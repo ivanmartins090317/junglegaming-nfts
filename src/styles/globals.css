@@ -1,0 +1,43 @@
+@import 'tailwindcss';
+@import './tokens.css';
+
+@theme {
+  --color-*: initial;
+  --shadow-*: initial;
+}
+
+@theme inline {
+  --font-sans: 'Roboto Mono', ui-monospace, monospace;
+  --font-mono: 'Roboto Mono', ui-monospace, monospace;
+
+  --color-ink: var(--ink);
+  --color-foreground: var(--fg);
+  --color-primary: var(--primary-color);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-text-accent: var(--text-accent);
+  --color-text-secondary: var(--text-secondary);
+  --color-secondary: var(--secondary-color);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-text-coral: var(--text-coral);
+  --color-surface-card: var(--surface-card);
+  --color-border: var(--border-color);
+  --color-background: var(--background);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+}
+
+html {
+  font-family: 'Roboto Mono', monospace;
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto Mono', monospace;
+  font-weight: 400;
+}
+
+*,
+*::before,
+*::after {
+  box-shadow: none;
+}

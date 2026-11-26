@@ -1,9 +1,10 @@
 # Implementação por fase
 
-Registro do que já foi entregue. Nenhuma fase de código fechada.
+Registro do que já foi entregue.
 
 | Fase | Documento | Status |
 | --- | --- | --- |
+| 1 | [Tokens, casca e rotas vazias](F1-tokens-casca-rotas.md) | concluída (código) · homologação manual pendente |
 
 O que falta está em [docs/state/PENDENCIAS.md](../state/PENDENCIAS.md).
 

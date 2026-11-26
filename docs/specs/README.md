@@ -4,8 +4,7 @@
 
 | Data | Slug | Tipo | Status | Spec |
 | --- | --- | --- | --- | --- |
-
-Nenhuma spec ainda. A primeira nasce na construção, com aprovação antes do código.
+| 2026-11-25 | tokens-casca-rotas | `feature` | `done` | [spec](2026-11-25-tokens-casca-rotas.md) |
 
 Status: `draft`, `aprovada`, `em_implementacao`, `done`.
 

@@ -1,0 +1,29 @@
+/*
+ * Nove cores medidas, raios 5, 6 e 15, e as variáveis do shadcn
+ * apontando para essas cores. Sem hex fora desta lista.
+ */
+:root {
+  --ink: #140D0A;
+  --fg: #F5F1EB;
+  --primary-color: #D28A4C;
+  --text-accent: #E89B55;
+  --text-secondary: #CFB28C;
+  --secondary-color: #B39463;
+  --text-coral: #F0805F;
+  --surface-card: #241612;
+  --border-color: #3F2319;
+
+  --radius-field: 5px;
+  --radius-page-button: 6px;
+  --radius-card-image: 15px;
+
+  --background: var(--ink);
+  --foreground: var(--fg);
+  --primary: var(--primary-color);
+  --primary-foreground: var(--ink);
+  --secondary: var(--secondary-color);
+  --secondary-foreground: var(--ink);
+  --border: var(--border-color);
+  --card: var(--surface-card);
+  --card-foreground: var(--fg);
+}

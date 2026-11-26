@@ -4,6 +4,15 @@ Fonte viva do que ainda falta implementar ou validar. Atualizar ao concluir cada
 
 Última revisão: 2026-11-25
 
+## Fase 1 · Homologação
+
+Código entregue em `docs/implementation/F1-tokens-casca-rotas.md`. Homologação manual pendente:
+
+- [ ] Casca do início, telas nomeadas e endereço desconhecido
+- [ ] Início desktop (1440) e mobile (390) contra os frames do Figma
+- [ ] Navegação do topo, busca sem efeito e larguras 1440, 768 e 390
+- [ ] Simulação ligada, desligada e falha ao subir
+
 ## Setup
 
 - [x] Workflow em `.cursor/workflow/`
@@ -13,7 +22,8 @@ Fonte viva do que ainda falta implementar ou validar. Atualizar ao concluir cada
 
 ## Construção
 
-- [ ] Tokens, casca e rotas vazias
+- [x] Tokens, casca e rotas vazias
+- [x] Tela de início fiel aos frames desktop e mobile (dados estáticos, sem catálogo)
 - [ ] MSW com dois usuários, reset e catálogo feliz
 - [ ] Catálogo e detalhe, estado na URL
 - [ ] Sessão, login, cadastro e guarda
