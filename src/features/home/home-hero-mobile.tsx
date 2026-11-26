@@ -29,13 +29,13 @@ export function HomeHeroMobile() {
           <button
             type="button"
             onClick={scrollToGrade}
-            className="m-0 inline-flex items-center gap-2 bg-transparent p-0 text-left font-mono text-[12px] font-bold leading-[14px] text-text-accent"
+            className="m-0 flex w-fit items-center gap-2 bg-transparent p-0 text-left font-mono text-[12px] font-bold leading-[14px] text-text-accent"
           >
             EXPLORAR
             <ArrowRightIcon className="size-3" />
           </button>
         </div>
-        <div className="relative mt-[3px] aspect-square w-[38%] max-w-[138px] shrink-0">
+        <div className="relative mt-[3px] aspect-square w-[min(138px,33.3vw)] shrink-0">
           <img
             src="/home/hero.png"
             alt=""

@@ -9,16 +9,16 @@ export function SlidersIcon({ className }: IconProps) {
     <svg
       viewBox="0 0 24 24"
       aria-hidden="true"
-      className={className ?? 'size-[18px]'}
+      className={className ?? 'size-6'}
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.8"
+      strokeWidth="1.6"
       strokeLinecap="round"
     >
-      <circle cx="7" cy="7.5" r="2.4" />
-      <path d="M13 7.5h6" />
-      <path d="M5 16.5h6" />
-      <circle cx="17" cy="16.5" r="2.4" />
+      <circle cx="6.5" cy="7" r="3" />
+      <path d="M12.500 7h8" />
+      <path d="M3.500 17h8" />
+      <circle cx="17.500" cy="17" r="3" />
     </svg>
   )
 }
@@ -46,7 +46,7 @@ function SolidSvg({ className, children }: IconProps & { children: ReactNode }) 
     <svg
       viewBox="0 0 24 24"
       aria-hidden="true"
-      className={className ?? 'size-[18px]'}
+      className={className ?? 'size-6'}
       fill="currentColor"
     >
       {children}

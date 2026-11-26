@@ -72,7 +72,7 @@ export function SiteHeader() {
       </div>
       <div className="flex items-center gap-2 desktop:hidden">
         <div className="relative min-w-0 flex-1">
-          <SearchIcon className="pointer-events-none absolute top-1/2 left-3.5 size-[18px] -translate-y-1/2 text-secondary" />
+          <SearchIcon className="pointer-events-none absolute top-1/2 left-[9px] size-7 -translate-y-1/2 text-secondary" />
           <Input
             readOnly
             aria-label="Busca"
