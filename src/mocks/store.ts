@@ -6,11 +6,20 @@ import { buildQuote, type PricedLine } from '@/lib/money.ts'
 import { catalogSeed } from '@/mocks/fixtures/catalog.ts'
 import { usersSeed, type SeedUser } from '@/mocks/fixtures/users.ts'
 
+export interface OrderClose {
+  userId: string
+  key: string
+  signature: string
+  orderId: string
+}
+
 export interface LiveStore {
   nfts: Nft[]
   users: SeedUser[]
   sessionUserId: string | null
   nextUserId: number
+  nextOrderSeq: number
+  orderCloses: OrderClose[]
 }
 
 export type SessionFailure = {
@@ -35,6 +44,8 @@ const seed: LiveStore = {
   users: usersSeed,
   sessionUserId: null,
   nextUserId: 3,
+  nextOrderSeq: 1,
+  orderCloses: [],
 }
 
 let liveStore = cloneStore(seed)
@@ -125,6 +136,10 @@ export function signOutUser() {
 
 export function updateLiveStore(change: (store: LiveStore) => void) {
   change(liveStore)
+}
+
+export function withStore<T>(read: (store: LiveStore) => T) {
+  return read(liveStore)
 }
 
 export function resetStore() {

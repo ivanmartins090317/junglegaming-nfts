@@ -1,4 +1,6 @@
 import { http, HttpResponse } from 'msw'
+import { orderMessages } from '@/lib/contracts/order.ts'
+import { closeSessionOrder, readSessionOrder, type OrderWrite } from '@/mocks/order-store.ts'
 import {
   addSessionItem,
   mergeSessionCart,
@@ -52,6 +54,11 @@ function sessionResponse(result: ReturnType<typeof signInUser>) {
 function cartResponse(result: CartWrite) {
   if (!result.ok) return HttpResponse.json({ message: 'Não foi possível atualizar o carrinho.' }, { status: result.status })
   return HttpResponse.json(result.cart)
+}
+
+function orderResponse(result: OrderWrite) {
+  if (!result.ok) return HttpResponse.json({ message: result.message }, { status: result.status })
+  return HttpResponse.json(result.order)
 }
 
 function routeId(value: string | readonly string[] | undefined) {
@@ -127,5 +134,17 @@ export const handlers = [
     }
     const body = await readBody(request)
     return HttpResponse.json(quoteCartLines(parseCartLines(body.lines)))
+  }),
+  http.get('/api/pedidos/:pedidoId', ({ params }) => {
+    if (!readSessionUser()) {
+      return HttpResponse.json({ message: orderMessages.loadFailed }, { status: 401 })
+    }
+    const order = readSessionOrder(routeId(params.pedidoId))
+    if (!order) return HttpResponse.json({ message: orderMessages.missing }, { status: 404 })
+    return HttpResponse.json(order)
+  }),
+  http.post('/api/pedidos', async ({ request }) => {
+    const body = await readBody(request)
+    return orderResponse(closeSessionOrder(body.key, body.lines))
   }),
 ]

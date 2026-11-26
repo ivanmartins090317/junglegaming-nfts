@@ -1,3 +1,4 @@
+import { http, HttpResponse } from 'msw'
 import { setupServer } from 'msw/node'
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { worker } from '@/mocks/browser.ts'
@@ -46,8 +47,20 @@ const happyUsers = [
     orders: [
       {
         id: 'ped-ada-1',
-        item: { nftId: 'ivory-baron-088', quantity: 1 },
+        lines: [
+          {
+            nftId: 'ivory-baron-088',
+            name: 'Ivory Baron #088',
+            image: '/home/ivory.png',
+            quantity: 1,
+            total: '1.79',
+          },
+        ],
+        networkFee: '0.00',
         total: '1.79',
+        wallet: 'MetaMask',
+        date: '29 Jul, 2026',
+        transactionId: '0xADA1000000000000000000000000A1E1',
         status: 'confirmado',
       },
     ],
@@ -62,8 +75,20 @@ const happyUsers = [
     orders: [
       {
         id: 'ped-bruno-1',
-        item: { nftId: 'golden-signal-160', quantity: 1 },
+        lines: [
+          {
+            nftId: 'golden-signal-160',
+            name: 'Golden Signal #160',
+            image: '/home/golden.png',
+            quantity: 1,
+            total: '0.39',
+          },
+        ],
+        networkFee: '0.00',
         total: '0.39',
+        wallet: 'MetaMask',
+        date: '29 Jul, 2026',
+        transactionId: '0xB200000000000000000000000000B2E2',
         status: 'confirmado',
       },
     ],
@@ -135,8 +160,8 @@ describe('loja simulada', () => {
     const brunoCart = bruno.cart.map((line) => line.nftId)
     const adaOrders = ada.orders.map((order) => order.id)
     const brunoOrders = bruno.orders.map((order) => order.id)
-    const adaItems = ada.orders.map((order) => order.item.nftId)
-    const brunoItems = bruno.orders.map((order) => order.item.nftId)
+    const adaItems = ada.orders.flatMap((order) => order.lines.map((line) => line.nftId))
+    const brunoItems = bruno.orders.flatMap((order) => order.lines.map((line) => line.nftId))
 
     expect(shared(ada.favorites, bruno.favorites)).toEqual([])
     expect(shared(adaCart, brunoCart)).toEqual([])
@@ -306,6 +331,146 @@ describe('loja simulada', () => {
     await fetch('/api/sessao', { method: 'DELETE' })
     await enter('bruno@kurio.test')
     expect(lineQuantity(await (await fetch('/api/carrinho')).json(), 'cosmic-bloom-118')).toBe(2)
+  })
+
+  it('grava o recibo uma vez, isola a pessoa e o recomeço apaga a chave', async () => {
+    expect((await fetch('/api/pedidos/ped-ada-1')).status).toBe(401)
+    const guest = await postJson('/api/pedidos', {
+      key: 'chave-visitante',
+      lines: [{ nftId: 'sage-nomad-009', quantity: 1 }],
+    })
+    expect(guest.status).toBe(401)
+    expect(readUsers()[0]?.orders).toHaveLength(1)
+
+    await enter('ada@kurio.test')
+    const adaSeed = await (await fetch('/api/pedidos/ped-ada-1')).json()
+    expect(adaSeed).toMatchObject({
+      id: 'ped-ada-1',
+      total: '1.79',
+      networkFee: '0.00',
+      status: 'confirmado',
+      wallet: 'MetaMask',
+      date: '29 Jul, 2026',
+      transactionId: '0xADA1000000000000000000000000A1E1',
+      lines: [{ nftId: 'ivory-baron-088', name: 'Ivory Baron #088', quantity: 1, total: '1.79' }],
+    })
+    expect((await fetch('/api/pedidos/ped-bruno-1')).status).toBe(404)
+    expect((await fetch('/api/pedidos/ped-9')).status).toBe(404)
+
+    const mismatch = await postJson('/api/pedidos', {
+      key: 'chave-ada-1',
+      lines: [{ nftId: 'ivory-baron-088', quantity: 1 }],
+    })
+    expect(mismatch.status).toBe(400)
+    expect(await mismatch.json()).toEqual({ message: 'O carrinho não confere com o pedido.' })
+    expect(readUsers()[0]?.cart).toEqual([{ nftId: 'sage-nomad-009', quantity: 1 }])
+
+    const created = await postJson('/api/pedidos', {
+      key: 'chave-ada-1',
+      lines: [{ nftId: 'sage-nomad-009', quantity: 1 }],
+      total: '99',
+    })
+    expect(created.status).toBe(200)
+    const receipt = await created.json()
+    expect(receipt).toMatchObject({
+      status: 'confirmado',
+      networkFee: '0.016',
+      total: '1.706',
+      wallet: 'MetaMask',
+      date: '29 Jul, 2026',
+      lines: [{ nftId: 'sage-nomad-009', name: 'Sage Nomad #009', quantity: 1, total: '1.69' }],
+    })
+    expect(receipt.id).not.toBe('ped-ada-1')
+    expect(readUsers()[0]?.cart).toEqual([])
+    expect(readUsers()[0]?.orders).toHaveLength(2)
+    expect(readUsers()[1]?.orders[0]?.total).toBe('0.39')
+
+    const replay = await postJson('/api/pedidos', {
+      key: 'chave-ada-1',
+      lines: [{ nftId: 'sage-nomad-009', quantity: 1 }],
+    })
+    expect(replay.status).toBe(200)
+    expect(await replay.json()).toMatchObject({ id: receipt.id, total: '1.706', transactionId: receipt.transactionId })
+    expect(readUsers()[0]?.orders).toHaveLength(2)
+    expect(readUsers()[0]?.cart).toEqual([])
+
+    const conflict = await postJson('/api/pedidos', {
+      key: 'chave-ada-1',
+      lines: [{ nftId: 'sage-nomad-009', quantity: 2 }],
+    })
+    expect(conflict.status).toBe(409)
+    expect(await conflict.json()).toEqual({ message: 'Esta chave já fechou outro pedido.' })
+    expect(readUsers()[0]?.orders).toHaveLength(2)
+
+    const empty = await postJson('/api/pedidos', { key: 'chave-vazia', lines: [] })
+    expect(empty.status).toBe(400)
+    expect(await empty.json()).toEqual({ message: 'O carrinho está vazio.' })
+
+    updateLiveStore((store) => {
+      const nft = store.nfts.find((item) => item.id === 'sage-nomad-009')
+      if (!nft) throw new Error('peça ausente')
+      nft.price = '9.99'
+      nft.name = 'Sage Mudou'
+    })
+    const reread = await (await fetch(`/api/pedidos/${receipt.id}`)).json()
+    expect(reread.lines[0]).toMatchObject({ name: 'Sage Nomad #009', total: '1.69' })
+    expect(reread.total).toBe('1.706')
+
+    await fetch('/api/sessao', { method: 'DELETE' })
+    await enter('bruno@kurio.test')
+    const brunoSeed = await (await fetch('/api/pedidos/ped-bruno-1')).json()
+    expect(brunoSeed).toMatchObject({
+      id: 'ped-bruno-1',
+      total: '0.39',
+      transactionId: '0xB200000000000000000000000000B2E2',
+      lines: [{ nftId: 'golden-signal-160', quantity: 1, total: '0.39' }],
+    })
+    expect((await fetch(`/api/pedidos/${receipt.id}`)).status).toBe(404)
+    const bruno = await postJson('/api/pedidos', {
+      key: 'chave-ada-1',
+      lines: [{ nftId: 'cosmic-bloom-118', quantity: 2 }],
+    })
+    expect(bruno.status).toBe(200)
+    expect(await bruno.json()).toMatchObject({
+      total: '2.596',
+      networkFee: '0.016',
+      lines: [{ nftId: 'cosmic-bloom-118', quantity: 2, total: '2.58' }],
+    })
+    expect(readUsers()[0]?.orders[1]?.total).toBe('1.706')
+    expect(readUsers()[1]?.cart).toEqual([])
+
+    expect((await fetch('/api/dev/reset', { method: 'POST' })).status).toBe(204)
+    expect(readUsers()).toEqual(happyUsers)
+    await enter('ada@kurio.test')
+    const again = await postJson('/api/pedidos', {
+      key: 'chave-ada-1',
+      lines: [{ nftId: 'sage-nomad-009', quantity: 1 }],
+    })
+    expect(again.status).toBe(200)
+    expect(readUsers()[0]?.orders).toHaveLength(2)
+    expect(readUsers()[0]?.orders[0]?.id).toBe('ped-ada-1')
+    expect(readUsers()[0]?.orders[0]?.total).toBe('1.79')
+  })
+
+  it('falha no fecho não grava a chave', async () => {
+    server.use(http.post('/api/pedidos', () => HttpResponse.json({ message: 'falha' }, { status: 500 })))
+    await enter('ada@kurio.test')
+    const failed = await postJson('/api/pedidos', {
+      key: 'chave-ada-2',
+      lines: [{ nftId: 'sage-nomad-009', quantity: 1 }],
+    })
+    expect(failed.status).toBe(500)
+    expect(readUsers()[0]?.cart).toEqual([{ nftId: 'sage-nomad-009', quantity: 1 }])
+    expect(readUsers()[0]?.orders).toHaveLength(1)
+
+    server.resetHandlers()
+    const retried = await postJson('/api/pedidos', {
+      key: 'chave-ada-2',
+      lines: [{ nftId: 'sage-nomad-009', quantity: 1 }],
+    })
+    expect(retried.status).toBe(200)
+    expect(await retried.json()).toMatchObject({ total: '1.706' })
+    expect(readUsers()[0]?.cart).toEqual([])
   })
 })
 

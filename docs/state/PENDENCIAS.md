@@ -62,6 +62,17 @@ Código entregue em `docs/implementation/F5-carrinho-cotacao.md`. Homologação 
 - [ ] Cupom, pontos do carrossel, Enviar e atalhos fora de escopo não navegam e não mostram sucesso
 - [ ] Em 1440, a tabela, as recomendações e o rodapé aparecem. Abaixo de 1440, inclusive 768 e 390, a coluna é a do mobile, com margem 28, sem a barra de baixo
 
+## Fase 6 · Homologação
+
+Código entregue em `docs/implementation/F6-pedido-idempotente-confirmacao.md`. Homologação manual pendente:
+
+- [ ] Sem sessão, `/pedidos/ped-ada-1` abre a entrada e volta ao pedido depois do sucesso
+- [ ] Ada vê Ivory Baron #088, quantidade 1, taxa `0.00 ETH`, total `1.79 ETH`, data `29 Jul, 2026` e `0xADA1…A1E1`, sem cabeçalho
+- [ ] O `×` volta ao início. `Ver no Etherscan` não navega e não mostra sucesso
+- [ ] Em 390 o modal cabe na coluna com padding 28, sem barra inferior
+- [ ] O pedido do Bruno não abre na sessão da Ada
+- [ ] `/`, `/carrinho` e `/perfil` continuam com cabeçalho
+
 ## Setup
 
 - [x] Workflow em `.cursor/workflow/`
@@ -77,7 +88,7 @@ Código entregue em `docs/implementation/F5-carrinho-cotacao.md`. Homologação 
 - [x] Catálogo e detalhe, estado na URL
 - [x] Sessão, login, cadastro e guarda
 - [x] Carrinho e cotação
-- [ ] Pedido idempotente, confirmação e recibo snapshot
+- [x] Pedido idempotente, confirmação e recibo snapshot
 - [ ] Socket no preço e no estado do pedido
 - [ ] Perfil e carteiras
 - [ ] Mapa de teste pela skill `C:\projetos\manual-report`

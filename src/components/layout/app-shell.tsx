@@ -12,9 +12,10 @@ interface AppShellProps {
 export function AppShell({ children }: AppShellProps) {
   const pathname = useRouterState({ select: (state) => state.location.pathname })
   const fullScreenAuth = (pathname === '/entrar' || pathname === '/cadastro') && !isDesktopEntry()
+  const confirmationPage = pathname.startsWith('/pedidos/')
   const cartPage = pathname === '/carrinho'
 
-  if (fullScreenAuth) {
+  if (fullScreenAuth || confirmationPage) {
     return <div className="min-h-screen bg-ink text-foreground">{children}</div>
   }
 

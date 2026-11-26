@@ -2,10 +2,13 @@ import { QueryClientProvider } from '@tanstack/react-query'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { setupServer } from 'msw/node'
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { routeTree } from '@/routeTree.gen.ts'
 import { parseCatalogLocation, stringifyCatalogLocation } from '@/features/catalog/catalog-search.ts'
 import { createAppQueryClient, setAppQueryClient } from '@/lib/query/session.ts'
+import { handlers } from '@/mocks/handlers.ts'
+import { resetStore } from '@/mocks/store.ts'
 
 function setViewport(width: number) {
   Object.defineProperty(window, 'innerWidth', { configurable: true, value: width })
@@ -325,6 +328,71 @@ describe('casca e rotas vazias', () => {
     })
     expect(view.router.history.length).toBe(before)
     expect(view.router.state.location.pathname).toBe('/')
+  })
+})
+
+const confirmationServer = setupServer(...handlers)
+
+describe('casca da confirmação', () => {
+  const mounted: Array<Awaited<ReturnType<typeof mount>>> = []
+
+  beforeAll(() => {
+    confirmationServer.listen({ onUnhandledFrame: 'error' })
+  })
+
+  beforeEach(() => {
+    resetStore()
+  })
+
+  afterEach(async () => {
+    confirmationServer.resetHandlers()
+    await act(async () => {
+      for (const view of mounted) view.root.unmount()
+    })
+    mounted.length = 0
+    document.body.replaceChildren()
+  })
+
+  afterAll(() => {
+    confirmationServer.close()
+  })
+
+  it('esconde cabeçalho e barra só na confirmação', async () => {
+    const response = await fetch('/api/sessao', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'ada@kurio.test', password: 'kurio' }),
+    })
+    expect(response.status).toBe(200)
+
+    const home = await mount('/', 1440)
+    mounted.push(home)
+    expect(home.container.querySelector('header')).not.toBeNull()
+
+    const homeNarrow = await mount('/', 390)
+    mounted.push(homeNarrow)
+    expect(homeNarrow.container.querySelector('header')).not.toBeNull()
+    expect(homeNarrow.container.querySelector('nav[aria-label="Atalhos"]')).not.toBeNull()
+
+    const cart = await mount('/carrinho', 1440)
+    mounted.push(cart)
+    expect(cart.container.querySelector('header')).not.toBeNull()
+
+    const order = await mount('/pedidos/ped-ada-1', 1440)
+    mounted.push(order)
+    await vi.waitFor(() => {
+      expect(order.container.textContent).toContain('Ivory Baron #088')
+    })
+    expect(order.container.querySelector('header')).toBeNull()
+    expect(order.container.querySelector('nav[aria-label="Atalhos"]')).toBeNull()
+
+    const orderNarrow = await mount('/pedidos/ped-ada-1', 390)
+    mounted.push(orderNarrow)
+    await vi.waitFor(() => {
+      expect(orderNarrow.container.textContent).toContain('Ivory Baron #088')
+    })
+    expect(orderNarrow.container.querySelector('header')).toBeNull()
+    expect(orderNarrow.container.querySelector('nav[aria-label="Atalhos"]')).toBeNull()
   })
 })
 

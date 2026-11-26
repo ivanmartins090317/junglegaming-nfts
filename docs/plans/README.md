@@ -10,7 +10,8 @@
 | 2026-11-26 | catalogo-detalhe-url | `done` | [plano](reviews/2026-11-26-catalogo-detalhe-url-plano.md) | [achados](reviews/2026-11-26-catalogo-detalhe-url-achados.md) |
 | 2026-11-26 | sessao-login-cadastro-guarda | `done` | [plano](reviews/2026-11-26-sessao-login-cadastro-guarda-plano.md) | pendente |
 | 2026-11-26 | carrinho-cotacao | `done` | [plano](reviews/2026-11-26-carrinho-cotacao-plano.md) | não pedido |
+| 2026-11-26 | pedido-idempotente-confirmacao | `done` | [plano](reviews/2026-11-26-pedido-idempotente-confirmacao-plano.md) | não pedido |
 
 O plano de arquitetura da prova ficou fora deste Git.
 
-Status: `aprovado` (plano gravado), `decidido` (triagem feita), `done` (feature fechada).
+Status: `aguardando aprovação` (plano escrito, sem aceite), `aprovado` (plano gravado), `decidido` (triagem feita), `done` (feature fechada).

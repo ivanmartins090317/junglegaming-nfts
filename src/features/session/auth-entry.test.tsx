@@ -264,7 +264,7 @@ describe('entrada, cadastro e guarda', () => {
     expect(valid.router.state.location.href).toContain('q=neon')
   })
 
-  it('com sessão a confirmação mostra o nome da tela e sair limpa a chave privada', async () => {
+  it('com sessão a confirmação abre o pedido e sair limpa a chave privada', async () => {
     const view = await mount('/pedidos/ped-9', 1440)
     mounted.push(view)
     expect(view.router.state.location.pathname).toBe('/')
@@ -274,7 +274,16 @@ describe('entrada, cadastro e guarda', () => {
 
     await signIn(view.container, 'ada@kurio.test', 'kurio')
     await vi.waitFor(() => {
-      expect(view.container.textContent).toContain('Confirmação ped-9')
+      expect(view.container.textContent).toContain('Pedido não encontrado.')
+    })
+    expect(view.router.state.location.pathname).toBe('/pedidos/ped-9')
+    expect(view.container.querySelector('header')).toBeNull()
+
+    await act(async () => {
+      await view.router.navigate({ to: '/perfil' })
+    })
+    await vi.waitFor(() => {
+      expect(view.container.textContent).toContain('ada@kurio.test')
     })
     view.queryClient.setQueryData(privateQueryKey('usr-ada'), { pedido: 'ped-9' })
     view.queryClient.setQueryData(['nfts'], [{ id: 'neon-vessel-552' }])
@@ -286,7 +295,7 @@ describe('entrada, cadastro e guarda', () => {
     expect(view.queryClient.getQueryData(privateQueryKey('usr-ada'))).toBeUndefined()
     const catalog = view.queryClient.getQueryData<Array<{ id: string }>>(['nfts'])
     expect(catalog?.some((item) => item.id === 'neon-vessel-552')).toBe(true)
-    expect(view.container.textContent).not.toContain('Confirmação ped-9')
+    expect(view.container.textContent).not.toContain('Pedido não encontrado.')
   })
 
   it('atalhos sociais não entram e a falha de leitura não abre a tela privada', async () => {

@@ -1,19 +1,5 @@
-export interface SeedCartLine {
-  nftId: string
-  quantity: number
-}
-
-export interface SeedOrderItem {
-  nftId: string
-  quantity: number
-}
-
-export interface SeedOrder {
-  id: string
-  item: SeedOrderItem
-  total: string
-  status: 'confirmado'
-}
+import type { OrderReceipt } from '@/lib/contracts/order.ts'
+import { orderDate, orderWallet } from '@/lib/contracts/order.ts'
 
 export interface SeedUser {
   id: string
@@ -22,7 +8,12 @@ export interface SeedUser {
   password: string
   favorites: string[]
   cart: SeedCartLine[]
-  orders: SeedOrder[]
+  orders: OrderReceipt[]
+}
+
+export interface SeedCartLine {
+  nftId: string
+  quantity: number
 }
 
 export const usersSeed: SeedUser[] = [
@@ -36,8 +27,20 @@ export const usersSeed: SeedUser[] = [
     orders: [
       {
         id: 'ped-ada-1',
-        item: { nftId: 'ivory-baron-088', quantity: 1 },
+        lines: [
+          {
+            nftId: 'ivory-baron-088',
+            name: 'Ivory Baron #088',
+            image: '/home/ivory.png',
+            quantity: 1,
+            total: '1.79',
+          },
+        ],
+        networkFee: '0.00',
         total: '1.79',
+        wallet: orderWallet,
+        date: orderDate,
+        transactionId: '0xADA1000000000000000000000000A1E1',
         status: 'confirmado',
       },
     ],
@@ -52,8 +55,20 @@ export const usersSeed: SeedUser[] = [
     orders: [
       {
         id: 'ped-bruno-1',
-        item: { nftId: 'golden-signal-160', quantity: 1 },
+        lines: [
+          {
+            nftId: 'golden-signal-160',
+            name: 'Golden Signal #160',
+            image: '/home/golden.png',
+            quantity: 1,
+            total: '0.39',
+          },
+        ],
+        networkFee: '0.00',
         total: '0.39',
+        wallet: orderWallet,
+        date: orderDate,
+        transactionId: '0xB200000000000000000000000000B2E2',
         status: 'confirmado',
       },
     ],
