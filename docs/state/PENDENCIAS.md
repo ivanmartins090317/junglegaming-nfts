@@ -72,6 +72,14 @@ Código entregue em `docs/implementation/F7-socket-preco-estado-pedido.md`. Homo
 - [ ] Sair corta escuta do pedido; preço público continua
 - [ ] Com `VITE_ENABLE_MOCK=false`, não há escuta de preço nem de pedido
 
+## Fase 8 · Homologação
+
+Código entregue em `docs/implementation/F8-perfil-carteiras.md`. Homologação manual pendente:
+
+- [ ] `/perfil` e `/carteiras` em 1440 e 390 conforme `docs/manual-dev/08-fase-8-perfil-carteiras.md`
+- [ ] Isolamento Ada/Bruno, senha nova, carteira sem mudar recibo `MetaMask`
+- [ ] Cliques fora de escopo (sidebar, avatar, Adicionar) não navegam
+
 ## Fase 6 · Homologação
 
 Código entregue em `docs/implementation/F6-pedido-idempotente-confirmacao.md`. Homologação manual pendente:
@@ -100,7 +108,7 @@ Código entregue em `docs/implementation/F6-pedido-idempotente-confirmacao.md`. 
 - [x] Carrinho e cotação
 - [x] Pedido idempotente, confirmação e recibo snapshot
 - [x] Socket no preço e no estado do pedido
-- [ ] Perfil e carteiras
+- [x] Perfil e carteiras
 - [ ] Mapa de teste pela skill `C:\projetos\manual-report`
 - [ ] Playwright dos 12 fluxos e regressão visual
 - [ ] Lighthouse, três medições, mediana, e deploy da mesma build

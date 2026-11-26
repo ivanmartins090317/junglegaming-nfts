@@ -1,6 +1,11 @@
 import type { CartLine, CartLineRef, CartView, Quote } from '@/lib/contracts/cart.ts'
+import type { Profile } from '@/lib/contracts/profile.ts'
+import { profileMessages } from '@/lib/contracts/profile.ts'
+import type { PrimaryWallet } from '@/lib/contracts/wallet.ts'
+import { walletMessages } from '@/lib/contracts/wallet.ts'
 import type { SessionUser } from '@/lib/contracts/session.ts'
 import { sessionMessages } from '@/lib/contracts/session.ts'
+import { blankProfile, blankWallet } from '@/mocks/fixtures/users.ts'
 import type { Nft } from '@/lib/contracts/nft.ts'
 import { buildQuote, type PricedLine } from '@/lib/money.ts'
 import { catalogSeed } from '@/mocks/fixtures/catalog.ts'
@@ -131,6 +136,8 @@ export function signUpUser(input: {
     name,
     email,
     password,
+    profile: blankProfile(),
+    wallet: blankWallet(),
     favorites: [],
     cart: [],
     orders: [],
@@ -282,4 +289,149 @@ export function mergeSessionCart(lines: CartLineRef[]): CartWrite {
     else user.cart.push({ nftId: line.nftId, quantity: line.quantity })
   }
   return { ok: true, cart: toCartView(user.cart) }
+}
+
+function filled(value: unknown) {
+  return typeof value === 'string' ? value.trim() : ''
+}
+
+export type ProfileResult =
+  | { ok: true; profile: Profile }
+  | { ok: false; status: 400 | 401 | 409; message: string }
+
+export function readProfile(): ProfileResult {
+  const user = currentUser()
+  if (!user) return { ok: false, status: 401, message: 'Não autorizado.' }
+  const profile: Profile = {
+    displayName: user.name,
+    email: user.email,
+    username: user.profile.username,
+    ensName: user.profile.ensName,
+    walletNickname: user.profile.walletNickname,
+  }
+  return { ok: true, profile }
+}
+
+export function saveProfile(input: {
+  displayName: unknown
+  username: unknown
+  email: unknown
+  ensName: unknown
+  walletNickname: unknown
+  currentPassword: unknown
+  nextPassword: unknown
+  confirmPassword: unknown
+}): ProfileResult {
+  const user = currentUser()
+  if (!user) return { ok: false, status: 401, message: 'Não autorizado.' }
+
+  const displayName = filled(input.displayName)
+  const username = filled(input.username)
+  const email = filled(input.email)
+  const ensName = filled(input.ensName)
+  const walletNickname = filled(input.walletNickname)
+  const currentPassword = filled(input.currentPassword)
+  const nextPassword = filled(input.nextPassword)
+  const confirmPassword = filled(input.confirmPassword)
+
+  if (
+    displayName === '' ||
+    username === '' ||
+    email === '' ||
+    ensName === '' ||
+    walletNickname === ''
+  ) {
+    return { ok: false, status: 400, message: profileMessages.required }
+  }
+
+  const taken = liveStore.users.some(
+    (item) => item.id !== user.id && sameEmail(item.email, email),
+  )
+  if (taken) return { ok: false, status: 409, message: profileMessages.emailTaken }
+
+  const passwordTouched =
+    currentPassword !== '' || nextPassword !== '' || confirmPassword !== ''
+
+  if (passwordTouched && currentPassword !== user.password) {
+    return { ok: false, status: 400, message: profileMessages.currentPassword }
+  }
+
+  if (passwordTouched && (nextPassword === '' || nextPassword !== confirmPassword)) {
+    return { ok: false, status: 400, message: profileMessages.passwordMismatch }
+  }
+
+  user.name = displayName
+  user.email = email
+  user.profile = { username, ensName, walletNickname }
+  if (passwordTouched) user.password = nextPassword
+
+  const profile: Profile = {
+    displayName: user.name,
+    email: user.email,
+    username: user.profile.username,
+    ensName: user.profile.ensName,
+    walletNickname: user.profile.walletNickname,
+  }
+  return { ok: true, profile }
+}
+
+export type WalletResult =
+  | { ok: true; wallet: PrimaryWallet }
+  | { ok: false; status: 400 | 401; message: string }
+
+export function readWallet(): WalletResult {
+  const user = currentUser()
+  if (!user) return { ok: false, status: 401, message: 'Não autorizado.' }
+  return { ok: true, wallet: { ...user.wallet } }
+}
+
+export function saveWallet(input: {
+  displayName: unknown
+  nickname: unknown
+  network: unknown
+  profileName: unknown
+  address: unknown
+  secondaryAddress: unknown
+  walletType: unknown
+  referralCode: unknown
+  email: unknown
+  ensName: unknown
+}): WalletResult {
+  const user = currentUser()
+  if (!user) return { ok: false, status: 401, message: 'Não autorizado.' }
+
+  const displayName = filled(input.displayName)
+  const nickname = filled(input.nickname)
+  const profileName = filled(input.profileName)
+  const address = filled(input.address)
+  const referralCode = filled(input.referralCode)
+  const email = filled(input.email)
+  const ensName = filled(input.ensName)
+  const secondaryAddress = filled(input.secondaryAddress)
+
+  if (
+    displayName === '' ||
+    nickname === '' ||
+    profileName === '' ||
+    address === '' ||
+    referralCode === '' ||
+    email === '' ||
+    ensName === ''
+  ) {
+    return { ok: false, status: 400, message: walletMessages.required }
+  }
+
+  user.wallet = {
+    displayName,
+    nickname,
+    network: '',
+    profileName,
+    address,
+    secondaryAddress,
+    walletType: '',
+    referralCode,
+    email,
+    ensName,
+  }
+  return { ok: true, wallet: { ...user.wallet } }
 }

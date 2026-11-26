@@ -10,16 +10,22 @@ import {
   quoteSessionCart,
   readCatalog,
   readNft,
+  readProfile,
   readSessionCart,
   readSessionUser,
+  readWallet,
   removeSessionItem,
   resetStore,
   resolveCart,
+  saveProfile,
+  saveWallet,
   setSessionQuantity,
   signInUser,
   signOutUser,
   signUpUser,
   type CartWrite,
+  type ProfileResult,
+  type WalletResult,
 } from '@/mocks/store.ts'
 
 const missingNft = { message: 'NFT não encontrado.' }
@@ -62,6 +68,16 @@ function orderResponse(result: OrderWrite) {
   return HttpResponse.json(result.order)
 }
 
+function profileResponse(result: ProfileResult) {
+  if (!result.ok) return HttpResponse.json({ message: result.message }, { status: result.status })
+  return HttpResponse.json(result.profile)
+}
+
+function walletResponse(result: WalletResult) {
+  if (!result.ok) return HttpResponse.json({ message: result.message }, { status: result.status })
+  return HttpResponse.json(result.wallet)
+}
+
 function routeId(value: string | readonly string[] | undefined) {
   return typeof value === 'string' && value.length > 0 ? value : ''
 }
@@ -96,6 +112,40 @@ export const handlers = [
         email: body.email,
         password: body.password,
         confirmPassword: body.confirmPassword,
+      }),
+    )
+  }),
+  http.get('/api/perfil', () => profileResponse(readProfile())),
+  http.put('/api/perfil', async ({ request }) => {
+    const body = await readBody(request)
+    return profileResponse(
+      saveProfile({
+        displayName: body.displayName,
+        username: body.username,
+        email: body.email,
+        ensName: body.ensName,
+        walletNickname: body.walletNickname,
+        currentPassword: body.currentPassword,
+        nextPassword: body.nextPassword,
+        confirmPassword: body.confirmPassword,
+      }),
+    )
+  }),
+  http.get('/api/carteiras', () => walletResponse(readWallet())),
+  http.put('/api/carteiras/principal', async ({ request }) => {
+    const body = await readBody(request)
+    return walletResponse(
+      saveWallet({
+        displayName: body.displayName,
+        nickname: body.nickname,
+        network: body.network,
+        profileName: body.profileName,
+        address: body.address,
+        secondaryAddress: body.secondaryAddress,
+        walletType: body.walletType,
+        referralCode: body.referralCode,
+        email: body.email,
+        ensName: body.ensName,
       }),
     )
   }),

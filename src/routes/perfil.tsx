@@ -1,5 +1,5 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { ProfilePage } from '@/features/session/profile-page.tsx'
+import { ProfilePage } from '@/features/profile/profile-page.tsx'
 import { returnToFrom } from '@/features/session/entry-location.ts'
 import { requireSession } from '@/features/session/guard.ts'
 

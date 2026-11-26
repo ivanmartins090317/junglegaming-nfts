@@ -3,6 +3,8 @@ import { setupServer } from 'msw/node'
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { worker } from '@/mocks/browser.ts'
 import { handlers } from '@/mocks/handlers.ts'
+import { profileMessages } from '@/lib/contracts/profile.ts'
+import { walletMessages } from '@/lib/contracts/wallet.ts'
 import { readUsers, resetStore, updateLiveStore } from '@/mocks/store.ts'
 
 const workerState = vi.hoisted(() => ({
@@ -42,6 +44,19 @@ const happyUsers = [
     name: 'Ada',
     email: 'ada@kurio.test',
     password: 'kurio',
+    profile: { username: '', ensName: '', walletNickname: '' },
+    wallet: {
+      displayName: '',
+      nickname: '',
+      network: '',
+      profileName: '',
+      address: '',
+      secondaryAddress: '',
+      walletType: '',
+      referralCode: '',
+      email: '',
+      ensName: '',
+    },
     favorites: ['emerald-ape-042', 'neon-vessel-552'],
     cart: [{ nftId: 'sage-nomad-009', quantity: 1 }],
     orders: [
@@ -70,6 +85,19 @@ const happyUsers = [
     name: 'Bruno',
     email: 'bruno@kurio.test',
     password: 'kurio',
+    profile: { username: '', ensName: '', walletNickname: '' },
+    wallet: {
+      displayName: '',
+      nickname: '',
+      network: '',
+      profileName: '',
+      address: '',
+      secondaryAddress: '',
+      walletType: '',
+      referralCode: '',
+      email: '',
+      ensName: '',
+    },
     favorites: ['golden-beat-207'],
     cart: [{ nftId: 'cosmic-bloom-118', quantity: 2 }],
     orders: [
@@ -452,6 +480,347 @@ describe('loja simulada', () => {
     expect(readUsers()[0]?.orders[0]?.total).toBe('1.79')
   })
 
+  const perfilCheio = {
+    displayName: 'Ada Costa',
+    username: 'ada',
+    email: 'ada.costa@kurio.test',
+    ensName: 'ada',
+    walletNickname: 'principal',
+    currentPassword: '',
+    nextPassword: '',
+    confirmPassword: '',
+  }
+
+  const carteiraAda = {
+    displayName: 'Ada carteira',
+    nickname: 'apelido',
+    network: '',
+    profileName: 'perfil',
+    address: 'carteira-ada',
+    secondaryAddress: '',
+    walletType: '',
+    referralCode: 'codigo',
+    email: 'bruno@kurio.test',
+    ensName: 'ada',
+  }
+
+  it('recusa perfil e carteira sem sessão', async () => {
+    for (const path of [
+      '/api/perfil',
+      '/api/carteiras',
+    ]) {
+      const read = await fetch(path)
+      expect(read.status).toBe(401)
+      expect(await read.json()).toEqual({ message: 'Não autorizado.' })
+    }
+  for (const path of ['/api/perfil', '/api/carteiras/principal']) {
+      const write = await putJson(path, {})
+      expect(write.status).toBe(401)
+      expect(await write.json()).toEqual({ message: 'Não autorizado.' })
+    }
+  })
+
+  it('Ada e Bruno leem o próprio perfil', async () => {
+    await enter('bruno@kurio.test')
+    expect(await (await fetch('/api/perfil')).json()).toEqual({
+      displayName: 'Bruno',
+      email: 'bruno@kurio.test',
+      username: '',
+      ensName: '',
+      walletNickname: '',
+    })
+    await fetch('/api/sessao', { method: 'DELETE' })
+    await enter('ada@kurio.test')
+    const ada = readUsers().find((user) => user.id === 'usr-ada')
+    expect(ada).toMatchObject({ name: 'Ada', email: 'ada@kurio.test', password: 'kurio' })
+  })
+
+  it('conta nova nasce com nome e e-mail no perfil', async () => {
+    await postJson('/api/cadastro', {
+      name: 'Lia',
+      email: 'lia@kurio.test',
+      password: 'kurio',
+      confirmPassword: 'kurio',
+    })
+    expect(await (await fetch('/api/perfil')).json()).toEqual({
+      displayName: 'Lia',
+      email: 'lia@kurio.test',
+      username: '',
+      ensName: '',
+      walletNickname: '',
+    })
+    expect(await (await fetch('/api/carteiras')).json()).toEqual({
+      displayName: '',
+      nickname: '',
+      network: '',
+      profileName: '',
+      address: '',
+      secondaryAddress: '',
+      walletType: '',
+      referralCode: '',
+      email: '',
+      ensName: '',
+    })
+  })
+
+  it('perfil vazio não grava', async () => {
+    await enter('ada@kurio.test')
+    const denied = await putJson('/api/perfil', { ...perfilCheio, displayName: '   ' })
+    expect(denied.status).toBe(400)
+    expect(await denied.json()).toEqual({ message: profileMessages.required })
+    expect(readUsers().find((user) => user.id === 'usr-ada')).toMatchObject({
+      name: 'Ada',
+      email: 'ada@kurio.test',
+    })
+  })
+
+  it('e-mail de outra conta não grava', async () => {
+    await enter('ada@kurio.test')
+    const denied = await putJson('/api/perfil', {
+      ...perfilCheio,
+      email: 'Bruno@kurio.test',
+      currentPassword: 'errada',
+    })
+    expect(denied.status).toBe(409)
+    expect(await denied.json()).toEqual({ message: profileMessages.emailTaken })
+    const ada = readUsers().find((user) => user.id === 'usr-ada')
+    expect(ada).toMatchObject({ email: 'ada@kurio.test', password: 'kurio' })
+  })
+
+  it('a própria conta aceita outra caixa', async () => {
+    await enter('ada@kurio.test')
+    const saved = await putJson('/api/perfil', {
+      displayName: 'Ada',
+      username: 'ada',
+      email: 'Ada@kurio.test',
+      ensName: 'ada',
+      walletNickname: 'principal',
+      currentPassword: '',
+      nextPassword: '',
+      confirmPassword: '',
+    })
+    expect(saved.status).toBe(200)
+    expect(readUsers().find((user) => user.id === 'usr-ada')?.email).toBe('Ada@kurio.test')
+    expect(await (await fetch('/api/sessao')).json()).toEqual({
+      id: 'usr-ada',
+      name: 'Ada',
+      email: 'Ada@kurio.test',
+    })
+  })
+
+  it('salvar o perfil troca nome e e-mail da sessão', async () => {
+    await enter('ada@kurio.test')
+    const saved = await putJson('/api/perfil', perfilCheio)
+    expect(saved.status).toBe(200)
+    expect(Object.keys(await saved.json()).sort()).toEqual([
+      'displayName',
+      'email',
+      'ensName',
+      'username',
+      'walletNickname',
+    ])
+    expect(await (await fetch('/api/sessao')).json()).toEqual({
+      id: 'usr-ada',
+      name: 'Ada Costa',
+      email: 'ada.costa@kurio.test',
+    })
+    expect(readUsers().find((user) => user.id === 'usr-ada')?.password).toBe('kurio')
+    expect(readUsers().find((user) => user.id === 'usr-bruno')).toMatchObject({
+      name: 'Bruno',
+      email: 'bruno@kurio.test',
+    })
+    expect(readUsers().find((user) => user.id === 'usr-ada')?.wallet.displayName).toBe('')
+  })
+
+  it('senha parcial ou errada não grava o nome', async () => {
+    await enter('ada@kurio.test')
+    const cases = [
+      { body: { ...perfilCheio, nextPassword: 'kurio-nova' }, message: profileMessages.currentPassword },
+      { body: { ...perfilCheio, currentPassword: 'errada' }, message: profileMessages.currentPassword },
+      {
+        body: { ...perfilCheio, currentPassword: 'kurio', nextPassword: 'kurio-nova', confirmPassword: '' },
+        message: profileMessages.passwordMismatch,
+      },
+      {
+        body: {
+          ...perfilCheio,
+          currentPassword: 'kurio',
+          nextPassword: 'kurio-nova',
+          confirmPassword: 'outra',
+        },
+        message: profileMessages.passwordMismatch,
+      },
+    ]
+    for (const item of cases) {
+      const denied = await putJson('/api/perfil', item.body)
+      expect(denied.status).toBe(400)
+      expect(await denied.json()).toEqual({ message: item.message })
+      const ada = readUsers().find((user) => user.id === 'usr-ada')
+      expect(ada).toMatchObject({ name: 'Ada', email: 'ada@kurio.test', password: 'kurio' })
+    }
+  })
+
+  it('senha nova entra e a sessão continua', async () => {
+    await enter('ada@kurio.test')
+    const saved = await putJson('/api/perfil', {
+      displayName: 'Ada',
+      username: 'ada',
+      email: 'ada@kurio.test',
+      ensName: 'ada',
+      walletNickname: 'principal',
+      currentPassword: 'kurio',
+      nextPassword: 'kurio-nova',
+      confirmPassword: 'kurio-nova',
+    })
+    expect(saved.status).toBe(200)
+    expect(readUsers().find((user) => user.id === 'usr-ada')?.password).toBe('kurio-nova')
+    expect(await (await fetch('/api/sessao')).json()).toEqual({
+      id: 'usr-ada',
+      name: 'Ada',
+      email: 'ada@kurio.test',
+    })
+    await fetch('/api/sessao', { method: 'DELETE' })
+    const old = await postJson('/api/sessao', { email: 'ada@kurio.test', password: 'kurio' })
+    expect(old.status).toBe(401)
+    const next = await postJson('/api/sessao', { email: 'ada@kurio.test', password: 'kurio-nova' })
+    expect(next.status).toBe(200)
+  })
+
+  it('carteira da semente vem vazia', async () => {
+    await enter('ada@kurio.test')
+    const body = await (await fetch('/api/carteiras')).json()
+    expect(Object.keys(body).sort()).toEqual([
+      'address',
+      'displayName',
+      'email',
+      'ensName',
+      'network',
+      'nickname',
+      'profileName',
+      'referralCode',
+      'secondaryAddress',
+      'walletType',
+    ])
+    expect(body).toEqual({
+      displayName: '',
+      nickname: '',
+      network: '',
+      profileName: '',
+      address: '',
+      secondaryAddress: '',
+      walletType: '',
+      referralCode: '',
+      email: '',
+      ensName: '',
+    })
+  })
+
+  it('carteira sem texto obrigatório não grava', async () => {
+    await enter('ada@kurio.test')
+    const denied = await putJson('/api/carteiras/principal', { ...carteiraAda, address: '   ' })
+    expect(denied.status).toBe(400)
+    expect(await denied.json()).toEqual({ message: walletMessages.required })
+    const ada = readUsers().find((user) => user.id === 'usr-ada')
+    expect(ada?.wallet.address).toBe('')
+    expect(ada).toMatchObject({ name: 'Ada', email: 'ada@kurio.test' })
+  })
+
+  it('endereço livre grava e rede vazia não bloqueia', async () => {
+    await enter('ada@kurio.test')
+    const saved = await putJson('/api/carteiras/principal', {
+      ...carteiraAda,
+      address: 'nao-e-hex',
+      network: 'ethereum',
+      walletType: 'metamask',
+    })
+    expect(saved.status).toBe(200)
+    const body = await saved.json()
+    expect(body).toMatchObject({
+      address: 'nao-e-hex',
+      network: '',
+      walletType: '',
+      email: 'bruno@kurio.test',
+    })
+    expect(readUsers().find((user) => user.id === 'usr-ada')?.profile.username).toBe('')
+    expect(readUsers().find((user) => user.id === 'usr-ada')?.email).toBe('ada@kurio.test')
+  })
+
+  it('campo sem rótulo não cria outra carteira', async () => {
+    await enter('ada@kurio.test')
+    const saved = await putJson('/api/carteiras/principal', {
+      ...carteiraAda,
+      secondaryAddress: 'extra.eth',
+    })
+    const body = await saved.json()
+    expect(body.secondaryAddress).toBe('extra.eth')
+    expect(Object.keys(body).sort()).toEqual([
+      'address',
+      'displayName',
+      'email',
+      'ensName',
+      'network',
+      'nickname',
+      'profileName',
+      'referralCode',
+      'secondaryAddress',
+      'walletType',
+    ])
+  })
+
+  it('perfil e carteira não se copiam', async () => {
+    await enter('ada@kurio.test')
+    await putJson('/api/perfil', perfilCheio)
+    expect(await (await fetch('/api/carteiras')).json()).toEqual({
+      displayName: '',
+      nickname: '',
+      network: '',
+      profileName: '',
+      address: '',
+      secondaryAddress: '',
+      walletType: '',
+      referralCode: '',
+      email: '',
+      ensName: '',
+    })
+    await putJson('/api/carteiras/principal', carteiraAda)
+    expect(await (await fetch('/api/perfil')).json()).toMatchObject({
+      displayName: 'Ada Costa',
+      email: 'ada.costa@kurio.test',
+      username: 'ada',
+    })
+  })
+
+  it('carteira salva não muda o recibo', async () => {
+    await enter('ada@kurio.test')
+    await putJson('/api/carteiras/principal', carteiraAda)
+    expect(await (await fetch('/api/pedidos/ped-ada-1')).json()).toMatchObject({ wallet: 'MetaMask' })
+  })
+
+  it('recomeço devolve perfil, carteira e senha', async () => {
+    await enter('ada@kurio.test')
+    await putJson('/api/perfil', {
+      displayName: 'Ada',
+      username: 'ada',
+      email: 'ada@kurio.test',
+      ensName: 'ada',
+      walletNickname: 'principal',
+      currentPassword: 'kurio',
+      nextPassword: 'kurio-nova',
+      confirmPassword: 'kurio-nova',
+    })
+    await putJson('/api/carteiras/principal', carteiraAda)
+    await fetch('/api/sessao', { method: 'DELETE' })
+    await postJson('/api/cadastro', {
+      name: 'Lia',
+      email: 'lia@kurio.test',
+      password: 'kurio',
+      confirmPassword: 'kurio',
+    })
+    expect((await fetch('/api/dev/reset', { method: 'POST' })).status).toBe(204)
+    expect(readUsers()).toEqual(happyUsers)
+    expect((await fetch('/api/perfil')).status).toBe(401)
+  })
+
   it('falha no fecho não grava a chave', async () => {
     server.use(http.post('/api/pedidos', () => HttpResponse.json({ message: 'falha' }, { status: 500 })))
     await enter('ada@kurio.test')
@@ -477,6 +846,14 @@ describe('loja simulada', () => {
 async function postJson(path: string, body: unknown) {
   return fetch(path, {
     method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+}
+
+async function putJson(path: string, body: unknown) {
+  return fetch(path, {
+    method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   })

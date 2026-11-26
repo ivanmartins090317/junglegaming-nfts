@@ -58,6 +58,14 @@ function field(container: ParentNode, label: string) {
   return found
 }
 
+function mainField(container: ParentNode, label: string) {
+  const main = container.querySelector('main')
+  if (!main) throw new Error('main ausente')
+  const found = main.querySelector(`[aria-label="${label}"]`)
+  if (!(found instanceof HTMLInputElement)) throw new Error(`Campo ausente: ${label}`)
+  return found
+}
+
 async function click(element: HTMLElement) {
   await act(async () => {
     element.click()
@@ -233,10 +241,10 @@ describe('entrada, cadastro e guarda', () => {
 
     await signIn(blocked.container, 'ada@kurio.test', 'kurio')
     await vi.waitFor(() => {
-      expect(blocked.container.textContent).toContain('ada@kurio.test')
+      expect(mainField(blocked.container, 'E-mail').value).toBe('ada@kurio.test')
     })
     expect(blocked.router.state.location.pathname).toBe('/perfil')
-    expect(blocked.container.querySelector('main input')).toBeNull()
+    expect(mainField(blocked.container, 'E-mail').value).toBe('ada@kurio.test')
 
     await click(buttonNamed(blocked.container.querySelector('main') as HTMLElement, 'Sair'))
     await vi.waitFor(() => {
@@ -283,7 +291,7 @@ describe('entrada, cadastro e guarda', () => {
       await view.router.navigate({ to: '/perfil' })
     })
     await vi.waitFor(() => {
-      expect(view.container.textContent).toContain('ada@kurio.test')
+      expect(mainField(view.container, 'E-mail').value).toBe('ada@kurio.test')
     })
     view.queryClient.setQueryData(privateQueryKey('usr-ada'), { pedido: 'ped-9' })
     view.queryClient.setQueryData(['nfts'], [{ id: 'neon-vessel-552' }])

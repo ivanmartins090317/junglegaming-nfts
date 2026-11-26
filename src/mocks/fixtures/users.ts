@@ -1,11 +1,15 @@
 import type { OrderReceipt } from '@/lib/contracts/order.ts'
 import { orderDate, orderWallet } from '@/lib/contracts/order.ts'
+import type { ProfileDetails } from '@/lib/contracts/profile.ts'
+import type { PrimaryWallet } from '@/lib/contracts/wallet.ts'
 
 export interface SeedUser {
   id: string
   name: string
   email: string
   password: string
+  profile: ProfileDetails
+  wallet: PrimaryWallet
   favorites: string[]
   cart: SeedCartLine[]
   orders: OrderReceipt[]
@@ -16,12 +20,33 @@ export interface SeedCartLine {
   quantity: number
 }
 
+export function blankProfile(): ProfileDetails {
+  return { username: '', ensName: '', walletNickname: '' }
+}
+
+export function blankWallet(): PrimaryWallet {
+  return {
+    displayName: '',
+    nickname: '',
+    network: '',
+    profileName: '',
+    address: '',
+    secondaryAddress: '',
+    walletType: '',
+    referralCode: '',
+    email: '',
+    ensName: '',
+  }
+}
+
 export const usersSeed: SeedUser[] = [
   {
     id: 'usr-ada',
     name: 'Ada',
     email: 'ada@kurio.test',
     password: 'kurio',
+    profile: blankProfile(),
+    wallet: blankWallet(),
     favorites: ['emerald-ape-042', 'neon-vessel-552'],
     cart: [{ nftId: 'sage-nomad-009', quantity: 1 }],
     orders: [
@@ -50,6 +75,8 @@ export const usersSeed: SeedUser[] = [
     name: 'Bruno',
     email: 'bruno@kurio.test',
     password: 'kurio',
+    profile: blankProfile(),
+    wallet: blankWallet(),
     favorites: ['golden-beat-207'],
     cart: [{ nftId: 'cosmic-bloom-118', quantity: 2 }],
     orders: [

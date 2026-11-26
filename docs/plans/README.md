@@ -12,6 +12,7 @@
 | 2026-11-26 | carrinho-cotacao | `done` | [plano](reviews/2026-11-26-carrinho-cotacao-plano.md) | não pedido |
 | 2026-11-26 | pedido-idempotente-confirmacao | `done` | [plano](reviews/2026-11-26-pedido-idempotente-confirmacao-plano.md) | não pedido |
 | 2026-11-26 | socket-preco-estado-pedido | `done` | [plano](reviews/2026-11-26-socket-preco-estado-pedido-plano.md) | pendente |
+| 2026-11-26 | perfil-carteiras | `done` | [plano](reviews/2026-11-26-perfil-carteiras-plano.md) | pendente |
 
 O plano de arquitetura da prova ficou fora deste Git.
 

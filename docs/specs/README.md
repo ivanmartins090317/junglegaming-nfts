@@ -11,6 +11,7 @@
 | 2026-11-26 | carrinho-cotacao | `feature` | `done` | [spec](2026-11-26-carrinho-cotacao.md) |
 | 2026-11-26 | pedido-idempotente-confirmacao | `feature` | `done` | [spec](2026-11-26-pedido-idempotente-confirmacao.md) |
 | 2026-11-26 | socket-preco-estado-pedido | `feature` | `done` | [spec](2026-11-26-socket-preco-estado-pedido.md) |
+| 2026-11-26 | perfil-carteiras | `feature` | `done` | [spec](2026-11-26-perfil-carteiras.md) |
 
 Status: `draft`, `aprovada`, `em_implementacao`, `done`.
 
