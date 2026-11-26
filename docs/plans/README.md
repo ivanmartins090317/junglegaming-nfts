@@ -7,6 +7,7 @@
 | 2026-11-25 | tokens-casca-rotas | `done` | [plano](reviews/2026-11-25-tokens-casca-rotas-plano.md) | pendente |
 | 2026-11-25 | inicio-frame | `decidido` | [plano](reviews/2026-11-25-inicio-frame-plano.md) | [achados](reviews/2026-11-25-inicio-frame-achados.md) |
 | 2026-11-26 | msw-usuarios-reset-catalogo | `done` | [plano](reviews/2026-11-26-msw-usuarios-reset-catalogo-plano.md) | pendente |
+| 2026-11-26 | catalogo-detalhe-url | `done` | [plano](reviews/2026-11-26-catalogo-detalhe-url-plano.md) | [achados](reviews/2026-11-26-catalogo-detalhe-url-achados.md) |
 
 O plano de arquitetura da prova ficou fora deste Git.
 

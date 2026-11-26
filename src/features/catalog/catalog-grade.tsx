@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useSearch } from '@tanstack/react-router'
 import { HeartIcon } from '@/components/layout/chrome-icons.tsx'
-import { catalogSearchParams } from '@/features/catalog/catalog-search.ts'
+import { catalogSearchParams, normalizeCatalogQuery } from '@/features/catalog/catalog-search.ts'
 import { nftsByNamePrefix } from '@/features/catalog/nfts-by-name-prefix.ts'
 import { useCatalogQuery } from '@/lib/query/nfts.ts'
 import type { Nft } from '@/lib/contracts/nft.ts'
@@ -11,14 +11,16 @@ const gradeClass =
 
 export function CatalogGrade() {
   const { q } = useSearch({ from: '/' })
-  const query = q ?? ''
+  const query = normalizeCatalogQuery(q)
   const catalog = useCatalogQuery()
 
   if (catalog.isPending) return <CatalogNote>Carregando</CatalogNote>
   if (catalog.isError) return <CatalogNote>Não foi possível carregar o catálogo.</CatalogNote>
 
   const visible = nftsByNamePrefix(catalog.data, query)
-  if (visible.length === 0) return <CatalogNote>Nenhuma peça com esse nome.</CatalogNote>
+  if (query.length > 0 && visible.length === 0) {
+    return <CatalogNote>Nenhuma peça com esse nome.</CatalogNote>
+  }
 
   return (
     <ul className={gradeClass}>

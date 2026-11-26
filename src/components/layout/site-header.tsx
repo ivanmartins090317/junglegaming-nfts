@@ -1,9 +1,10 @@
-import { Link, useNavigate, useRouterState } from '@tanstack/react-router'
-import type { MouseEvent } from 'react'
+import { Link, useNavigate, useRouterState, useSearch } from '@tanstack/react-router'
+import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import { Button } from '@/components/ui/button.tsx'
 import { Input } from '@/components/ui/input.tsx'
 import { CartIcon, EnterIcon, SearchIcon } from '@/components/layout/chrome-icons.tsx'
 import { SlidersIcon } from '@/components/layout/mobile-icons.tsx'
+import { catalogSearchParams, readCatalogQuery } from '@/features/catalog/catalog-search.ts'
 
 const navItemClass =
   'relative inline-flex h-full items-center bg-transparent p-0 text-left font-mono text-[16px] font-normal leading-none text-foreground no-underline'
@@ -19,12 +20,31 @@ const quietLink = {
 export function SiteHeader() {
   const navigate = useNavigate()
   const pathname = useRouterState({ select: (state) => state.location.pathname })
+  const q = readCatalogQuery(useSearch({ strict: false }))
   const homeIsActive = pathname === '/'
+  const [desktopSearchOpen, setDesktopSearchOpen] = useState(false)
+  const replaceRef = useRef(pathname === '/')
+
+  useEffect(() => {
+    replaceRef.current = pathname === '/'
+  }, [pathname])
 
   function openHome(event: MouseEvent<HTMLAnchorElement>) {
     event.preventDefault()
     void navigate({ to: '/' })
   }
+
+  function commitSearch(next: string) {
+    const replace = replaceRef.current
+    replaceRef.current = true
+    void navigate({
+      to: '/',
+      search: catalogSearchParams(next),
+      replace,
+    })
+  }
+
+  const desktopFieldVisible = desktopSearchOpen || q.length > 0
 
   return (
     <header className="w-full">
@@ -47,9 +67,27 @@ export function SiteHeader() {
           </button>
         </nav>
         <div className="flex items-center gap-7">
-          <button type="button" aria-label="Busca" className="bg-transparent p-0 text-foreground">
-            <SearchIcon />
-          </button>
+          {desktopFieldVisible ? (
+            <div className="relative">
+              <SearchIcon className="pointer-events-none absolute top-1/2 left-2 size-4 -translate-y-1/2 text-secondary" />
+              <Input
+                aria-label="Busca"
+                value={q}
+                placeholder="Explorar coleções"
+                onChange={(event) => commitSearch(event.target.value)}
+                className="h-[35px] w-[220px] bg-transparent pl-8 text-[14px]"
+              />
+            </div>
+          ) : (
+            <button
+              type="button"
+              aria-label="Busca"
+              onClick={() => setDesktopSearchOpen(true)}
+              className="bg-transparent p-0 text-foreground"
+            >
+              <SearchIcon />
+            </button>
+          )}
           <Link
             to="/carrinho"
             {...quietLink}
@@ -74,9 +112,10 @@ export function SiteHeader() {
         <div className="relative min-w-0 flex-1">
           <SearchIcon className="pointer-events-none absolute top-1/2 left-[9px] size-7 -translate-y-1/2 text-secondary" />
           <Input
-            readOnly
             aria-label="Busca"
+            value={q}
             placeholder="Explorar coleções"
+            onChange={(event) => commitSearch(event.target.value)}
             className="h-[45px] border-surface-card bg-surface-card pr-3 pl-[42px] text-[14px] font-medium text-secondary placeholder:text-secondary"
           />
         </div>

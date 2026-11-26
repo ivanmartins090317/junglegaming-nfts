@@ -1,14 +1,29 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { StrictMode } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen.ts'
 import { isMockEnabled } from './mocks/config.ts'
+import { parseCatalogLocation, stringifyCatalogLocation } from '@/features/catalog/catalog-search.ts'
 import '@fontsource/roboto-mono/400.css'
 import '@fontsource/roboto-mono/500.css'
 import '@fontsource/roboto-mono/700.css'
 import './styles/globals.css'
 
-const router = createRouter({ routeTree })
+const router = createRouter({
+  routeTree,
+  parseSearch: parseCatalogLocation,
+  stringifySearch: stringifyCatalogLocation,
+})
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+      refetchOnWindowFocus: false,
+    },
+  },
+})
 
 declare module '@tanstack/react-router' {
   interface Register {
@@ -35,7 +50,9 @@ export async function startApp(root: HTMLElement): Promise<Root | null> {
   const reactRoot = createRoot(root)
   reactRoot.render(
     <StrictMode>
-      <RouterProvider router={router} />
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
     </StrictMode>,
   )
   return reactRoot

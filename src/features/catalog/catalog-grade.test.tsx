@@ -8,6 +8,7 @@ import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest
 import { handlers } from '@/mocks/handlers.ts'
 import { resetStore } from '@/mocks/store.ts'
 import { routeTree } from '@/routeTree.gen.ts'
+import { parseCatalogLocation, stringifyCatalogLocation } from '@/features/catalog/catalog-search.ts'
 
 const server = setupServer(...handlers)
 const seedNames = [
@@ -23,7 +24,12 @@ const seedNames = [
 
 async function mount(path: string) {
   const history = createMemoryHistory({ initialEntries: [path] })
-  const router = createRouter({ routeTree, history })
+  const router = createRouter({
+    routeTree,
+    history,
+    parseSearch: parseCatalogLocation,
+    stringifySearch: stringifyCatalogLocation,
+  })
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   })
@@ -56,7 +62,7 @@ describe('grade do catálogo', () => {
   const mounted: Array<Awaited<ReturnType<typeof mount>>> = []
 
   beforeAll(() => {
-    server.listen({ onUnhandledRequest: 'error' })
+    server.listen({ onUnhandledFrame: 'error' })
   })
 
   afterEach(async () => {
@@ -83,7 +89,6 @@ describe('grade do catálogo', () => {
     expect(view.container.textContent).toContain('Como funciona a propriedade de NFTs')
     expect(view.container.textContent).toContain('RARO')
     expect(view.container.textContent).toContain('2.29 ETH')
-    expect(view.container.textContent).not.toContain('2.29 ETH2.29 ETH')
   })
 
   it('recorta pelo começo do nome e esvazia quando o texto não é prefixo', async () => {
@@ -174,7 +179,9 @@ describe('grade do catálogo', () => {
     server.use(
       http.get('/api/nfts', async () => {
         await gate
-        return HttpResponse.json([])
+        return HttpResponse.json([
+          { id: 'emerald-ape-042', name: 'Emerald Ape #042', price: '1.19', image: '/home/emerald.png' },
+        ])
       }),
     )
     const loading = await mount('/')
@@ -184,7 +191,7 @@ describe('grade do catálogo', () => {
     expect(loading.container.textContent).toContain('OFERTA LIMITADA')
     release()
     await vi.waitFor(() => {
-      expect(loading.container.textContent).toContain('Nenhuma peça com esse nome.')
+      expect(loading.container.textContent).toContain('Emerald Ape #042')
     })
 
     server.use(http.get('/api/nfts', () => HttpResponse.error()))

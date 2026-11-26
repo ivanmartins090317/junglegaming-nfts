@@ -1,18 +1,32 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router'
-import { afterEach, describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { routeTree } from '@/routeTree.gen.ts'
+import { parseCatalogLocation, stringifyCatalogLocation } from '@/features/catalog/catalog-search.ts'
 
 async function mount(path: string) {
   const history = createMemoryHistory({ initialEntries: [path] })
-  const router = createRouter({ routeTree, history })
+  const router = createRouter({
+    routeTree,
+    history,
+    parseSearch: parseCatalogLocation,
+    stringifySearch: stringifyCatalogLocation,
+  })
+  const queryClient = new QueryClient({
+    defaultOptions: { queries: { retry: false } },
+  })
   await router.load()
   const container = document.createElement('div')
   document.body.append(container)
   const root = createRoot(container)
   await act(async () => {
-    root.render(<RouterProvider router={router} />)
+    root.render(
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>,
+    )
   })
   return { container, router, root }
 }
@@ -79,7 +93,7 @@ describe('casca e rotas vazias', () => {
     const search = view.container.querySelector('input')
     expect(header?.querySelector('button[aria-label="Busca"]')).not.toBeNull()
     expect(search?.getAttribute('aria-label')).toBe('Busca')
-    expect(search?.readOnly).toBe(true)
+    expect(search?.readOnly).toBe(false)
     expect(search?.getAttribute('placeholder')).toBe('Explorar coleções')
 
     const cart = [...view.container.querySelectorAll('a')].find((anchor) =>
@@ -102,6 +116,9 @@ describe('casca e rotas vazias', () => {
     expect(signIn?.className).toContain('text-ink')
     expect(signIn?.className).toContain('font-medium')
 
+    await vi.waitFor(() => {
+      expect(view.container.textContent).toContain('Não foi possível carregar o catálogo.')
+    })
     expect(view.container.textContent).toContain('SEJA DONO DO FUTURO')
     expect(view.container.textContent).toContain('SEJA DONO DA CULTURA DIGITAL')
     expect(view.container.textContent).not.toContain('Mock ligado')
@@ -132,7 +149,11 @@ describe('casca e rotas vazias', () => {
   it('mostra o identificador ao lado do nome nas telas dinâmicas', async () => {
     const nft = await mount('/nfts/rune-1')
     mounted.push(nft)
-    expect(miolo(nft.container)?.textContent).toBe('Detalhe rune-1')
+    await vi.waitFor(() => {
+      expect(nft.container.textContent).toContain('Não foi possível carregar a peça.')
+    })
+    expect(nft.container.textContent).not.toContain('NFT não encontrado.')
+    expect(nft.container.querySelector('header')).not.toBeNull()
 
     const order = await mount('/pedidos/ped-9')
     mounted.push(order)
@@ -223,20 +244,101 @@ describe('casca e rotas vazias', () => {
     expect(view.router.state.location.pathname).toBe(beforeBrand)
   })
 
-  it('não grava a busca no endereço', async () => {
+  it('grava a busca em q e o voltar do navegador devolve a tela de origem', async () => {
     const view = await mount('/carrinho')
     mounted.push(view)
-    const search = view.container.querySelector('input')
-    if (!search) throw new Error('Campo de busca ausente')
+    const before = view.router.history.length
+
+    await typeSearch(mobileSearch(view.container), 'n')
+    await vi.waitFor(() => {
+      expect(view.router.state.location.pathname).toBe('/')
+    })
+    expect(view.router.state.location.href).toContain('q=n')
+    expect(view.router.history.length).toBe(before + 1)
+
+    await typeSearch(mobileSearch(view.container), 'ne')
+    await vi.waitFor(() => {
+      expect(view.router.state.location.href).toContain('q=ne')
+    })
+    expect(view.router.history.length).toBe(before + 1)
 
     await act(async () => {
-      search.focus()
-      search.dispatchEvent(new KeyboardEvent('keydown', { key: 'a', bubbles: true }))
-      search.dispatchEvent(new Event('input', { bubbles: true }))
+      view.router.history.back()
     })
+    await vi.waitFor(() => {
+      expect(view.router.state.location.pathname).toBe('/carrinho')
+    })
+  })
 
-    expect(search.readOnly).toBe(true)
-    expect(view.router.state.location.href).not.toContain('q=')
-    expect(view.router.state.location.pathname).toBe('/carrinho')
+  it('abre o campo do desktop na lupa e já mostra q quando ele existe', async () => {
+    const closed = await mount('/carrinho')
+    mounted.push(closed)
+    const closedBar = desktopBar(closed.container)
+    expect(closedBar.querySelector('input')).toBeNull()
+
+    await act(async () => {
+      closedBar.querySelector('button[aria-label="Busca"]')?.dispatchEvent(
+        new MouseEvent('click', { bubbles: true, cancelable: true }),
+      )
+    })
+    const opened = closedBar.querySelector('input')
+    expect(opened).not.toBeNull()
+    expect(opened?.className).toContain('rounded-[var(--radius-field)]')
+    expect(opened?.className).toContain('border-border')
+    expect(closed.router.state.location.pathname).toBe('/carrinho')
+
+    const withQuery = await mount('/nfts/neon-vessel-552?q=neon')
+    mounted.push(withQuery)
+    const field = desktopBar(withQuery.container).querySelector('input')
+    if (!(field instanceof HTMLInputElement)) throw new Error('Campo desktop ausente')
+    expect(desktopBar(withQuery.container).querySelector('button[aria-label="Busca"]')).toBeNull()
+    expect(field.value).toBe('neon')
+    expect(mobileSearch(withQuery.container).value).toBe('neon')
+    expect(mobileSearch(withQuery.container).readOnly).toBe(false)
+  })
+
+  it('na busca do início cada letra substitui a entrada atual', async () => {
+    const view = await mount('/')
+    mounted.push(view)
+    const before = view.router.history.length
+
+    await typeSearch(mobileSearch(view.container), 'n')
+    await vi.waitFor(() => {
+      expect(view.router.state.location.href).toContain('q=n')
+    })
+    expect(view.router.history.length).toBe(before)
+
+    await typeSearch(mobileSearch(view.container), 'ne')
+    await vi.waitFor(() => {
+      expect(view.router.state.location.href).toContain('q=ne')
+    })
+    expect(view.router.history.length).toBe(before)
+
+    await typeSearch(mobileSearch(view.container), '')
+    await vi.waitFor(() => {
+      expect(view.router.state.location.href).not.toContain('q=')
+    })
+    expect(view.router.history.length).toBe(before)
+    expect(view.router.state.location.pathname).toBe('/')
   })
 })
+
+function desktopBar(container: ParentNode) {
+  const bar = container.querySelector('header')?.children[0]
+  if (!bar) throw new Error('Topo desktop ausente')
+  return bar
+}
+
+function mobileSearch(container: ParentNode) {
+  const field = container.querySelector('header')?.children[1]?.querySelector('input')
+  if (!(field instanceof HTMLInputElement)) throw new Error('Campo de busca ausente')
+  return field
+}
+
+async function typeSearch(input: HTMLInputElement, value: string) {
+  await act(async () => {
+    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set
+    setter?.call(input, value)
+    input.dispatchEvent(new Event('input', { bubbles: true }))
+  })
+}
