@@ -2,13 +2,14 @@ import { Link, useNavigate, useRouterState } from '@tanstack/react-router'
 import type { MouseEvent } from 'react'
 import { Button } from '@/components/ui/button.tsx'
 import { Input } from '@/components/ui/input.tsx'
-import { CartIcon, EnterIcon, FilterIcon, SearchIcon } from '@/components/layout/chrome-icons.tsx'
+import { CartIcon, EnterIcon, SearchIcon } from '@/components/layout/chrome-icons.tsx'
+import { SlidersIcon } from '@/components/layout/mobile-icons.tsx'
 
 const navItemClass =
-  'border-b-[3px] border-solid border-transparent bg-transparent p-0 text-left font-mono text-[16px] font-normal leading-none text-foreground no-underline'
+  'relative inline-flex h-full items-center bg-transparent p-0 text-left font-mono text-[16px] font-normal leading-none text-foreground no-underline'
 
 const navItemActiveClass =
-  'border-b-[3px] border-solid border-primary bg-transparent p-0 text-left font-mono text-[16px] font-bold leading-none text-text-accent no-underline'
+  'relative inline-flex h-full items-center bg-transparent p-0 text-left font-mono text-[16px] font-bold leading-none text-text-accent no-underline after:absolute after:inset-x-0 after:-bottom-px after:h-[3px] after:bg-primary after:content-[""]'
 
 const quietLink = {
   activeProps: {},
@@ -27,11 +28,11 @@ export function SiteHeader() {
 
   return (
     <header className="w-full">
-      <div className="hidden h-[45px] items-center justify-between border-b border-border desktop:flex">
+      <div className="relative hidden h-[45px] items-center justify-between border-b border-border desktop:flex">
         <span className="text-[14px] font-bold leading-none tracking-[0.1em] text-foreground">
           KURIO
         </span>
-        <nav className="flex items-center gap-10" aria-label="Principal">
+        <nav className="absolute top-0 left-[377px] flex h-full items-center gap-10" aria-label="Principal">
           <Link to="/" {...quietLink} className={homeIsActive ? navItemActiveClass : navItemClass}>
             Início
           </Link>
@@ -69,22 +70,22 @@ export function SiteHeader() {
           </Button>
         </div>
       </div>
-      <div className="flex items-center gap-3 desktop:hidden">
+      <div className="flex items-center gap-2 desktop:hidden">
         <div className="relative min-w-0 flex-1">
-          <SearchIcon className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-text-secondary" />
+          <SearchIcon className="pointer-events-none absolute top-1/2 left-3.5 size-[18px] -translate-y-1/2 text-secondary" />
           <Input
             readOnly
             aria-label="Busca"
             placeholder="Explorar coleções"
-            className="h-12 bg-surface-card pr-3 pl-10 text-[14px] text-text-secondary placeholder:text-text-secondary"
+            className="h-[45px] border-surface-card bg-surface-card pr-3 pl-[42px] text-[14px] font-medium text-secondary placeholder:text-secondary"
           />
         </div>
         <button
           type="button"
           aria-label="Filtros"
-          className="inline-flex size-12 shrink-0 items-center justify-center rounded-[var(--radius-page-button)] bg-primary text-ink"
+          className="inline-flex size-[45px] shrink-0 items-center justify-center rounded-[var(--radius-page-button)] bg-linear-to-br from-primary/70 to-primary/90 text-ink"
         >
-          <FilterIcon />
+          <SlidersIcon />
         </button>
       </div>
     </header>

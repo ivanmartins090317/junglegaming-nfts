@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button.tsx'
 import { scrollToGrade } from '@/features/home/home-data.ts'
+import { HomeHeroMobile } from '@/features/home/home-hero-mobile.tsx'
 
 const slides = [0, 1, 2]
 
@@ -9,7 +10,7 @@ export function HomeHero() {
 
   return (
     <>
-      <section className="relative hidden h-[450px] items-center pl-10 desktop:grid desktop:grid-cols-[minmax(0,1fr)_450px]">
+      <section className="hidden h-[450px] items-center pl-10 desktop:grid desktop:grid-cols-[minmax(0,1fr)_450px]">
         <div>
           <p className="m-0 text-[14px] leading-none text-text-secondary">Bem-vindo à Kurio</p>
           <h1 className="m-0 mt-4 text-[40px] font-bold leading-[46px] text-foreground">
@@ -25,57 +26,23 @@ export function HomeHero() {
             EXPLORAR
           </Button>
         </div>
-        <img
-          src="/home/hero.png"
-          alt=""
-          width={450}
-          height={450}
-          className="h-[450px] w-[450px] rounded-[15px] object-cover"
-        />
-        <HeroDots
-          slide={slide}
-          onSelect={setSlide}
-          className="absolute top-full left-1/2 mt-6 -translate-x-1/2 justify-center"
-        />
+        <div className="relative">
+          <img
+            src="/home/hero.png"
+            alt=""
+            width={450}
+            height={450}
+            className="h-[450px] w-[450px] rounded-[15px] object-cover"
+          />
+          <HeroDots
+            slide={slide}
+            onSelect={setSlide}
+            className="absolute right-[calc(100%+110px)] bottom-8 justify-center"
+          />
+        </div>
       </section>
 
-      <section className="rounded-[15px] bg-surface-card p-4 desktop:hidden">
-        <div className="flex items-start gap-3">
-          <div className="min-w-0 flex-1">
-            <p className="m-0 text-[12px] leading-none text-text-secondary">Bem-vindo à Kurio</p>
-            <h1 className="m-0 mt-3 text-[20px] font-bold leading-[26px] text-foreground">
-              SEJA DONO DA CULTURA DIGITAL
-            </h1>
-            <p className="m-0 mt-3 text-[12px] leading-[16px] text-text-secondary">
-              Descubra NFTs selecionados de criadores do mundo todo.
-            </p>
-            <button
-              type="button"
-              onClick={scrollToGrade}
-              className="mt-3 bg-transparent p-0 text-left font-mono text-[14px] font-bold text-primary"
-            >
-              EXPLORAR →
-            </button>
-          </div>
-          <div className="relative h-[128px] w-[104px] shrink-0">
-            <img
-              src="/home/hero.png"
-              alt=""
-              width={96}
-              height={96}
-              className="absolute top-0 right-0 h-24 w-24 rounded-[15px] object-cover"
-            />
-            <img
-              src="/home/sage.png"
-              alt=""
-              width={56}
-              height={56}
-              className="absolute bottom-0 left-0 h-14 w-14 rounded-[15px] border-2 border-surface-card object-cover"
-            />
-          </div>
-        </div>
-        <HeroDots slide={slide} onSelect={setSlide} className="mt-4 justify-center" />
-      </section>
+      <HomeHeroMobile />
     </>
   )
 }
