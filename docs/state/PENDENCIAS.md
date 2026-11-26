@@ -62,6 +62,16 @@ Código entregue em `docs/implementation/F5-carrinho-cotacao.md`. Homologação 
 - [ ] Cupom, pontos do carrossel, Enviar e atalhos fora de escopo não navegam e não mostram sucesso
 - [ ] Em 1440, a tabela, as recomendações e o rodapé aparecem. Abaixo de 1440, inclusive 768 e 390, a coluna é a do mobile, com margem 28, sem a barra de baixo
 
+## Fase 7 · Homologação
+
+Código entregue em `docs/implementation/F7-socket-preco-estado-pedido.md`. Homologação manual pendente:
+
+- [ ] Com simulação ligada, Neon Vessel #552 alterna na grade, no detalhe e na cotação quando a peça está no carrinho
+- [ ] Pedido novo mostra `Aguardando confirmação do pedido.` e depois o recibo, ou `Pedido recusado.` com Golden Signal #160
+- [ ] Recibo da Ada (`ped-ada-1`) não muda com o relógio de preço
+- [ ] Sair corta escuta do pedido; preço público continua
+- [ ] Com `VITE_ENABLE_MOCK=false`, não há escuta de preço nem de pedido
+
 ## Fase 6 · Homologação
 
 Código entregue em `docs/implementation/F6-pedido-idempotente-confirmacao.md`. Homologação manual pendente:
@@ -89,7 +99,7 @@ Código entregue em `docs/implementation/F6-pedido-idempotente-confirmacao.md`. 
 - [x] Sessão, login, cadastro e guarda
 - [x] Carrinho e cotação
 - [x] Pedido idempotente, confirmação e recibo snapshot
-- [ ] Socket no preço e no estado do pedido
+- [x] Socket no preço e no estado do pedido
 - [ ] Perfil e carteiras
 - [ ] Mapa de teste pela skill `C:\projetos\manual-report`
 - [ ] Playwright dos 12 fluxos e regressão visual

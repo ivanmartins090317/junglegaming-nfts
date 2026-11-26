@@ -7,8 +7,9 @@ import { createRoot } from 'react-dom/client'
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { parseCatalogLocation, stringifyCatalogLocation } from '@/features/catalog/catalog-search.ts'
 import { createAppQueryClient, setAppQueryClient } from '@/lib/query/session.ts'
+import { closeOrder } from '@/lib/api/order.ts'
 import { handlers } from '@/mocks/handlers.ts'
-import { resetStore } from '@/mocks/store.ts'
+import { resetStore, updateLiveStore } from '@/mocks/store.ts'
 import { routeTree } from '@/routeTree.gen.ts'
 
 const server = setupServer(...handlers)
@@ -151,6 +152,36 @@ describe('confirmação', () => {
     expect(view.container.querySelector('article')?.className).toContain('max-w-[358px]')
     expect(view.container.querySelector('header')).toBeNull()
     expect(view.container.querySelector('nav[aria-label="Atalhos"]')).toBeNull()
+  })
+
+  it('mostra aguardando no pedido novo e recusa sem modal', async () => {
+    await enter('ada@kurio.test')
+    const created = await closeOrder('chave-page-1', [{ nftId: 'sage-nomad-009', quantity: 1 }])
+    const waiting = await mount(`/pedidos/${created.id}`, 1440)
+    mounted.push(waiting)
+    await vi.waitFor(() => {
+      expect(waiting.container.textContent).toContain('Aguardando confirmação do pedido.')
+    })
+    expect(waiting.container.textContent).not.toContain(
+      'Transação confirmada na Ethereum. A propriedade foi transferida para sua carteira conectada e registrada na rede.',
+    )
+    expect(waiting.container.querySelector('article')).toBeNull()
+
+    updateLiveStore((store) => {
+      const user = store.users.find((item) => item.id === 'usr-ada')
+      const order = user?.orders.find((item) => item.id === created.id)
+      if (!order) throw new Error('pedido ausente')
+      order.status = 'recusado'
+    })
+    const refused = await mount(`/pedidos/${created.id}`, 1440)
+    mounted.push(refused)
+    await vi.waitFor(() => {
+      expect(refused.container.textContent).toContain('Pedido recusado.')
+    })
+    expect(refused.container.querySelector('article')).toBeNull()
+    expect(refused.container.textContent).not.toContain(
+      'Transação confirmada na Ethereum. A propriedade foi transferida para sua carteira conectada e registrada na rede.',
+    )
   })
 
   it('mostra carregando e a frase de falha sem o modal', async () => {

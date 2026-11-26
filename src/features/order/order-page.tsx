@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { orderMessages } from '@/lib/contracts/order.ts'
+import { orderMessages, type OrderStatus } from '@/lib/contracts/order.ts'
 import { fetchOrder, OrderActionError } from '@/lib/api/order.ts'
 import { orderQueryKey } from '@/lib/query/order.ts'
 import { useSessionQuery } from '@/lib/query/session.ts'
@@ -14,19 +14,29 @@ export function OrderPage({ orderId }: { orderId: string }) {
     enabled: Boolean(userId),
   })
 
-  const message = pageMessage(Boolean(userId), order.isPending, order.error)
+  const message = pageMessage(Boolean(userId), order.isPending, order.error, order.data?.status)
+  const confirmed = order.data?.status === 'confirmado'
 
   return (
     <div data-order="pagina" className="min-h-screen bg-ink px-7 pt-16 text-foreground desktop:px-0">
       {message ? <p className="m-0 text-[14px] leading-[16px]">{message}</p> : null}
-      {order.data ? <OrderReceiptView order={order.data} /> : null}
+      {confirmed && order.data ? <OrderReceiptView order={order.data} /> : null}
     </div>
   )
 }
 
-function pageMessage(hasUser: boolean, pending: boolean, error: unknown) {
+function pageMessage(
+  hasUser: boolean,
+  pending: boolean,
+  error: unknown,
+  status: OrderStatus | undefined,
+) {
   if (!hasUser || pending) return orderMessages.loading
-  if (!error) return null
-  if (error instanceof OrderActionError) return error.message
-  return orderMessages.loadFailed
+  if (error) {
+    if (error instanceof OrderActionError) return error.message
+    return orderMessages.loadFailed
+  }
+  if (status === 'pendente') return orderMessages.awaiting
+  if (status === 'recusado') return orderMessages.refused
+  return null
 }

@@ -1,6 +1,7 @@
 import type { OrderLine, OrderReceipt } from '@/lib/contracts/order.ts'
 import { orderDate, orderMessages, orderWallet } from '@/lib/contracts/order.ts'
 import { buildQuote, type PricedLine } from '@/lib/money.ts'
+import { scheduleOrderResolution } from '@/mocks/live-clock.ts'
 import { parseCartLines, withStore, type LiveStore } from '@/mocks/store.ts'
 
 export type OrderWrite =
@@ -50,11 +51,13 @@ export function closeSessionOrder(key: unknown, lines: unknown): OrderWrite {
       wallet: orderWallet,
       date: orderDate,
       transactionId: transactionIdFor(sequence),
-      status: 'confirmado',
+      status: 'pendente',
     }
     user.orders.push(order)
+    store.orderVersions[order.id] = 1
     user.cart = []
     store.orderCloses.push({ userId: user.id, key: idempotencyKey, signature, orderId: order.id })
+    scheduleOrderResolution(user.id, order.id)
     return { ok: true as const, order: structuredClone(order) }
   })
 }

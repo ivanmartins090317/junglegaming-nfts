@@ -10,6 +10,7 @@ Registro do que já foi entregue.
 | 4 | [Sessão, login, cadastro e guarda](F4-sessao-login-cadastro-guarda.md) | concluída (código) · homologação manual pendente |
 | 5 | [Carrinho e cotação](F5-carrinho-cotacao.md) | concluída (código) · homologação manual pendente |
 | 6 | [Pedido idempotente, confirmação e recibo](F6-pedido-idempotente-confirmacao.md) | concluída (código) · homologação manual pendente |
+| 7 | [Preço ao vivo e estado do pedido](F7-socket-preco-estado-pedido.md) | concluída (código) · homologação manual pendente |
 
 O que falta está em [docs/state/PENDENCIAS.md](../state/PENDENCIAS.md).
 

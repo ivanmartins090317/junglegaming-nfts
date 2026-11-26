@@ -30,6 +30,8 @@ async function startMock() {
 
   const { worker } = await import('./mocks/browser.ts')
   await worker.start({ onUnhandledFrame: 'bypass' })
+  const { startLiveClock } = await import('./mocks/live-clock.ts')
+  startLiveClock()
 }
 
 export async function startApp(root: HTMLElement): Promise<Root | null> {

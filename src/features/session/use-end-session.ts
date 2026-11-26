@@ -4,6 +4,7 @@ import type { SessionUser } from '@/lib/contracts/session.ts'
 import { deleteSession } from '@/lib/api/session.ts'
 import { cartQueryKey, quoteQueryKey } from '@/lib/query/cart.ts'
 import { clearSessionCache, sessionQueryKey } from '@/lib/query/session.ts'
+import { leaveOrderListen } from '@/lib/socket/client.ts'
 import { entryHref, isDesktopEntry, isPrivatePath } from '@/features/session/entry-location.ts'
 
 export function useEndSession() {
@@ -16,6 +17,7 @@ export function useEndSession() {
     try {
       await deleteSession()
     } finally {
+      leaveOrderListen(current?.id)
       queryClient.setQueryData(sessionQueryKey, null)
       clearSessionCache(queryClient, current?.id)
       queryClient.removeQueries({ queryKey: cartQueryKey(null) })

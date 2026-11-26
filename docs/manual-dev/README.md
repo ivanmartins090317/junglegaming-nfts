@@ -14,5 +14,6 @@ Stack fechada: Vite, React, TypeScript, TanStack Router, TanStack Query, Axios, 
 | [04-fase-4-sessao-login-cadastro-guarda.md](04-fase-4-sessao-login-cadastro-guarda.md) | Entrada, cadastro, guarda das rotas privadas e saída |
 | [05-fase-5-carrinho-cotacao.md](05-fase-5-carrinho-cotacao.md) | Carrinho, cotação, rascunho do visitante e fusão na entrada |
 | [06-fase-6-pedido-idempotente-confirmacao.md](06-fase-6-pedido-idempotente-confirmacao.md) | Pedido idempotente, confirmação e recibo gravado na criação |
+| [07-fase-7-socket-preco-estado-pedido.md](07-fase-7-socket-preco-estado-pedido.md) | Socket de preço público, pedido pendente ao vivo e frases na confirmação |
 
 Ao fechar uma fase, o capítulo entra nesta tabela.

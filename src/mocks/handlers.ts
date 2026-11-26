@@ -1,4 +1,5 @@
 import { http, HttpResponse } from 'msw'
+import { liveSocketHandler } from '@/mocks/live-socket.ts'
 import { orderMessages } from '@/lib/contracts/order.ts'
 import { closeSessionOrder, readSessionOrder, type OrderWrite } from '@/mocks/order-store.ts'
 import {
@@ -147,4 +148,5 @@ export const handlers = [
     const body = await readBody(request)
     return orderResponse(closeSessionOrder(body.key, body.lines))
   }),
+  liveSocketHandler,
 ]

@@ -4,12 +4,14 @@ import { MobileTabs } from '@/components/layout/mobile-tabs.tsx'
 import { SiteHeader } from '@/components/layout/site-header.tsx'
 import { AuthPanel } from '@/features/session/auth-entry.tsx'
 import { isDesktopEntry } from '@/features/session/entry-location.ts'
+import { useLiveNotices } from '@/lib/socket/use-live-notices.ts'
 
 interface AppShellProps {
   children: ReactNode
 }
 
 export function AppShell({ children }: AppShellProps) {
+  useLiveNotices()
   const pathname = useRouterState({ select: (state) => state.location.pathname })
   const fullScreenAuth = (pathname === '/entrar' || pathname === '/cadastro') && !isDesktopEntry()
   const confirmationPage = pathname.startsWith('/pedidos/')

@@ -20,6 +20,8 @@ export interface LiveStore {
   nextUserId: number
   nextOrderSeq: number
   orderCloses: OrderClose[]
+  nftVersions: Record<string, number>
+  orderVersions: Record<string, number>
 }
 
 export type SessionFailure = {
@@ -39,6 +41,12 @@ function cloneStore(store: LiveStore): LiveStore {
   return structuredClone(store)
 }
 
+function seedVersions(ids: string[]) {
+  const versions: Record<string, number> = {}
+  for (const id of ids) versions[id] = 1
+  return versions
+}
+
 const seed: LiveStore = {
   nfts: catalogSeed,
   users: usersSeed,
@@ -46,6 +54,8 @@ const seed: LiveStore = {
   nextUserId: 3,
   nextOrderSeq: 1,
   orderCloses: [],
+  nftVersions: seedVersions(catalogSeed.map((nft) => nft.id)),
+  orderVersions: { 'ped-ada-1': 1, 'ped-bruno-1': 1 },
 }
 
 let liveStore = cloneStore(seed)

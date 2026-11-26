@@ -35,6 +35,7 @@ describe('fecho do pedido no cliente', () => {
   it('espera a resposta e a mesma chave devolve o mesmo pedido', async () => {
     await enter('ada@kurio.test')
     const created = await closeOrder('chave-ada-1', [{ nftId: 'sage-nomad-009', quantity: 1 }])
+    expect(created.status).toBe('pendente')
     expect(created.total).toBe('1.706')
     expect(created.lines[0]).toMatchObject({ nftId: 'sage-nomad-009', total: '1.69' })
     expect(readUsers()[0]?.cart).toEqual([])

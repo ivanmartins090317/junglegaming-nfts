@@ -11,6 +11,8 @@ export interface OrderLine {
   total: string
 }
 
+export type OrderStatus = 'pendente' | 'confirmado' | 'recusado'
+
 export interface OrderReceipt {
   id: string
   lines: OrderLine[]
@@ -19,7 +21,7 @@ export interface OrderReceipt {
   wallet: string
   date: string
   transactionId: string
-  status: 'confirmado'
+  status: OrderStatus
 }
 
 export const orderWallet = 'MetaMask'
@@ -33,4 +35,6 @@ export const orderMessages = {
   empty: 'O carrinho está vazio.',
   conflict: 'Esta chave já fechou outro pedido.',
   createFailed: 'Não foi possível registrar o pedido.',
+  awaiting: 'Aguardando confirmação do pedido.',
+  refused: 'Pedido recusado.',
 } as const

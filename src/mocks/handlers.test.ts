@@ -373,7 +373,7 @@ describe('loja simulada', () => {
     expect(created.status).toBe(200)
     const receipt = await created.json()
     expect(receipt).toMatchObject({
-      status: 'confirmado',
+      status: 'pendente',
       networkFee: '0.016',
       total: '1.706',
       wallet: 'MetaMask',
