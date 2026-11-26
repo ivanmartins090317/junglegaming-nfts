@@ -15,7 +15,7 @@ Marketplace Kurio, prova frontend da Jungle. SPA no cliente. Dados simulados. Se
 - Teste: Playwright. Auditoria: Lighthouse.
 - Package manager: pnpm.
 
-O esqueleto do app ainda não está neste repositório. Não criar `package.json`, tela ou mock neste passo.
+O esqueleto Vite está neste repositório. O mock liga por padrão e desliga com `VITE_ENABLE_MOCK=false`. Tela, token, rota e mock de domínio esperam a spec da fatia.
 
 ## Estrutura preferida
 
@@ -161,7 +161,7 @@ E também:
 - Docs vivos atualizados.
 - Resumo do que mudou, arquivos tocados e links dos docs.
 
-Neste commit de workflow os scripts ainda não existem. Não marcar Done de feature.
+`pnpm typecheck` e `pnpm lint` existem neste esqueleto. `pnpm test` e Playwright entram nas fatias de teste. Não marcar Done de feature neste commit.
 
 ## Como reportar ao final
 

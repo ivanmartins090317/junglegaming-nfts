@@ -8,8 +8,8 @@ Fonte viva do que ainda falta implementar ou validar. Atualizar ao concluir cada
 
 - [x] Workflow em `.cursor/workflow/`
 - [x] `AGENTS.md` e rules do projeto
-- [ ] Esqueleto Vite, com mock ligado ou desligado por configuração
-- [ ] `.gitignore` do app (dependência, build, ambiente)
+- [x] Esqueleto Vite, com mock ligado ou desligado por configuração
+- [x] `.gitignore` do app (dependência, build, ambiente)
 
 ## Construção
 

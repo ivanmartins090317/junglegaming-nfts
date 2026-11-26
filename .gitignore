@@ -1,0 +1,47 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# dependências e build
+node_modules
+dist
+dist-ssr
+*.local
+
+# ambiente
+.env
+.env.*
+!.env.example
+
+# editor
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# relatórios locais
+coverage
+playwright-report
+test-results
+blob-report
+
+# cópia do vault ou do mapa de teste, se cair nesta pasta
+/research/
+/workflow-ai-native/
+/manual-report/
+*-plano-arquitetura.md
+*-plano-total-prova.md
+*mapa-de-teste*
+*mapa-teste*
+rascunho-commit.md
+COMMIT_DRAFT.md

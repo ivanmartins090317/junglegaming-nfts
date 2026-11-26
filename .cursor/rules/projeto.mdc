@@ -24,7 +24,7 @@ Marketplace de NFTs. Marca visível: Kurio. Prova frontend da Jungle. SPA Vite, 
 
 Vite, React, TypeScript, TanStack Router por arquivo, TanStack Query, Axios, Socket.IO no cliente (websocket), Tailwind 4, shadcn, MSW com `@mswjs/socket.io-binding`, Playwright, Lighthouse. pnpm.
 
-O esqueleto ainda não existe. Não adicionar dependência, `package.json` nem tela sem pedido.
+O esqueleto Vite existe. O mock liga por padrão e desliga com `VITE_ENABLE_MOCK=false`. Dependência nova e tela continuam sob pedido.
 
 ## Visual medido
 
