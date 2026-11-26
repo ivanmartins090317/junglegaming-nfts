@@ -109,7 +109,7 @@ Código entregue em `docs/implementation/F6-pedido-idempotente-confirmacao.md`. 
 - [x] Pedido idempotente, confirmação e recibo snapshot
 - [x] Socket no preço e no estado do pedido
 - [x] Perfil e carteiras
-- [ ] Mapa de teste pela skill `C:\projetos\manual-report`
+- [x] Mapa de teste pela skill `C:\projetos\manual-report`. Primeira rodada, casos em Pendente: `docs/relatorio-testes-manuais.html` e `docs/evidencias/`
 - [ ] Playwright dos 12 fluxos e regressão visual
 - [ ] Lighthouse, três medições, mediana, e deploy da mesma build
 - [ ] Segunda rodada do mapa, antes da entrega

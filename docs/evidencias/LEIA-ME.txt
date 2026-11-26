@@ -1,0 +1,6 @@
+Screenshots da segunda rodada do mapa manual.
+
+Nomenclatura: tc[número]-[descricao-curta].jpeg
+Exemplo: tc01-grade-oito-pecas.jpeg
+
+A primeira rodada (2026-11-26) deixa esta pasta vazia de imagem. O relatório usa placeholder até a execução.

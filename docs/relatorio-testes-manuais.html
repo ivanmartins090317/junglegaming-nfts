@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Relatório de Testes Manuais: Kurio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-page: #0f1117;
+      --bg-card: #1a1d27;
+      --bg-card2: #20233a;
+      --border: #2a2f4a;
+      --accent: #6c63ff;
+      --accent-light: #8b85ff;
+      --accent-glow: rgba(108, 99, 255, 0.15);
+      --pass: #22c55e;
+      --fail: #ef4444;
+      --block: #f59e0b;
+      --pending: #94a3b8;
+      --text-primary: #e2e8f0;
+      --text-muted: #8892a4;
+      --radius: 12px;
+      --font: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--bg-page);
+      color: var(--text-primary);
+      font-family: var(--font);
+      line-height: 1.5;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding: 18px 28px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-card);
+    }
+    .topbar-brand { display: flex; align-items: center; gap: 12px; }
+    .logo-dot {
+      width: 42px; height: 42px; border-radius: 10px;
+      display: grid; place-items: center; font-size: 22px;
+      background: var(--accent-glow); border: 1px solid var(--border);
+    }
+    .topbar h1 { margin: 0; font-size: 18px; font-weight: 700; }
+    .topbar-brand span, .topbar-meta { color: var(--text-muted); font-size: 13px; }
+    .badge-version {
+      border: 1px solid var(--border);
+      background: var(--bg-card2);
+      color: var(--accent-light);
+      border-radius: 999px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .hero { padding: 36px 28px 12px; }
+    .hero-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: linear-gradient(180deg, var(--bg-card2), var(--bg-card));
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+    }
+    .hero-tag {
+      display: inline-block;
+      color: var(--accent-light);
+      background: var(--accent-glow);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .hero h2 { margin: 0 0 8px; font-size: 28px; }
+    .hero p { margin: 0 0 18px; color: var(--text-muted); max-width: 78ch; }
+    .hero-meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+    .hero-meta-item {
+      background: rgba(15, 17, 23, 0.45);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+    .hero-meta-item label {
+      display: block; color: var(--text-muted); font-size: 11px;
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .hero-meta-item span { font-weight: 600; }
+
+    .container { max-width: 1100px; margin: 0 auto; padding: 20px 28px 48px; }
+
+    .scoreboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 12px;
+    }
+    .score-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+    .score-icon { font-size: 18px; }
+    .score-num { font-size: 28px; font-weight: 700; margin-top: 4px; }
+    .score-label { color: var(--text-muted); font-size: 13px; }
+    .score-card.pass .score-num { color: var(--pass); }
+    .score-card.fail .score-num { color: var(--fail); }
+    .score-card.block .score-num { color: var(--block); }
+    .score-card.pct .score-num { color: var(--accent-light); }
+
+    .progress-section { margin: 22px 0 8px; }
+    .progress-section h3 { margin: 0 0 8px; font-size: 15px; }
+    .progress-bar-wrap {
+      height: 10px; border-radius: 999px; background: var(--bg-card2);
+      border: 1px solid var(--border); overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%; width: 0;
+      background: linear-gradient(90deg, var(--accent), var(--pass));
+    }
+    .progress-labels {
+      display: flex; justify-content: space-between;
+      color: var(--text-muted); font-size: 12px; margin-top: 6px;
+    }
+
+    .section-title {
+      display: flex; align-items: center; gap: 8px;
+      margin: 28px 0 12px; font-size: 18px; font-weight: 700;
+    }
+    .section-title .icon { font-size: 18px; }
+
+    .flow-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .flow-header {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 12px; padding: 14px 16px; cursor: pointer; user-select: none;
+    }
+    .flow-header:hover { background: rgba(108, 99, 255, 0.06); }
+    .flow-header-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .flow-id {
+      color: var(--accent-light);
+      background: var(--accent-glow);
+      border-radius: 8px;
+      padding: 2px 8px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .flow-title { font-weight: 600; }
+    .flow-chevron { color: var(--text-muted); transition: transform 0.15s ease; }
+    .flow-block:not(.open) .flow-body { display: none; }
+    .flow-block:not(.open) .flow-chevron { transform: rotate(-90deg); }
+    .flow-body { padding: 0 16px 16px; }
+
+    .test-table, .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .test-table th, .matrix-table th {
+      text-align: left;
+      color: var(--text-muted);
+      font-weight: 600;
+      padding: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .test-table td, .matrix-table td {
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .test-table tr:last-child td { border-bottom: 0; }
+    .matrix-table { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+    .matrix-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+
+    .status {
+      display: inline-flex; align-items: center; gap: 6px;
+      border-radius: 999px; padding: 3px 8px; font-size: 12px; font-weight: 600;
+      white-space: nowrap;
+    }
+    .status.dot::before {
+      content: ''; width: 7px; height: 7px; border-radius: 50%; background: currentColor;
+    }
+    .status.pending { color: var(--pending); background: rgba(148, 163, 184, 0.12); }
+    .status.pass { color: var(--pass); background: rgba(34, 197, 94, 0.12); }
+    .status.fail { color: var(--fail); background: rgba(239, 68, 68, 0.12); }
+    .status.block { color: var(--block); background: rgba(245, 158, 11, 0.12); }
+
+    .evidence-section h4 { margin: 16px 0 8px; font-size: 14px; }
+    .evidence-gallery { display: flex; flex-wrap: wrap; gap: 10px; }
+    .evidence-placeholder, .bug-empty {
+      color: var(--text-muted);
+      background: var(--bg-card2);
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      width: 100%;
+    }
+    .evidence-item {
+      width: 180px; cursor: pointer;
+      background: var(--bg-card2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden;
+    }
+    .evidence-item img { width: 100%; height: 110px; object-fit: cover; display: block; background: #111; }
+    .evidence-caption { padding: 8px; font-size: 12px; color: var(--text-muted); }
+
+    .obs-box {
+      margin-top: 12px;
+      background: var(--bg-card2);
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+      padding: 10px 12px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    .obs-box strong { color: var(--text-primary); }
+
+    .bug-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .bug-header { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+    .bug-id { color: var(--accent-light); font-size: 12px; font-weight: 700; }
+    .bug-title { font-weight: 700; }
+    .severity { border-radius: 999px; padding: 3px 8px; font-size: 12px; font-weight: 700; }
+    .bug-body { display: grid; grid-template-columns: 180px 1fr; gap: 6px 12px; margin: 12px 0 0; }
+    .bug-body dt { color: var(--text-muted); }
+    .bug-body dd { margin: 0; }
+
+    .footer {
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      text-align: center;
+      padding: 18px;
+      font-size: 13px;
+    }
+
+    #lightbox {
+      display: none; position: fixed; inset: 0; z-index: 20;
+      background: rgba(0, 0, 0, 0.82);
+      align-items: center; justify-content: center;
+    }
+    #lightbox.open { display: flex; }
+    #lightbox img { max-width: min(920px, 92vw); max-height: 88vh; border-radius: 8px; }
+    #lightbox-close {
+      position: absolute; top: 16px; right: 20px;
+      color: white; font-size: 28px; cursor: pointer;
+    }
+
+    @media (max-width: 720px) {
+      .topbar, .hero, .container { padding-left: 16px; padding-right: 16px; }
+      .bug-body { grid-template-columns: 1fr; }
+      .test-table { display: block; overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Evidência ampliada">
+    <span id="lightbox-close" onclick="closeLightbox()">&#x2715;</span>
+    <img id="lightbox-img" src="" alt="Evidência ampliada" />
+  </div>
+
+  <header class="topbar">
+    <div class="topbar-brand">
+      <div class="logo-dot">🎯</div>
+      <div>
+        <h1>Kurio</h1>
+        <span>Relatório de Testes Manuais</span>
+      </div>
+    </div>
+    <div class="topbar-meta">
+      <span class="badge-version">v1.0, primeira rodada</span>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-tag">📋 QA Report</div>
+      <h2>Relatório de Testes Manuais</h2>
+      <p>
+        Mapa da prova frontend da Jungle. Cobre os 12 fluxos do enunciado (FL-01 a FL-12)
+        e a regressão visual de início, detalhe, carrinho e pagamento (FL-13).
+        Esta é a primeira rodada: todos os casos estão pendentes. O resultado esperado
+        segue a spec aprovada das fases 1 a 8. Onde o enunciado pede mais do que a spec
+        fechou, a observação do fluxo registra a lacuna. A segunda rodada preenche status,
+        screenshot e bug.
+      </p>
+      <div class="hero-meta">
+        <div class="hero-meta-item">
+          <label>Projeto</label>
+          <span>Kurio</span>
+        </div>
+        <div class="hero-meta-item">
+          <label>Plataforma</label>
+          <span>Web · SPA Vite</span>
+        </div>
+        <div class="hero-meta-item">
+          <label>Executor</label>
+          <span id="meta-executor">Aguardando</span>
+        </div>
+        <div class="hero-meta-item">
+          <label>Data</label>
+          <span id="meta-data">26/11/2026</span>
+        </div>
+        <div class="hero-meta-item">
+          <label>Ambiente</label>
+          <span>Dev local, mock ligado</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="container">
+    <div class="scoreboard" id="scoreboard">
+      <div class="score-card total">
+        <div class="score-icon">🧪</div>
+        <div class="score-num" id="sc-total">0</div>
+        <div class="score-label">Total de Casos</div>
+      </div>
+      <div class="score-card pass">
+        <div class="score-icon">✅</div>
+        <div class="score-num" id="sc-pass">0</div>
+        <div class="score-label">Aprovados</div>
+      </div>
+      <div class="score-card fail">
+        <div class="score-icon">❌</div>
+        <div class="score-num" id="sc-fail">0</div>
+        <div class="score-label">Reprovados</div>
+      </div>
+      <div class="score-card block">
+        <div class="score-icon">⚠️</div>
+        <div class="score-num" id="sc-block">0</div>
+        <div class="score-label">Bloqueados</div>
+      </div>
+      <div class="score-card pct">
+        <div class="score-icon">📊</div>
+        <div class="score-num" id="sc-pct">0%</div>
+        <div class="score-label">Taxa de Aprovação</div>
+      </div>
+    </div>
+
+    <div class="progress-section">
+      <h3>Progresso geral de aprovação</h3>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="progress-bar" style="width: 0%"></div>
+      </div>
+      <div class="progress-labels">
+        <span>0%</span>
+        <span id="progress-pct-label">0%</span>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <div class="icon">🧪</div>
+      Casos de Teste por Fluxo
+    </div>
+
+    <div class="flow-block open" id="flow-1">
+      <div class="flow-header" onclick="toggleFlow('flow-1')">
+        <div class="flow-header-left">
+          <span class="flow-id">FL-01</span>
+          <span class="flow-title">Catálogo e histórico</span>
+        </div>
+        <span class="flow-chevron">▼</span>
+      </div>
+      <div class="flow-body">
+        <table class="test-table">
+          <thead>
+            <tr><th>#</th><th>Caso de Teste</th><th>Pré-condição</th><th>Resultado Esperado</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>TC-01</td>
+              <td>Grade inicial em 1440 mostra as oito peças na ordem da semente, com hero, oferta, artigos e rodapé.</td>
+              <td>Mock ligado. Sem <code>q</code>. Largura 1440.</td>
+              <td>Ordem: Emerald Ape #042, Sage Nomad #009, Neon Vessel #552, Cosmic Bloom #118, Violet Nomad #314, Ivory Baron #088, Golden Beat #207, Golden Signal #160. Neon Vessel mostra <code>1.99</code>, <code>2.29</code> e <code>RARO</code>.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-02</td>
+              <td>A busca <code>q</code> recorta a grade, sobrevive ao refresh e, ao ser apagada, devolve as oito peças.</td>
+              <td><code>/</code> aberto. Mock ligado.</td>
+              <td><code>/?q=neon</code> e <code>/?q=NEON</code> deixam só Neon Vessel #552. <code>nomad</code>, <code>552</code> e <code>inexistente</code> esvaziam a grade com <code>Nenhuma peça com esse nome.</code> Apagar a busca tira <code>q</code> do endereço.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-03</td>
+              <td>O histórico preserva a busca: o card abre o detalhe com <code>q</code>, o voltar reabre a grade recortada, e buscar a partir do carrinho cria uma entrada nova.</td>
+              <td>Grade com <code>q=neon</code>. Em outro passo, a pessoa está em <code>/carrinho</code>.</td>
+              <td>O card abre <code>/nfts/neon-vessel-552</code> e preserva <code>q</code>. Voltar reabre a grade recortada. Sem <code>q</code>, voltar reabre <code>/</code>. Buscar no carrinho empurra uma entrada; o voltar do navegador reabre o carrinho.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-04</td>
+              <td>Aba, coleção, rede, faixa de preço, ordenação e página não mudam a lista nem o endereço.</td>
+              <td>Grade com as oito peças.</td>
+              <td>Acionar esses controles deixa as oito peças e não grava parâmetro novo na URL.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-05</td>
+              <td>No desktop a lupa abre o campo; no mobile, <code>Explorar coleções</code> grava <code>q</code>.</td>
+              <td>Larguras 1440 e 390. Mock ligado.</td>
+              <td>Em 1440, com <code>q</code> o campo já está aberto; sem <code>q</code>, a lupa abre o campo. Em 390, <code>Explorar coleções</code> grava <code>q</code>.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="evidence-section">
+          <h4>📸 Evidências Visuais</h4>
+          <div class="evidence-gallery" id="gallery-1">
+            <div class="evidence-placeholder"><span>📷</span> Screenshots serão adicionados após execução dos testes</div>
+          </div>
+        </div>
+        <div class="obs-box">
+          <strong>Observações:</strong>
+          Testes pendentes de execução. Lacuna do enunciado: filtro combinável, ordenação e paginação na URL. A spec da fase 3 deixa esses controles visíveis e sem efeito sobre a lista (TC-04).
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-block" id="flow-2">
+      <div class="flow-header" onclick="toggleFlow('flow-2')">
+        <div class="flow-header-left">
+          <span class="flow-id">FL-02</span>
+          <span class="flow-title">Detalhe inexistente</span>
+        </div>
+        <span class="flow-chevron">▼</span>
+      </div>
+      <div class="flow-body">
+        <table class="test-table">
+          <thead>
+            <tr><th>#</th><th>Caso de Teste</th><th>Pré-condição</th><th>Resultado Esperado</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>TC-06</td>
+              <td>O detalhe de uma peça da semente abre direto, sem passar pela grade.</td>
+              <td>Mock ligado. Acesso a <code>/nfts/neon-vessel-552</code>.</td>
+              <td>A página mostra imagem, nome, <code>1.99</code>, <code>2.29</code> e <code>RARO</code>. A casca continua.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-07</td>
+              <td>Identificador ausente não desenha uma peça.</td>
+              <td>Acesso a <code>/nfts/nao-existe</code>.</td>
+              <td>A frase é <code>NFT não encontrado.</code> Não aparece preço nem nome de outra peça.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-08</td>
+              <td>Com a simulação desligada, o detalhe e a grade mostram a frase de falha.</td>
+              <td><code>VITE_ENABLE_MOCK=false</code>.</td>
+              <td>A grade mostra <code>Não foi possível carregar o catálogo.</code> O detalhe mostra <code>Não foi possível carregar a peça.</code> O restante do início continua.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="evidence-section">
+          <h4>📸 Evidências Visuais</h4>
+          <div class="evidence-gallery" id="gallery-2">
+            <div class="evidence-placeholder"><span>📷</span> Screenshots serão adicionados após execução dos testes</div>
+          </div>
+        </div>
+        <div class="obs-box"><strong>Observações:</strong> Testes pendentes de execução.</div>
+      </div>
+    </div>
+
+    <div class="flow-block" id="flow-3">
+      <div class="flow-header" onclick="toggleFlow('flow-3')">
+        <div class="flow-header-left">
+          <span class="flow-id">FL-03</span>
+          <span class="flow-title">Conta e troca de usuário</span>
+        </div>
+        <span class="flow-chevron">▼</span>
+      </div>
+      <div class="flow-body">
+        <table class="test-table">
+          <thead>
+            <tr><th>#</th><th>Caso de Teste</th><th>Pré-condição</th><th>Resultado Esperado</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>TC-09</td>
+              <td>No desktop, Entrar abre o painel sobre a página atual. A aba, o X e Esc trocam ou fecham.</td>
+              <td>Largura 1440. Sem sessão.</td>
+              <td>O endereço fica <code>conta=entrar</code>, sem película escura. <code>/entrar</code> e <code>/cadastro</code> viram <code>/?conta=entrar</code> e <code>/?conta=cadastro</code>. X e Esc tiram <code>conta</code>.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-10</td>
+              <td>Ada entra com a credencial da semente. Senha errada não abre a sessão.</td>
+              <td>Sem sessão. Ada é <code>ada@kurio.test</code> / <code>kurio</code>.</td>
+              <td>A senha certa abre a sessão e o topo passa a <code>Sair</code>. Senha errada mostra <code>E-mail ou senha não conferem.</code></td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-11</td>
+              <td>Cadastro de e-mail novo abre a sessão. E-mail já usado, senhas diferentes e nome vazio não entram na conta da Ada.</td>
+              <td>Sem sessão. Bruno já usa <code>bruno@kurio.test</code>.</td>
+              <td>Conta nova entra. E-mail repetido mostra <code>Este e-mail já tem conta.</code> Senhas diferentes mostram <code>As senhas não conferem.</code> Nome vazio mostra <code>Informe nome, e-mail e senha.</code></td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-12</td>
+              <td>Trocar de Ada para Bruno isola carrinho, recibo e perfil. Sair encerra a sessão.</td>
+              <td>Ada logada. Bruno é <code>bruno@kurio.test</code> / <code>kurio</code>.</td>
+              <td>Sair no topo e em <code>/perfil</code> volta o topo para <code>Entrar</code>. Página privada reabre a entrada. O pedido <code>ped-bruno-1</code> não abre na sessão da Ada, e o dado da Ada não aparece no Bruno.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-13</td>
+              <td>A guarda devolve ao caminho válido. Retorno externo cai em <code>/</code>. Recarregar perde a sessão.</td>
+              <td>Sem sessão. Rotas <code>/perfil</code>, <code>/carteiras</code>, <code>/pagamento</code> e <code>/pedidos/ped-9</code>.</td>
+              <td>A entrada abre e, depois do sucesso, volta ao caminho pedido. <code>retorno</code> com origem externa, <code>//</code> ou a própria entrada cai em <code>/</code>. Sem <code>retorno</code>, o desktop fica na página de trás e o mobile vai para <code>/</code>. Recarregar perde a sessão, porque a loja viva nasce de novo.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-14</td>
+              <td>Abaixo de 1440 a entrada é tela cheia. Links fora de escopo não navegam. Sem mock, a guarda não abre a página privada.</td>
+              <td>Largura 390. Depois, <code>VITE_ENABLE_MOCK=false</code>.</td>
+              <td><code>/entrar</code> e <code>/cadastro</code> ficam sem cabeçalho, sem mercado e sem o raio 40. Esqueceu a senha, Google e Facebook continuam visíveis e o clique não navega. Sem mock, o formulário mostra <code>Não foi possível carregar a sessão.</code></td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="evidence-section">
+          <h4>📸 Evidências Visuais</h4>
+          <div class="evidence-gallery" id="gallery-3">
+            <div class="evidence-placeholder"><span>📷</span> Screenshots serão adicionados após execução dos testes</div>
+          </div>
+        </div>
+        <div class="obs-box">
+          <strong>Observações:</strong>
+          Testes pendentes de execução. Lacuna do enunciado: a sessão não volta no refresh. A spec da fase 4 registra que recarregar a página perde a sessão (TC-13).
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-block" id="flow-4">
+      <div class="flow-header" onclick="toggleFlow('flow-4')">
+        <div class="flow-header-left">
+          <span class="flow-id">FL-04</span>
+          <span class="flow-title">Favoritos com falha</span>
+        </div>
+        <span class="flow-chevron">▼</span>
+      </div>
+      <div class="flow-body">
+        <table class="test-table">
+          <thead>
+            <tr><th>#</th><th>Caso de Teste</th><th>Pré-condição</th><th>Resultado Esperado</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>TC-15</td>
+              <td>O coração do card alterna o salvo local e não abre a peça.</td>
+              <td>Grade com Neon Vessel #552. Coração livre.</td>
+              <td>O botão alterna entre <code>Salvar Neon Vessel #552</code> e <code>Remover Neon Vessel #552 dos favoritos</code>. O endereço não muda. <code>q</code>, se houver, permanece.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-16</td>
+              <td>Trocar de tela esquece o coração. Não há pedido à loja.</td>
+              <td>Coração marcado no card. A pessoa abre o detalhe e volta.</td>
+              <td>O coração nasce livre de novo. A rede não recebe gravação de favorito.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-17</td>
+              <td>Falha do catálogo não oferece coração para desfazer.</td>
+              <td>Leitura de <code>/api/nfts</code> em falha, ou mock desligado.</td>
+              <td>A grade mostra <code>Não foi possível carregar o catálogo.</code> Não há coração persistido nem rollback, porque o salvo não foi gravado.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="evidence-section">
+          <h4>📸 Evidências Visuais</h4>
+          <div class="evidence-gallery" id="gallery-4">
+            <div class="evidence-placeholder"><span>📷</span> Screenshots serão adicionados após execução dos testes</div>
+          </div>
+        </div>
+        <div class="obs-box">
+          <strong>Observações:</strong>
+          Testes pendentes de execução. Lacuna do enunciado: favorito autenticado, otimista, com rollback quando a gravação falha. A spec da fase 3 deixa o coração só no card, sem sessão e sem pedido. A semente ainda guarda favoritos da Ada e do Bruno na loja, e a tela não os lê.
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-block" id="flow-5">
+      <div class="flow-header" onclick="toggleFlow('flow-5')">
+        <div class="flow-header-left">
+          <span class="flow-id">FL-05</span>
+          <span class="flow-title">Carrinho</span>
+        </div>
+        <span class="flow-chevron">▼</span>
+      </div>
+      <div class="flow-body">
+        <table class="test-table">
+          <thead>
+            <tr><th>#</th><th>Caso de Teste</th><th>Pré-condição</th><th>Resultado Esperado</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>TC-18</td>
+              <td>O visitante inclui uma peça, vê o selo e a cotação, e o recarregar mantém o rascunho desta aba.</td>
+              <td>Sem sessão. Peça <code>emerald-ape-042</code>.</td>
+              <td><code>Incluir no carrinho</code> não troca de página. O selo passa a <code>1</code>. <code>/carrinho</code> mostra a linha, subtotal <code>1.19 ETH</code>, taxa <code>0.016 ETH</code> e total <code>1.206 ETH</code>. Recarregar a aba mantém. Outra aba abre vazio.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-19</td>
+              <td>Ada entra com o rascunho e a quantidade da mesma peça soma. Sair deixa o visitante vazio e a loja da Ada intacta.</td>
+              <td>Rascunho com Sage quantidade 2 e Emerald quantidade 1. Ada já tem Sage quantidade 1 na semente.</td>
+              <td>Depois da entrada, a loja fica Sage quantidade 3 e Emerald quantidade 1, total <code>6.276 ETH</code>, selo <code>4</code>. O rascunho esvazia. Sair mostra <code>Entrar</code> e <code>Seu carrinho está vazio.</code> Entrar de novo devolve o carrinho da Ada.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-20</td>
+              <td>Carrinho vazio não segue para o pagamento.</td>
+              <td><code>/carrinho</code> sem linhas.</td>
+              <td>A frase é <code>Seu carrinho está vazio.</code> Subtotal, taxa e total são <code>0.00 ETH</code>. Desconto <code>(-) 00.00</code>. <code>Conectar e finalizar</code> permanece em <code>/carrinho</code>.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-21</td>
+              <td>Com linha, <code>Conectar e finalizar</code> vai para <code>/pagamento</code>. Sem sessão, a guarda pede a entrada antes.</td>
+              <td>Carrinho com ao menos uma linha.</td>
+              <td>Com sessão, o endereço vai para <code>/pagamento</code>. Sem sessão, a entrada abre e, depois do sucesso, a fusão acontece antes do pagamento.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-22</td>
+              <td>Cupom e atalhos fora de escopo não navegam. O corpo muda entre 1440 e a coluna estreita.</td>
+              <td>Carrinho com linha. Larguras 1440, 768 e 390.</td>
+              <td>Aplicar um código deixa <code>(-) 00.00</code> e não muda o endereço. Em 1440 aparecem tabela, recomendações e rodapé. Abaixo de 1440, inclusive 768 e 390, a coluna tem margem 28 e a barra de baixo não aparece.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="evidence-section">
+          <h4>📸 Evidências Visuais</h4>
+          <div class="evidence-gallery" id="gallery-5">
+            <div class="evidence-placeholder"><span>📷</span> Screenshots serão adicionados após execução dos testes</div>
+          </div>
+        </div>
+        <div class="obs-box">
+          <strong>Observações:</strong>
+          Testes pendentes de execução. Lacuna do enunciado: cupom inválido ou expirado com desconto vindo da cotação. Nesta prova o desconto permanece <code>(-) 00.00</code>. A tela não soma ETH por conta própria. Falha da cotação mostra <code>Não foi possível calcular o total.</code> e deixa a coluna de total sem número.
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-block" id="flow-6">
+      <div class="flow-header" onclick="toggleFlow('flow-6')">
+        <div class="flow-header-left">
+          <span class="flow-id">FL-06</span>
+          <span class="flow-title">Compra até o recibo</span>
+        </div>
+        <span class="flow-chevron">▼</span>
+      </div>
+      <div class="flow-body">
+        <table class="test-table">
+          <thead>
+            <tr><th>#</th><th>Caso de Teste</th><th>Pré-condição</th><th>Resultado Esperado</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>TC-23</td>
+              <td>Ada vê o recibo da semente, sem cabeçalho.</td>
+              <td>Sessão da Ada. Endereço <code>/pedidos/ped-ada-1</code>. Largura 1440.</td>
+              <td>Ivory Baron #088, quantidade 1, taxa <code>0.00 ETH</code>, total <code>1.79 ETH</code>, data <code>29 Jul, 2026</code>, carteira <code>MetaMask</code> e transação visível <code>0xADA1…A1E1</code>. O modal não tem cabeçalho da loja.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-24</td>
+              <td>O <code>×</code> volta ao início. <code>Ver no Etherscan</code> não navega.</td>
+              <td>Recibo da Ada aberto.</td>
+              <td>O <code>×</code> vai para <code>/</code> e o cabeçalho volta. <code>Ver no Etherscan</code> não muda o endereço e não mostra sucesso. O fundo não fecha o modal.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-25</td>
+              <td>O pedido do Bruno não abre na sessão da Ada. Sem sessão, a guarda volta ao pedido depois da entrada.</td>
+              <td>Ada logada para o pedido alheio. Visitante para <code>/pedidos/ped-ada-1</code>.</td>
+              <td><code>/pedidos/ped-bruno-1</code> na Ada mostra <code>Pedido não encontrado.</code> Golden Signal não aparece. Sem sessão, a entrada abre e o sucesso volta ao pedido.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-26</td>
+              <td>O caminho do carrinho até o pagamento não cria um pedido novo pela tela.</td>
+              <td>Ada com linha no carrinho. Largura 390 no segundo olhar.</td>
+              <td><code>Conectar e finalizar</code> abre <code>/pagamento</code> com o título <code>Revisão e envio</code>. Não nasce pedido. Em 390 o recibo da semente cabe na coluna com padding 28, sem barra inferior. <code>/</code>, <code>/carrinho</code> e <code>/perfil</code> continuam com cabeçalho.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="evidence-section">
+          <h4>📸 Evidências Visuais</h4>
+          <div class="evidence-gallery" id="gallery-6">
+            <div class="evidence-placeholder"><span>📷</span> Screenshots serão adicionados após execução dos testes</div>
+          </div>
+        </div>
+        <div class="obs-box">
+          <strong>Observações:</strong>
+          Testes pendentes de execução. O recibo observável na tela é o da semente. Pedido novo nasce em <code>POST /api/pedidos</code>, com chave de idempotência. A tela de pagamento ainda não envia esse pedido. Sucesso da criação esvazia só o carrinho daquela pessoa. O recibo é fotografia: preço posterior do catálogo não entra nele.
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-block" id="flow-7">
+      <div class="flow-header" onclick="toggleFlow('flow-7')">
+        <div class="flow-header-left">
+          <span class="flow-id">FL-07</span>
+          <span class="flow-title">Falha de pagamento, clique repetido e timeout</span>
+        </div>
+        <span class="flow-chevron">▼</span>
+      </div>
+      <div class="flow-body">
+        <table class="test-table">
+          <thead>
+            <tr><th>#</th><th>Caso de Teste</th><th>Pré-condição</th><th>Resultado Esperado</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>TC-27</td>
+              <td>A mesma chave, da mesma pessoa, com as mesmas linhas, devolve o mesmo pedido.</td>
+              <td>Ada autenticada na loja simulada. Carrinho com Sage Nomad #009, quantidade 1. Duas chamadas <code>POST /api/pedidos</code> com a mesma chave e o mesmo corpo.</td>
+              <td>As duas respostas apontam o mesmo pedido. A segunda não cria outro. O carrinho dessa pessoa esvazia na primeira criação com sucesso.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-28</td>
+              <td>A mesma chave com corpo diferente conflita. Falha não grava a chave.</td>
+              <td>Chave já usada pela Ada com um corpo. Outra tentativa muda as linhas. Uma tentativa anterior responde erro.</td>
+              <td>Corpo diferente conflita. A falha não deixa a chave ocupada: repetir o mesmo corpo depois do erro ainda pode criar. Carrinho vazio com chave nova responde <code>O carrinho está vazio.</code> Linhas que não conferem respondem <code>O carrinho não confere com o pedido.</code></td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-29</td>
+              <td>Golden Signal #160 recusa o pedido e não abre o modal de compra confirmada.</td>
+              <td>Ada fecha um carrinho que contém Golden Signal #160. O pedido novo está <code>pendente</code>.</td>
+              <td>A frase começa em <code>Aguardando confirmação do pedido.</code> Depois da resolução, passa a <code>Pedido recusado.</code> O modal e o parágrafo de transação confirmada não aparecem. Não nasce segunda compra.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-30</td>
+              <td>Timeout depois de criar o pedido recupera o mesmo recibo pela mesma chave, sem segunda compra.</td>
+              <td>A primeira resposta de criação se perde depois que a loja já gravou o pedido. A pessoa repete a mesma chave e o mesmo corpo.</td>
+              <td>A repetição devolve o pedido já gravado. O carrinho não é comprado duas vezes. Confirmado e recusado não voltam para pendente.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="evidence-section">
+          <h4>📸 Evidências Visuais</h4>
+          <div class="evidence-gallery" id="gallery-7">
+            <div class="evidence-placeholder"><span>📷</span> Screenshots serão adicionados após execução dos testes</div>
+          </div>
+        </div>
+        <div class="obs-box">
+          <strong>Observações:</strong>
+          Testes pendentes de execução. Não há botão de confirmar pagamento na tela <code>Revisão e envio</code>. Clique repetido e timeout se provam no <code>POST /api/pedidos</code> e, quando o pedido já existe, na página <code>/pedidos/:id</code>. A chave de outra pessoa é outra chave.
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-block" id="flow-8">
+      <div class="flow-header" onclick="toggleFlow('flow-8')">
+        <div class="flow-header-left">
+          <span class="flow-id">FL-08</span>
+          <span class="flow-title">Perfil e carteiras</span>
+        </div>
+        <span class="flow-chevron">▼</span>
+      </div>
+      <div class="flow-body">
+        <table class="test-table">
+          <thead>
+            <tr><th>#</th><th>Caso de Teste</th><th>Pré-condição</th><th>Resultado Esperado</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>TC-31</td>
+              <td>Ada vê o próprio perfil. Bruno não vê o dado da Ada.</td>
+              <td>Mock ligado. Ada e depois Bruno. Larguras 1440 e 390.</td>
+              <td>Ada vê <code>Ada</code> e <code>ada@kurio.test</code>. Bruno vê os dados dele. Em 1440, sidebar e formulário ficam lado a lado. Em 390, a sidebar vem antes, numa coluna.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-32</td>
+              <td>Salvar perfil válido atualiza a sessão. E-mail de outra conta e senha que não confere não gravam.</td>
+              <td>Ada em <code>/perfil</code>.</td>
+              <td>Perfil válido atualiza nome e e-mail e limpa os três campos de senha. E-mail de outra conta mostra <code>Este e-mail já tem conta.</code> Senha atual errada mostra <code>A senha atual não confere.</code> Senhas novas diferentes mostram <code>As senhas não conferem.</code> Nada grava nesses erros.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-33</td>
+              <td>Salvar a carteira principal não muda o rótulo do recibo.</td>
+              <td>Ada em <code>/carteiras</code>. Recibo <code>ped-ada-1</code> já existe.</td>
+              <td>A semente mostra rede e tipo por selecionar, e a secundária com <code>Você ainda não adicionou uma carteira secundária.</code> Gravar a principal não copia dado do perfil. O recibo continua <code>MetaMask</code>.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-34</td>
+              <td>Cliques fora de escopo não navegam e não mostram sucesso.</td>
+              <td>Ada em <code>/perfil</code> ou <code>/carteiras</code>.</td>
+              <td><code>Alterar</code>, <code>Remover</code>, <code>Adicionar</code>, <code>Igual à carteira principal</code>, avatar e itens fora de escopo da sidebar permanecem na rota. O círculo de <code>Adicionar</code> não ganha o fundo primário.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-35</td>
+              <td>Falha de leitura deixa a sidebar. Sair na sidebar encerra a sessão. O reset devolve a semente.</td>
+              <td>Sessão aberta. Uma leitura de perfil ou carteira responde erro.</td>
+              <td>As frases são <code>Não foi possível carregar o perfil.</code> ou <code>Não foi possível carregar as carteiras.</code> O <code>Sair</code> continua. Sair limpa o cache privado. <code>POST /api/dev/reset</code> devolve perfil e carteira à semente.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="evidence-section">
+          <h4>📸 Evidências Visuais</h4>
+          <div class="evidence-gallery" id="gallery-8">
+            <div class="evidence-placeholder"><span>📷</span> Screenshots serão adicionados após execução dos testes</div>
+          </div>
+        </div>
+        <div class="obs-box">
+          <strong>Observações:</strong>
+          Testes pendentes de execução. Não há frame mobile de perfil nem de carteiras. Abaixo de 1440 a spec só empilha os blocos do desktop. A carteira salva não passa a ser a do pagamento: a frase de disponibilidade continua só como cópia.
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-block" id="flow-9">
+      <div class="flow-header" onclick="toggleFlow('flow-9')">
+        <div class="flow-header-left">
+          <span class="flow-id">FL-09</span>
+          <span class="flow-title">Socket no checkout</span>
+        </div>
+        <span class="flow-chevron">▼</span>
+      </div>
+      <div class="flow-body">
+        <table class="test-table">
+          <thead>
+            <tr><th>#</th><th>Caso de Teste</th><th>Pré-condição</th><th>Resultado Esperado</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>TC-36</td>
+              <td>Neon Vessel #552 alterna o preço na grade, no detalhe e na cotação quando a peça está no carrinho.</td>
+              <td>Mock ligado. Esperar cerca de 3 segundos. A peça está no carrinho de quem olha.</td>
+              <td>O preço alterna entre <code>1.99</code> e <code>2.09</code>. A comparação <code>2.29</code> não muda. As outras sete peças não alternam. A cotação acompanha o preço novo. A tela não soma ETH localmente.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-37</td>
+              <td>Pedido novo com Sage Nomad #009 nasce pendente e depois mostra o recibo.</td>
+              <td>Ada autenticada. Carrinho fechado com Sage Nomad #009, quantidade 1, pela loja simulada. Página do pedido novo aberta.</td>
+              <td>A frase é <code>Aguardando confirmação do pedido.</code> Cerca de 2 segundos depois, o modal do recibo aparece com os números da fotografia. O preço que mudou no catálogo depois da criação não entra nesse recibo.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-38</td>
+              <td>Sair corta a escuta do pedido. O preço público continua.</td>
+              <td>Pedido pendente aberto na sessão da Ada. Em seguida, Sair.</td>
+              <td>Sem sessão, o estado do pedido não atualiza. Neon Vessel continua alternando na grade. A página privada reabre a entrada.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-39</td>
+              <td>Com a simulação desligada não há escuta de preço nem de pedido.</td>
+              <td><code>VITE_ENABLE_MOCK=false</code>.</td>
+              <td>Não há relógio nem socket. As frases de falha continuam as de catálogo, peça ou pedido. Não nasce frase nova de falha do aviso.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="evidence-section">
+          <h4>📸 Evidências Visuais</h4>
+          <div class="evidence-gallery" id="gallery-9">
+            <div class="evidence-placeholder"><span>📷</span> Screenshots serão adicionados após execução dos testes</div>
+          </div>
+        </div>
+        <div class="obs-box">
+          <strong>Observações:</strong>
+          Testes pendentes de execução. O checkout na tela ainda é <code>Revisão e envio</code> e não dispara o fecho. O efeito ao vivo do pedido se vê em <code>/pedidos/:id</code> depois do <code>POST /api/pedidos</code>. O evento passa pelo cliente Socket.IO, não por um setter direto na UI.
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-block" id="flow-10">
+      <div class="flow-header" onclick="toggleFlow('flow-10')">
+        <div class="flow-header-left">
+          <span class="flow-id">FL-10</span>
+          <span class="flow-title">Evento duplicado ou antigo e pedido pendente</span>
+        </div>
+        <span class="flow-chevron">▼</span>
+      </div>
+      <div class="flow-body">
+        <table class="test-table">
+          <thead>
+            <tr><th>#</th><th>Caso de Teste</th><th>Pré-condição</th><th>Resultado Esperado</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>TC-40</td>
+              <td>Evento de preço com versão igual ou menor não regride Neon Vessel.</td>
+              <td>A grade já aplicou um preço mais novo de Neon Vessel #552.</td>
+              <td>Aviso repetido ou mais antigo deixa o preço atual. Não há segunda animação de volta ao valor velho.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-41</td>
+              <td><code>confirmado</code> e <code>recusado</code> são terminais.</td>
+              <td>Um pedido da Ada já confirmou. Outro, com Golden Signal #160, já recusou.</td>
+              <td>Aviso posterior não tira o modal do pedido confirmado nem troca <code>Pedido recusado.</code> de volta para espera. O recibo da semente <code>ped-ada-1</code> permanece <code>1.79 ETH</code> com o relógio de preço ligado.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-42</td>
+              <td>Evento de pedido de outra sessão não mexe na pessoa atual.</td>
+              <td>Ada e Bruno com sessões separadas. O pedido pendente é da Ada.</td>
+              <td>Quando o pedido da Ada confirma, a tela dela troca a frase pelo recibo. A tela do Bruno não recebe esse aviso. Se Bruno abre o pedido da Ada, continua <code>Pedido não encontrado.</code></td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-43</td>
+              <td>Recarregar com pedido pendente recupera o estado sem segunda compra.</td>
+              <td>Pedido pendente já gravado. A página recarrega, ou a escuta cai e volta.</td>
+              <td>A leitura REST devolve o mesmo pedido. Não nasce outro <code>POST</code>. Se a resolução já ocorreu, a tela mostra recibo ou <code>Pedido recusado.</code>, conforme o estado gravado.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="evidence-section">
+          <h4>📸 Evidências Visuais</h4>
+          <div class="evidence-gallery" id="gallery-10">
+            <div class="evidence-placeholder"><span>📷</span> Screenshots serão adicionados após execução dos testes</div>
+          </div>
+        </div>
+        <div class="obs-box">
+          <strong>Observações:</strong>
+          Testes pendentes de execução. A sessão cai no refresh da página, porque a loja viva nasce de novo. Recuperar um pedido pendente depois do reload exige entrar outra vez. Recomeço sem aviso pode deixar a aba com o preço anterior até chegar uma versão maior.
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-block" id="flow-11">
+      <div class="flow-header" onclick="toggleFlow('flow-11')">
+        <div class="flow-header-left">
+          <span class="flow-id">FL-11</span>
+          <span class="flow-title">Teclado</span>
+        </div>
+        <span class="flow-chevron">▼</span>
+      </div>
+      <div class="flow-body">
+        <table class="test-table">
+          <thead>
+            <tr><th>#</th><th>Caso de Teste</th><th>Pré-condição</th><th>Resultado Esperado</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>TC-44</td>
+              <td>O painel de entrada em 1440 fecha por Esc e troca de aba pelo teclado.</td>
+              <td>Painel <code>conta=entrar</code> aberto. Foco no painel.</td>
+              <td>Tab percorre os controles do painel. Esc fecha e tira <code>conta</code> do endereço. O X também fecha. O início continua atrás, sem película.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-45</td>
+              <td>Campo de conta tem rótulo, e o erro aparece como texto.</td>
+              <td>Formulário de entrar e de criar conta.</td>
+              <td>E-mail e senha têm rótulo. Senha errada, senhas diferentes e nome vazio mostram a frase da spec, não só uma mudança de cor.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-46</td>
+              <td>As rotas principais não estouram na horizontal e não perdem conteúdo no zoom.</td>
+              <td>Larguras 1440, 768 e 390. Zoom do navegador aumentado. Rotas <code>/</code>, detalhe, <code>/carrinho</code>, <code>/pagamento</code>, <code>/perfil</code> e recibo.</td>
+              <td>Não há barra horizontal forçada pelo miolo. O texto do erro, do vazio e do recibo continua legível. Blog, Criadores e Aprenda continuam visíveis e não navegam.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="evidence-section">
+          <h4>📸 Evidências Visuais</h4>
+          <div class="evidence-gallery" id="gallery-11">
+            <div class="evidence-placeholder"><span>📷</span> Screenshots serão adicionados após execução dos testes</div>
+          </div>
+        </div>
+        <div class="obs-box">
+          <strong>Observações:</strong>
+          Testes pendentes de execução. Esta passada é manual no que o Playwright de clique não vê: foco visível, ordem de tabulação e zoom. A spec de perfil não desenha anel de foco novo fora do campo que a casca já usa.
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-block" id="flow-12">
+      <div class="flow-header" onclick="toggleFlow('flow-12')">
+        <div class="flow-header-left">
+          <span class="flow-id">FL-12</span>
+          <span class="flow-title">Skeleton com rede lenta</span>
+        </div>
+        <span class="flow-chevron">▼</span>
+      </div>
+      <div class="flow-body">
+        <table class="test-table">
+          <thead>
+            <tr><th>#</th><th>Caso de Teste</th><th>Pré-condição</th><th>Resultado Esperado</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>TC-47</td>
+              <td>Enquanto a leitura não chega, catálogo, detalhe e carrinho mostram a frase de espera.</td>
+              <td>Resposta de <code>/api/nfts</code>, do detalhe ou do carrinho atrasada.</td>
+              <td>A frase é <code>Carregando</code>. A casca permanece. Não há bloco de skeleton nem shimmer no miolo.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-48</td>
+              <td>A falha de rede troca a espera pela frase da tela, sem pular o restante da página.</td>
+              <td>Catálogo, detalhe ou carrinho respondem erro.</td>
+              <td>As frases são <code>Não foi possível carregar o catálogo.</code>, <code>Não foi possível carregar a peça.</code> ou <code>Não foi possível carregar o carrinho.</code> Hero, oferta e rodapé do início continuam no catálogo. A cotação falha com <code>Não foi possível calcular o total.</code> e não inventa soma local.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-49</td>
+              <td>Movimento reduzido não encontra shimmer para desligar.</td>
+              <td><code>prefers-reduced-motion: reduce</code>. Leitura lenta de catálogo, detalhe e carrinho.</td>
+              <td>A espera continua a frase <code>Carregando</code>. Não há animação de skeleton. O conteúdo que chega não empurra a casca para outra coluna.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="evidence-section">
+          <h4>📸 Evidências Visuais</h4>
+          <div class="evidence-gallery" id="gallery-12">
+            <div class="evidence-placeholder"><span>📷</span> Screenshots serão adicionados após execução dos testes</div>
+          </div>
+        </div>
+        <div class="obs-box">
+          <strong>Observações:</strong>
+          Testes pendentes de execução. Lacuna do enunciado: skeleton com shimmer em catálogo, detalhe e resumo do carrinho, dimensão estável, respeitando movimento reduzido. O código entregue usa a frase <code>Carregando</code>, sem skeleton.
+        </div>
+      </div>
+    </div>
+
+    <div class="flow-block" id="flow-13">
+      <div class="flow-header" onclick="toggleFlow('flow-13')">
+        <div class="flow-header-left">
+          <span class="flow-id">FL-13</span>
+          <span class="flow-title">Regressão visual</span>
+        </div>
+        <span class="flow-chevron">▼</span>
+      </div>
+      <div class="flow-body">
+        <table class="test-table">
+          <thead>
+            <tr><th>#</th><th>Caso de Teste</th><th>Pré-condição</th><th>Resultado Esperado</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>TC-50</td>
+              <td>Baseline visual do início, desktop e mobile.</td>
+              <td>Mock ligado. Sem <code>q</code>. Larguras 1440 e 390. Baseline ainda não versionada: a primeira captura cria a referência.</td>
+              <td>A captura de <code>/</code> fica estável entre duas rodadas no mesmo estado da semente. Hero, grade das oito peças e rodapé entram no quadro.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-51</td>
+              <td>Baseline visual do detalhe.</td>
+              <td><code>/nfts/neon-vessel-552</code>. Larguras 1440 e 390.</td>
+              <td>A captura mostra imagem, nome, <code>1.99</code>, <code>2.29</code> e <code>RARO</code>, sem o preço alternado do relógio no meio do quadro. Para isso, a captura ocorre antes do primeiro tick de 3 segundos, ou com o relógio pausado no teste.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-52</td>
+              <td>Baseline visual do carrinho.</td>
+              <td><code>/carrinho</code> vazio e, em outra captura, com uma linha. Larguras 1440 e 390.</td>
+              <td>Vazio mostra <code>Seu carrinho está vazio.</code> e totais <code>0.00</code>. Com linha, a tabela ou a coluna estreita e o resumo entram no quadro. Abaixo de 1440 não há barra de baixo.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-53</td>
+              <td>Baseline visual do pagamento.</td>
+              <td>Sessão da Ada. <code>/pagamento</code>. Larguras 1440 e 390.</td>
+              <td>A página mostra <code>Revisão e envio</code>. Não há formulário de checkout desenhado nesta fatia. A captura registra esse estado, sem inventar campos.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+            <tr>
+              <td>TC-54</td>
+              <td>Coluna de 768 e fidelidade ao frame, fora do par 1440/390.</td>
+              <td>Largura 768 em início, detalhe, carrinho e pagamento. Frames em <code>research/figma/</code>.</td>
+              <td>768 usa a coluna estreita, com padding horizontal 28 no carrinho. A comparação com o frame é manual: o Playwright visual cobre 1440 e 390. Blog, Criadores e Aprenda continuam visíveis e não navegam.</td>
+              <td><span class="status pending dot">Pendente</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="evidence-section">
+          <h4>📸 Evidências Visuais</h4>
+          <div class="evidence-gallery" id="gallery-13">
+            <div class="evidence-placeholder"><span>📷</span> Screenshots serão adicionados após execução dos testes</div>
+          </div>
+        </div>
+        <div class="obs-box">
+          <strong>Observações:</strong>
+          Testes pendentes de execução. FL-13 não é um dos 12 fluxos do enunciado. Entra no mapa porque o Playwright da prova inclui regressão visual de início, detalhe, carrinho e pagamento. Baselines ainda não existem. Esta rodada não tira screenshot.
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title" style="margin-top: 2rem;">
+      <div class="icon">🐛</div>
+      Log de Bugs
+    </div>
+    <div class="bug-empty" id="bug-log">
+      Nenhum bug registrado. A primeira rodada deixa os casos em Pendente. Bug entra aqui na segunda rodada, quando um caso for reprovado, com código BG, severidade, passos e o que a tela fez.
+    </div>
+
+    <div class="section-title" style="margin-top: 2rem;">
+      <div class="icon">📊</div>
+      Matriz de Cobertura
+    </div>
+    <div class="matrix-wrap">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>Fluxo</th>
+            <th>Total TCs</th>
+            <th>Aprovados</th>
+            <th>Reprovados</th>
+            <th>Bloqueados</th>
+            <th>Taxa</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-flow="fluxo1"><td>FL-01: Catálogo e histórico</td><td class="mat-total">5</td><td class="mat-pass">0</td><td class="mat-fail">0</td><td class="mat-block">0</td><td class="mat-pct">0%</td></tr>
+          <tr data-flow="fluxo2"><td>FL-02: Detalhe inexistente</td><td class="mat-total">3</td><td class="mat-pass">0</td><td class="mat-fail">0</td><td class="mat-block">0</td><td class="mat-pct">0%</td></tr>
+          <tr data-flow="fluxo3"><td>FL-03: Conta e troca de usuário</td><td class="mat-total">6</td><td class="mat-pass">0</td><td class="mat-fail">0</td><td class="mat-block">0</td><td class="mat-pct">0%</td></tr>
+          <tr data-flow="fluxo4"><td>FL-04: Favoritos com falha</td><td class="mat-total">3</td><td class="mat-pass">0</td><td class="mat-fail">0</td><td class="mat-block">0</td><td class="mat-pct">0%</td></tr>
+          <tr data-flow="fluxo5"><td>FL-05: Carrinho</td><td class="mat-total">5</td><td class="mat-pass">0</td><td class="mat-fail">0</td><td class="mat-block">0</td><td class="mat-pct">0%</td></tr>
+          <tr data-flow="fluxo6"><td>FL-06: Compra até o recibo</td><td class="mat-total">4</td><td class="mat-pass">0</td><td class="mat-fail">0</td><td class="mat-block">0</td><td class="mat-pct">0%</td></tr>
+          <tr data-flow="fluxo7"><td>FL-07: Falha de pagamento, clique repetido e timeout</td><td class="mat-total">4</td><td class="mat-pass">0</td><td class="mat-fail">0</td><td class="mat-block">0</td><td class="mat-pct">0%</td></tr>
+          <tr data-flow="fluxo8"><td>FL-08: Perfil e carteiras</td><td class="mat-total">5</td><td class="mat-pass">0</td><td class="mat-fail">0</td><td class="mat-block">0</td><td class="mat-pct">0%</td></tr>
+          <tr data-flow="fluxo9"><td>FL-09: Socket no checkout</td><td class="mat-total">4</td><td class="mat-pass">0</td><td class="mat-fail">0</td><td class="mat-block">0</td><td class="mat-pct">0%</td></tr>
+          <tr data-flow="fluxo10"><td>FL-10: Evento duplicado ou antigo e pedido pendente</td><td class="mat-total">4</td><td class="mat-pass">0</td><td class="mat-fail">0</td><td class="mat-block">0</td><td class="mat-pct">0%</td></tr>
+          <tr data-flow="fluxo11"><td>FL-11: Teclado</td><td class="mat-total">3</td><td class="mat-pass">0</td><td class="mat-fail">0</td><td class="mat-block">0</td><td class="mat-pct">0%</td></tr>
+          <tr data-flow="fluxo12"><td>FL-12: Skeleton com rede lenta</td><td class="mat-total">3</td><td class="mat-pass">0</td><td class="mat-fail">0</td><td class="mat-block">0</td><td class="mat-pct">0%</td></tr>
+          <tr data-flow="fluxo13"><td>FL-13: Regressão visual</td><td class="mat-total">5</td><td class="mat-pass">0</td><td class="mat-fail">0</td><td class="mat-block">0</td><td class="mat-pct">0%</td></tr>
+          <tr style="font-weight: 700; background: rgba(108,99,255,0.06);">
+            <td>TOTAL</td>
+            <td id="mat-total">0</td>
+            <td id="mat-pass">0</td>
+            <td id="mat-fail">0</td>
+            <td id="mat-block">0</td>
+            <td id="mat-pct">0%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <footer class="footer">
+    Gerado pela equipe de QA da <strong>ByStartup</strong> · POP-QA-001 v1.0 · skill <code>manual-report</code>
+  </footer>
+
+  <script>
+    const testData = {
+      fluxo1: { total: 5, pass: 0, fail: 0, block: 0 },
+      fluxo2: { total: 3, pass: 0, fail: 0, block: 0 },
+      fluxo3: { total: 6, pass: 0, fail: 0, block: 0 },
+      fluxo4: { total: 3, pass: 0, fail: 0, block: 0 },
+      fluxo5: { total: 5, pass: 0, fail: 0, block: 0 },
+      fluxo6: { total: 4, pass: 0, fail: 0, block: 0 },
+      fluxo7: { total: 4, pass: 0, fail: 0, block: 0 },
+      fluxo8: { total: 5, pass: 0, fail: 0, block: 0 },
+      fluxo9: { total: 4, pass: 0, fail: 0, block: 0 },
+      fluxo10: { total: 4, pass: 0, fail: 0, block: 0 },
+      fluxo11: { total: 3, pass: 0, fail: 0, block: 0 },
+      fluxo12: { total: 3, pass: 0, fail: 0, block: 0 },
+      fluxo13: { total: 5, pass: 0, fail: 0, block: 0 }
+    };
+
+    function initScoreboard() {
+      const flows = Object.values(testData);
+      const total = flows.reduce((sum, flow) => sum + flow.total, 0);
+      const pass = flows.reduce((sum, flow) => sum + flow.pass, 0);
+      const fail = flows.reduce((sum, flow) => sum + flow.fail, 0);
+      const block = flows.reduce((sum, flow) => sum + flow.block, 0);
+      const pct = total === 0 ? 0 : Math.round((pass / total) * 100);
+
+      document.getElementById('sc-total').textContent = String(total);
+      document.getElementById('sc-pass').textContent = String(pass);
+      document.getElementById('sc-fail').textContent = String(fail);
+      document.getElementById('sc-block').textContent = String(block);
+      document.getElementById('sc-pct').textContent = pct + '%';
+      document.getElementById('progress-bar').style.width = pct + '%';
+      document.getElementById('progress-pct-label').textContent = pct + '%';
+      document.getElementById('mat-total').textContent = String(total);
+      document.getElementById('mat-pass').textContent = String(pass);
+      document.getElementById('mat-fail').textContent = String(fail);
+      document.getElementById('mat-block').textContent = String(block);
+      document.getElementById('mat-pct').textContent = pct + '%';
+
+      Object.entries(testData).forEach(([id, flow]) => {
+        const row = document.querySelector('[data-flow="' + id + '"]');
+        if (!row) return;
+        const rate = flow.total === 0 ? 0 : Math.round((flow.pass / flow.total) * 100);
+        row.querySelector('.mat-total').textContent = String(flow.total);
+        row.querySelector('.mat-pass').textContent = String(flow.pass);
+        row.querySelector('.mat-fail').textContent = String(flow.fail);
+        row.querySelector('.mat-block').textContent = String(flow.block);
+        row.querySelector('.mat-pct').textContent = rate + '%';
+      });
+    }
+
+    function toggleFlow(id) {
+      const block = document.getElementById(id);
+      if (!block) return;
+      block.classList.toggle('open');
+    }
+
+    function openLightbox(src) {
+      const box = document.getElementById('lightbox');
+      const img = document.getElementById('lightbox-img');
+      img.src = src;
+      box.classList.add('open');
+    }
+
+    function closeLightbox() {
+      const box = document.getElementById('lightbox');
+      const img = document.getElementById('lightbox-img');
+      box.classList.remove('open');
+      img.src = '';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('meta-executor').textContent = 'Aguardando execução';
+      document.getElementById('meta-data').textContent = '26/11/2026';
+      initScoreboard();
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeLightbox();
+    });
+  </script>
+</body>
+</html>
