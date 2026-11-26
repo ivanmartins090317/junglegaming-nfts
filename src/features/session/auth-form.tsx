@@ -4,7 +4,9 @@ import { useState, type FormEvent } from 'react'
 import { Button } from '@/components/ui/button.tsx'
 import { Input } from '@/components/ui/input.tsx'
 import { signIn, signUp } from '@/lib/api/session.ts'
+import { cartMessages } from '@/lib/contracts/cart.ts'
 import { sessionMessages } from '@/lib/contracts/session.ts'
+import { mergeGuestDraft } from '@/features/cart/merge-guest.ts'
 import { sessionQueryKey, useSessionQuery } from '@/lib/query/session.ts'
 import { cn } from '@/lib/utils.ts'
 import { EyeIcon, EyeOffIcon } from '@/features/session/auth-icons.tsx'
@@ -52,6 +54,12 @@ export function AuthForm({
       holdRedirect()
       await queryClient.cancelQueries({ queryKey: sessionQueryKey })
       queryClient.setQueryData(sessionQueryKey, user)
+      const merged = await mergeGuestDraft(queryClient)
+      if (merged === 'failed') {
+        setActionMessage(cartMessages.mergeFailed)
+        return
+      }
+      if (merged === 'busy') return
       await navigate({
         href: pathAfterSuccess({
           retorno,

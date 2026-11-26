@@ -6,6 +6,7 @@ import {
   ScanIcon,
   UserSolidIcon,
 } from '@/components/layout/mobile-icons.tsx'
+import { useCartBadgeCount } from '@/features/cart/use-cart-badge.ts'
 
 const quietLink = {
   activeProps: {},
@@ -17,6 +18,7 @@ const itemClass = 'mt-7 inline-flex size-11 items-center justify-center bg-trans
 export function MobileTabs() {
   const pathname = useRouterState({ select: (state) => state.location.pathname })
   const homeIsActive = pathname === '/'
+  const cartCount = useCartBadgeCount()
 
   return (
     <nav aria-label="Atalhos" className="fixed inset-x-0 bottom-0 z-20 h-[95px] desktop:hidden">
@@ -59,8 +61,11 @@ export function MobileTabs() {
             to="/carrinho"
             {...quietLink}
             aria-label="Carrinho"
-            className={`${itemClass} text-text-secondary`}
+            className={`${itemClass} relative text-text-secondary`}
           >
+            <span className="absolute top-1 right-0 inline-flex h-[16px] min-w-[16px] items-center justify-center rounded-full bg-primary text-[10px] font-bold leading-none text-ink">
+              {cartCount}
+            </span>
             <CartSolidIcon />
             <span className="sr-only">Carrinho</span>
           </Link>

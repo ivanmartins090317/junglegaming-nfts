@@ -12,5 +12,6 @@ Stack fechada: Vite, React, TypeScript, TanStack Router, TanStack Query, Axios, 
 | [02-fase-2-msw-usuarios-reset-catalogo.md](02-fase-2-msw-usuarios-reset-catalogo.md) | Catálogo feliz, Ada e Bruno, e recomeço da loja simulada |
 | [03-fase-3-catalogo-detalhe-url.md](03-fase-3-catalogo-detalhe-url.md) | Grade da loja, busca no endereço e detalhe da peça |
 | [04-fase-4-sessao-login-cadastro-guarda.md](04-fase-4-sessao-login-cadastro-guarda.md) | Entrada, cadastro, guarda das rotas privadas e saída |
+| [05-fase-5-carrinho-cotacao.md](05-fase-5-carrinho-cotacao.md) | Carrinho, cotação, rascunho do visitante e fusão na entrada |
 
 Ao fechar uma fase, o capítulo entra nesta tabela.

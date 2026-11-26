@@ -12,6 +12,7 @@ interface AppShellProps {
 export function AppShell({ children }: AppShellProps) {
   const pathname = useRouterState({ select: (state) => state.location.pathname })
   const fullScreenAuth = (pathname === '/entrar' || pathname === '/cadastro') && !isDesktopEntry()
+  const cartPage = pathname === '/carrinho'
 
   if (fullScreenAuth) {
     return <div className="min-h-screen bg-ink text-foreground">{children}</div>
@@ -19,11 +20,17 @@ export function AppShell({ children }: AppShellProps) {
 
   return (
     <div className="min-h-screen bg-ink text-foreground">
-      <div className="px-6 pt-10 pb-28 md:px-7 desktop:px-[120px] desktop:pt-6 desktop:pb-6">
+      <div
+        className={
+          cartPage
+            ? 'px-7 pt-10 pb-0 desktop:px-[120px] desktop:pt-6 desktop:pb-6'
+            : 'px-6 pt-10 pb-28 md:px-7 desktop:px-[120px] desktop:pt-6 desktop:pb-6'
+        }
+      >
         <SiteHeader />
         <main className="mt-4 desktop:mt-8">{children}</main>
       </div>
-      <MobileTabs />
+      {cartPage ? null : <MobileTabs />}
       <AuthPanel />
     </div>
   )

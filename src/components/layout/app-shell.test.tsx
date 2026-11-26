@@ -106,10 +106,11 @@ describe('casca e rotas vazias', () => {
     )
     const badge = cart?.querySelector('span')
     expect(cart?.getAttribute('href')).toBe('/carrinho')
-    expect(badge?.textContent).toBe('5')
+    expect(badge?.textContent).toBe('0')
     expect(badge?.className).toContain('h-[16px]')
     expect(badge?.className).toContain('min-w-[16px]')
     expect(badge?.className).toContain('bg-primary')
+    expect(view.container.querySelector('button[aria-label="Carteira"] span')?.textContent).toBe('2')
 
     const signIn = [...view.container.querySelectorAll('button')].find(
       (button) => button.textContent?.trim() === 'Entrar',
@@ -143,14 +144,6 @@ describe('casca e rotas vazias', () => {
     expect(padded?.className).toContain('desktop:px-[120px]')
     expect(padded?.querySelector('header')).not.toBeNull()
     expect(padded?.querySelector('main')).not.toBeNull()
-  })
-
-  it.each([['/carrinho', 'Carrinho']])('mostra só o nome em %s', async (path, title) => {
-    const view = await mount(path)
-    mounted.push(view)
-    expect(miolo(view.container)?.textContent).toBe(title)
-    expect(miolo(view.container)?.className).toContain('text-foreground')
-    expect(view.container.querySelector('header')).not.toBeNull()
   })
 
   it('mostra o identificador ao lado do nome nas telas dinâmicas', async () => {
@@ -235,7 +228,7 @@ describe('casca e rotas vazias', () => {
       [...view.container.querySelectorAll('a')]
         .find((anchor) => anchor.textContent?.includes('Carrinho'))
         ?.querySelector('span')?.textContent,
-    ).toBe('5')
+    ).toBe('0')
 
     await act(async () => {
       const signIn = [...view.container.querySelectorAll('button')].find(

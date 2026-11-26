@@ -1,6 +1,8 @@
+import type { CartLine, CartLineRef, CartView, Quote } from '@/lib/contracts/cart.ts'
 import type { SessionUser } from '@/lib/contracts/session.ts'
 import { sessionMessages } from '@/lib/contracts/session.ts'
 import type { Nft } from '@/lib/contracts/nft.ts'
+import { buildQuote, type PricedLine } from '@/lib/money.ts'
 import { catalogSeed } from '@/mocks/fixtures/catalog.ts'
 import { usersSeed, type SeedUser } from '@/mocks/fixtures/users.ts'
 
@@ -127,4 +129,132 @@ export function updateLiveStore(change: (store: LiveStore) => void) {
 
 export function resetStore() {
   liveStore = cloneStore(seed)
+}
+
+function isPositiveInt(value: unknown): value is number {
+  return typeof value === 'number' && Number.isSafeInteger(value) && value >= 1
+}
+
+function currentUser() {
+  if (!liveStore.sessionUserId) return undefined
+  return liveStore.users.find((user) => user.id === liveStore.sessionUserId)
+}
+
+export function parseCartLines(value: unknown): CartLineRef[] {
+  if (!Array.isArray(value)) return []
+  const lines: CartLineRef[] = []
+  for (const item of value) {
+    if (typeof item !== 'object' || item === null) continue
+    const record = item as Record<string, unknown>
+    if (typeof record.nftId !== 'string' || record.nftId.length === 0) continue
+    if (!isPositiveInt(record.quantity)) continue
+    lines.push({ nftId: record.nftId, quantity: record.quantity })
+  }
+  return normalizeRefs(lines)
+}
+
+function normalizeRefs(lines: CartLineRef[]) {
+  const next: CartLineRef[] = []
+  for (const line of lines) {
+    if (!isPositiveInt(line.quantity) || line.nftId.length === 0) continue
+    const found = next.find((item) => item.nftId === line.nftId)
+    if (found) found.quantity += line.quantity
+    else next.push({ nftId: line.nftId, quantity: line.quantity })
+  }
+  return next
+}
+
+function pricedLines(lines: CartLineRef[]): PricedLine[] {
+  const priced: PricedLine[] = []
+  for (const line of normalizeRefs(lines)) {
+    const nft = liveStore.nfts.find((item) => item.id === line.nftId)
+    if (!nft) continue
+    priced.push({ nftId: nft.id, unitPrice: nft.price, quantity: line.quantity })
+  }
+  return priced
+}
+
+function toCartView(lines: CartLineRef[]): CartView {
+  const view: CartLine[] = []
+  for (const line of pricedLines(lines)) {
+    const nft = liveStore.nfts.find((item) => item.id === line.nftId)
+    if (!nft) continue
+    view.push({
+      nftId: nft.id,
+      name: nft.name,
+      image: nft.image,
+      unitPrice: nft.price,
+      quantity: line.quantity,
+    })
+  }
+  return { lines: view }
+}
+
+export type CartWrite =
+  | { ok: true; cart: CartView }
+  | { ok: false; status: 400 | 401 | 404 }
+
+function denied(): CartWrite {
+  return { ok: false, status: 401 }
+}
+
+export function readSessionCart(): CartView | undefined {
+  const user = currentUser()
+  if (!user) return undefined
+  return toCartView(user.cart)
+}
+
+export function resolveCart(lines: CartLineRef[]) {
+  return toCartView(lines)
+}
+
+export function quoteSessionCart(): Quote | undefined {
+  const user = currentUser()
+  if (!user) return undefined
+  return buildQuote(pricedLines(user.cart))
+}
+
+export function quoteCartLines(lines: CartLineRef[]) {
+  return buildQuote(pricedLines(lines))
+}
+
+export function addSessionItem(nftId: unknown): CartWrite {
+  const user = currentUser()
+  if (!user) return denied()
+  if (typeof nftId !== 'string' || !liveStore.nfts.some((nft) => nft.id === nftId)) {
+    return { ok: false, status: 404 }
+  }
+  const found = user.cart.find((line) => line.nftId === nftId)
+  if (found) found.quantity += 1
+  else user.cart.push({ nftId, quantity: 1 })
+  return { ok: true, cart: toCartView(user.cart) }
+}
+
+export function setSessionQuantity(nftId: string, quantity: unknown): CartWrite {
+  const user = currentUser()
+  if (!user) return denied()
+  if (!isPositiveInt(quantity)) return { ok: false, status: 400 }
+  const found = user.cart.find((line) => line.nftId === nftId)
+  if (!found) return { ok: false, status: 404 }
+  found.quantity = quantity
+  return { ok: true, cart: toCartView(user.cart) }
+}
+
+export function removeSessionItem(nftId: string): CartWrite {
+  const user = currentUser()
+  if (!user) return denied()
+  user.cart = user.cart.filter((line) => line.nftId !== nftId)
+  return { ok: true, cart: toCartView(user.cart) }
+}
+
+export function mergeSessionCart(lines: CartLineRef[]): CartWrite {
+  const user = currentUser()
+  if (!user) return denied()
+  for (const line of normalizeRefs(lines)) {
+    if (!liveStore.nfts.some((nft) => nft.id === line.nftId)) continue
+    const found = user.cart.find((item) => item.nftId === line.nftId)
+    if (found) found.quantity += line.quantity
+    else user.cart.push({ nftId: line.nftId, quantity: line.quantity })
+  }
+  return { ok: true, cart: toCartView(user.cart) }
 }

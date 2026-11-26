@@ -8,6 +8,7 @@
 | 2026-11-26 | msw-usuarios-reset-catalogo | `feature` | `done` | [spec](2026-11-26-msw-usuarios-reset-catalogo.md) |
 | 2026-11-26 | catalogo-detalhe-url | `feature` | `done` | [spec](2026-11-26-catalogo-detalhe-url.md) |
 | 2026-11-26 | sessao-login-cadastro-guarda | `feature` | `done` | [spec](2026-11-26-sessao-login-cadastro-guarda.md) |
+| 2026-11-26 | carrinho-cotacao | `feature` | `done` | [spec](2026-11-26-carrinho-cotacao.md) |
 
 Status: `draft`, `aprovada`, `em_implementacao`, `done`.
 

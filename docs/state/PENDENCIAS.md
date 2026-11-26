@@ -51,6 +51,17 @@ Código entregue em `docs/implementation/F4-sessao-login-cadastro-guarda.md`. Ho
 - [ ] Esqueceu a senha, Google e Facebook continuam visíveis e o clique não navega
 - [ ] Com a simulação desligada, a guarda não abre a página privada e o formulário mostra `Não foi possível carregar a sessão.`
 
+## Fase 5 · Homologação
+
+Código entregue em `docs/implementation/F5-carrinho-cotacao.md`. Homologação manual pendente:
+
+- [ ] Visitante inclui uma peça, vê o selo e a cotação, e o recarregar mantém o rascunho desta aba
+- [ ] Ada entra com o rascunho e a quantidade da mesma peça soma. Sair deixa o visitante vazio e a loja da Ada intacta
+- [ ] Carrinho vazio mostra `Seu carrinho está vazio.` e totais `0.00`. `Conectar e finalizar` não sai da rota
+- [ ] Com linha, `Conectar e finalizar` vai para `/pagamento`. Sem sessão, a guarda pede a entrada antes
+- [ ] Cupom, pontos do carrossel, Enviar e atalhos fora de escopo não navegam e não mostram sucesso
+- [ ] Em 1440, a tabela, as recomendações e o rodapé aparecem. Abaixo de 1440, inclusive 768 e 390, a coluna é a do mobile, com margem 28, sem a barra de baixo
+
 ## Setup
 
 - [x] Workflow em `.cursor/workflow/`
@@ -65,7 +76,7 @@ Código entregue em `docs/implementation/F4-sessao-login-cadastro-guarda.md`. Ho
 - [x] MSW com dois usuários, reset e catálogo feliz
 - [x] Catálogo e detalhe, estado na URL
 - [x] Sessão, login, cadastro e guarda
-- [ ] Carrinho e cotação
+- [x] Carrinho e cotação
 - [ ] Pedido idempotente, confirmação e recibo snapshot
 - [ ] Socket no preço e no estado do pedido
 - [ ] Perfil e carteiras

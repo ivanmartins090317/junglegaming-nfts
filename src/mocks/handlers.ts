@@ -1,5 +1,23 @@
 import { http, HttpResponse } from 'msw'
-import { readCatalog, readNft, readSessionUser, resetStore, signInUser, signOutUser, signUpUser } from '@/mocks/store.ts'
+import {
+  addSessionItem,
+  mergeSessionCart,
+  parseCartLines,
+  quoteCartLines,
+  quoteSessionCart,
+  readCatalog,
+  readNft,
+  readSessionCart,
+  readSessionUser,
+  removeSessionItem,
+  resetStore,
+  resolveCart,
+  setSessionQuantity,
+  signInUser,
+  signOutUser,
+  signUpUser,
+  type CartWrite,
+} from '@/mocks/store.ts'
 
 const missingNft = { message: 'NFT não encontrado.' }
 
@@ -29,6 +47,15 @@ async function readBody(request: Request) {
 function sessionResponse(result: ReturnType<typeof signInUser>) {
   if (!result.ok) return HttpResponse.json({ message: result.message }, { status: result.status })
   return HttpResponse.json(result.user)
+}
+
+function cartResponse(result: CartWrite) {
+  if (!result.ok) return HttpResponse.json({ message: 'Não foi possível atualizar o carrinho.' }, { status: result.status })
+  return HttpResponse.json(result.cart)
+}
+
+function routeId(value: string | readonly string[] | undefined) {
+  return typeof value === 'string' && value.length > 0 ? value : ''
 }
 
 export const handlers = [
@@ -67,5 +94,38 @@ export const handlers = [
   http.post('/api/dev/reset', () => {
     resetStore()
     return new HttpResponse(null, { status: 204 })
+  }),
+  http.get('/api/carrinho', () => {
+    const cart = readSessionCart()
+    if (!cart) return HttpResponse.json({ message: 'Não autorizado.' }, { status: 401 })
+    return HttpResponse.json(cart)
+  }),
+  http.post('/api/carrinho/leitura', async ({ request }) => {
+    const body = await readBody(request)
+    return HttpResponse.json(resolveCart(parseCartLines(body.lines)))
+  }),
+  http.post('/api/carrinho/itens', async ({ request }) => {
+    const body = await readBody(request)
+    return cartResponse(addSessionItem(body.nftId))
+  }),
+  http.put('/api/carrinho/itens/:nftId', async ({ params, request }) => {
+    const body = await readBody(request)
+    return cartResponse(setSessionQuantity(routeId(params.nftId), body.quantity))
+  }),
+  http.delete('/api/carrinho/itens/:nftId', ({ params }) => {
+    return cartResponse(removeSessionItem(routeId(params.nftId)))
+  }),
+  http.post('/api/carrinho/fusao', async ({ request }) => {
+    const body = await readBody(request)
+    return cartResponse(mergeSessionCart(parseCartLines(body.lines)))
+  }),
+  http.post('/api/cotacao', async ({ request }) => {
+    if (readSessionUser()) {
+      const quote = quoteSessionCart()
+      if (!quote) return HttpResponse.json({ message: 'Não autorizado.' }, { status: 401 })
+      return HttpResponse.json(quote)
+    }
+    const body = await readBody(request)
+    return HttpResponse.json(quoteCartLines(parseCartLines(body.lines)))
   }),
 ]

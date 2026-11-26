@@ -6,7 +6,7 @@ import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { handlers } from '@/mocks/handlers.ts'
-import { resetStore } from '@/mocks/store.ts'
+import { readUsers, resetStore } from '@/mocks/store.ts'
 import { routeTree } from '@/routeTree.gen.ts'
 import { parseCatalogLocation, stringifyCatalogLocation } from '@/features/catalog/catalog-search.ts'
 
@@ -53,6 +53,7 @@ describe('detalhe da peça', () => {
   afterEach(async () => {
     server.resetHandlers()
     resetStore()
+    sessionStorage.clear()
     await act(async () => {
       for (const view of mounted) view.root.unmount()
     })
@@ -87,6 +88,7 @@ describe('detalhe da peça', () => {
       expect(missing.container.textContent).toContain('NFT não encontrado.')
     })
     expect(missing.container.textContent).not.toContain('Não foi possível carregar a peça.')
+    expect(missing.container.textContent).not.toContain('Incluir no carrinho')
     expect(missing.container.querySelector('header')).not.toBeNull()
 
     server.use(http.get('/api/nfts/:nftId', () => HttpResponse.error()))
@@ -112,6 +114,7 @@ describe('detalhe da peça', () => {
     const view = await mount('/nfts/neon-vessel-552')
     mounted.push(view)
     expect(view.container.textContent).toContain('Carregando')
+    expect(view.container.textContent).not.toContain('Incluir no carrinho')
     expect(view.container.querySelector('header')).not.toBeNull()
     expect(view.container.textContent).not.toContain('Neon Vessel #552')
     release()
@@ -160,4 +163,59 @@ describe('detalhe da peça', () => {
     expect(view.router.state.location.pathname).toBe('/')
     expect(view.router.state.location.href).not.toContain('q=')
   })
+
+  it('inclui no rascunho e soma de novo sem aviso de sucesso', async () => {
+    const view = await mount('/nfts/emerald-ape-042')
+    mounted.push(view)
+    await vi.waitFor(() => {
+      expect(buttonNamed(view.container, 'Incluir no carrinho')).toBeTruthy()
+    })
+    await click(buttonNamed(view.container, 'Incluir no carrinho'))
+    await vi.waitFor(() => {
+      expect(cartBadge(view.container)).toBe('1')
+    })
+    expect(view.router.state.location.pathname).toBe('/nfts/emerald-ape-042')
+    expect(view.container.textContent?.toLowerCase()).not.toContain('sucesso')
+
+    await click(buttonNamed(view.container, 'Incluir no carrinho'))
+    await vi.waitFor(() => {
+      expect(cartBadge(view.container)).toBe('2')
+    })
+  })
+
+  it('mantém a quantidade quando a loja recusa incluir', async () => {
+    const entered = await fetch('/api/sessao', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: 'ada@kurio.test', password: 'kurio' }),
+    })
+    expect(entered.status).toBe(200)
+    server.use(http.post('/api/carrinho/itens', () => HttpResponse.error()))
+    const view = await mount('/nfts/emerald-ape-042')
+    mounted.push(view)
+    await vi.waitFor(() => {
+      expect(buttonNamed(view.container, 'Incluir no carrinho')).toBeTruthy()
+    })
+    await click(buttonNamed(view.container, 'Incluir no carrinho'))
+    await vi.waitFor(() => {
+      expect(view.container.textContent).toContain('Não foi possível atualizar o carrinho.')
+    })
+    expect(readUsers()[0]?.cart).toEqual([{ nftId: 'sage-nomad-009', quantity: 1 }])
+  })
 })
+
+function buttonNamed(container: ParentNode, name: string) {
+  const found = [...container.querySelectorAll('button')].find((item) => item.textContent?.trim() === name)
+  if (!found) throw new Error(`Botão ausente: ${name}`)
+  return found
+}
+
+function cartBadge(container: ParentNode) {
+  return container.querySelector('header a[aria-label="Carrinho"] span')?.textContent
+}
+
+async function click(element: HTMLElement) {
+  await act(async () => {
+    element.click()
+  })
+}

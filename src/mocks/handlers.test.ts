@@ -190,4 +190,149 @@ describe('loja simulada', () => {
 
     await expect(fetch('/api/desconhecido')).rejects.toThrow()
   })
+
+  it('separa o carrinho da Ada e do Bruno e cota pela regra', async () => {
+    await enter('ada@kurio.test')
+    expect(await (await fetch('/api/carrinho')).json()).toEqual({
+      lines: [
+        {
+          nftId: 'sage-nomad-009',
+          name: 'Sage Nomad #009',
+          image: '/home/sage.png',
+          unitPrice: '1.69',
+          quantity: 1,
+        },
+      ],
+    })
+    const adaQuote = await postJson('/api/cotacao', {
+      lines: [{ nftId: 'emerald-ape-042', quantity: 4 }],
+    })
+    expect(adaQuote.status).toBe(200)
+    expect(await adaQuote.json()).toMatchObject({
+      subtotal: '1.69',
+      discount: '0.00',
+      networkFee: '0.016',
+      total: '1.706',
+    })
+
+    expect((await fetch('/api/sessao', { method: 'DELETE' })).status).toBe(204)
+    await enter('bruno@kurio.test')
+    const bruno = await (await fetch('/api/carrinho')).json()
+    expect(lineIds(bruno)).toEqual(['cosmic-bloom-118'])
+    expect(lineQuantity(bruno, 'cosmic-bloom-118')).toBe(2)
+    expect(await (await postJson('/api/cotacao', {})).json()).toMatchObject({
+      subtotal: '2.58',
+      total: '2.596',
+    })
+    expect(lineIds(bruno)).not.toContain('sage-nomad-009')
+  })
+
+  it('soma na fusão, ignora peça de fora e a conta nova nasce vazia', async () => {
+    await enter('ada@kurio.test')
+    const merged = await postJson('/api/carrinho/fusao', {
+      lines: [
+        { nftId: 'sage-nomad-009', quantity: 2 },
+        { nftId: 'emerald-ape-042', quantity: 1 },
+      ],
+    })
+    expect(merged.status).toBe(200)
+    expect(lineIds(await merged.json())).toEqual(['sage-nomad-009', 'emerald-ape-042'])
+    expect(lineQuantity(await (await fetch('/api/carrinho')).json(), 'sage-nomad-009')).toBe(3)
+    expect(await (await postJson('/api/cotacao', {})).json()).toMatchObject({
+      subtotal: '6.26',
+      total: '6.276',
+    })
+
+    resetStore()
+    await enter('ada@kurio.test')
+    await postJson('/api/carrinho/fusao', {
+      lines: [
+        { nftId: 'fora-do-catalogo', quantity: 4 },
+        { nftId: 'golden-signal-160', quantity: 1 },
+      ],
+    })
+    const ignored = await (await fetch('/api/carrinho')).json()
+    expect(lineIds(ignored)).toEqual(['sage-nomad-009', 'golden-signal-160'])
+    expect(await (await postJson('/api/cotacao', {})).json()).toMatchObject({
+      subtotal: '2.08',
+      total: '2.096',
+    })
+
+    resetStore()
+    const created = await postJson('/api/cadastro', {
+      name: 'Lia',
+      email: 'lia@kurio.test',
+      password: 'kurio',
+      confirmPassword: 'kurio',
+    })
+    expect(created.status).toBe(200)
+    expect(await (await fetch('/api/carrinho')).json()).toEqual({ lines: [] })
+    expect(await (await postJson('/api/cotacao', {})).json()).toMatchObject({
+      subtotal: '0.00',
+      networkFee: '0.00',
+      total: '0.00',
+    })
+    await postJson('/api/carrinho/fusao', { lines: [{ nftId: 'violet-nomad-314', quantity: 1 }] })
+    expect(lineIds(await (await fetch('/api/carrinho')).json())).toEqual(['violet-nomad-314'])
+    expect(await (await postJson('/api/cotacao', {})).json()).toMatchObject({
+      subtotal: '1.39',
+      total: '1.406',
+    })
+  })
+
+  it('o recomeço devolve o carrinho da semente e o visitante não grava linha', async () => {
+    const denied = await fetch('/api/carrinho')
+    expect(denied.status).toBe(401)
+    const guest = await postJson('/api/cotacao', { lines: [{ nftId: 'emerald-ape-042', quantity: 1 }] })
+    expect(await guest.json()).toMatchObject({ subtotal: '1.19', networkFee: '0.016', total: '1.206' })
+    expect(readUsers()[0]?.cart).toEqual([{ nftId: 'sage-nomad-009', quantity: 1 }])
+
+    await enter('ada@kurio.test')
+    await postJson('/api/carrinho/itens', { nftId: 'emerald-ape-042' })
+    expect((await fetch('/api/dev/reset', { method: 'POST' })).status).toBe(204)
+    expect(await fetch('/api/carrinho')).toMatchObject({ status: 401 })
+    await enter('ada@kurio.test')
+    expect(await (await fetch('/api/carrinho')).json()).toEqual({
+      lines: [
+        {
+          nftId: 'sage-nomad-009',
+          name: 'Sage Nomad #009',
+          image: '/home/sage.png',
+          unitPrice: '1.69',
+          quantity: 1,
+        },
+      ],
+    })
+    await fetch('/api/sessao', { method: 'DELETE' })
+    await enter('bruno@kurio.test')
+    expect(lineQuantity(await (await fetch('/api/carrinho')).json(), 'cosmic-bloom-118')).toBe(2)
+  })
 })
+
+async function postJson(path: string, body: unknown) {
+  return fetch(path, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+}
+
+async function enter(email: string) {
+  const response = await postJson('/api/sessao', { email, password: 'kurio' })
+  expect(response.status).toBe(200)
+}
+
+function lineIds(body: unknown) {
+  if (!isRecord(body) || !Array.isArray(body.lines)) throw new Error('carrinho inválido')
+  return body.lines.map((line) => {
+    if (!isRecord(line) || typeof line.nftId !== 'string') throw new Error('linha inválida')
+    return line.nftId
+  })
+}
+
+function lineQuantity(body: unknown, nftId: string) {
+  if (!isRecord(body) || !Array.isArray(body.lines)) throw new Error('carrinho inválido')
+  const line = body.lines.find((item) => isRecord(item) && item.nftId === nftId)
+  if (!isRecord(line) || typeof line.quantity !== 'number') throw new Error('quantidade ausente')
+  return line.quantity
+}

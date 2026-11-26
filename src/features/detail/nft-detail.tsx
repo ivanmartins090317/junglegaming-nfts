@@ -1,5 +1,7 @@
 import { Link, useSearch } from '@tanstack/react-router'
+import { Button } from '@/components/ui/button.tsx'
 import { catalogSearchParams, normalizeCatalogQuery } from '@/features/catalog/catalog-search.ts'
+import { useCartMutations } from '@/features/cart/use-cart-mutations.ts'
 import { NftNotFoundError } from '@/lib/api/nfts.ts'
 import { useNftQuery } from '@/lib/query/nfts.ts'
 import type { Nft } from '@/lib/contracts/nft.ts'
@@ -64,6 +66,19 @@ function NftDetailBody({ nft }: { nft: Nft }) {
           </span>
         ) : null}
       </p>
+      <IncludeButton nftId={nft.id} />
+    </div>
+  )
+}
+
+function IncludeButton({ nftId }: { nftId: string }) {
+  const cart = useCartMutations()
+  return (
+    <div className="mt-4">
+      <Button type="button" className="w-auto px-4 font-bold" onClick={() => void cart.addOne(nftId)}>
+        Incluir no carrinho
+      </Button>
+      {cart.message ? <p className="m-0 mt-2 text-[14px] text-foreground">{cart.message}</p> : null}
     </div>
   )
 }

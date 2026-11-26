@@ -8,6 +8,7 @@ import { catalogSearchParams, readCatalogQuery } from '@/features/catalog/catalo
 import { entrySearch, hrefWithConta, isDesktopEntry } from '@/features/session/entry-location.ts'
 import { useSessionQuery } from '@/lib/query/session.ts'
 import { useEndSession } from '@/features/session/use-end-session.ts'
+import { useCartBadgeCount } from '@/features/cart/use-cart-badge.ts'
 
 const navItemClass =
   'relative inline-flex h-full items-center bg-transparent p-0 text-left font-mono text-[16px] font-normal leading-none text-foreground no-underline'
@@ -27,6 +28,7 @@ export function SiteHeader() {
   const q = readCatalogQuery(useSearch({ strict: false }))
   const session = useSessionQuery()
   const endSession = useEndSession()
+  const cartCount = useCartBadgeCount()
   const homeIsActive = pathname === '/'
   const [desktopSearchOpen, setDesktopSearchOpen] = useState(false)
   const replaceRef = useRef(pathname === '/')
@@ -123,7 +125,7 @@ export function SiteHeader() {
             className="relative inline-flex items-center text-foreground no-underline"
           >
             <span className="absolute -right-2 -top-2 inline-flex h-[16px] min-w-[16px] items-center justify-center rounded-full bg-primary text-[10px] font-bold leading-none text-ink">
-              5
+              {cartCount}
             </span>
             <CartIcon />
             <span className="sr-only">Carrinho</span>
