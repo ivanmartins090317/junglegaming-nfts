@@ -9,9 +9,9 @@ interface AppShellProps {
 export function AppShell({ children }: AppShellProps) {
   return (
     <div className="min-h-screen bg-ink text-foreground">
-      <div className="px-[28px] pb-28 md:pb-16 min-[1440px]:px-[120px]">
+      <div className="px-6 pt-10 pb-28 md:px-7 desktop:px-[120px] desktop:pt-6 desktop:pb-6">
         <SiteHeader />
-        <main className="mt-8 md:mt-10 min-[1440px]:mt-12">{children}</main>
+        <main className="mt-4 desktop:mt-8">{children}</main>
       </div>
       <MobileTabs />
     </div>

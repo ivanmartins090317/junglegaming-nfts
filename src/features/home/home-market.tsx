@@ -16,9 +16,9 @@ export function HomeMarket() {
   const [page, setPage] = useState(1)
 
   return (
-    <section id="grade" className="scroll-mt-8 mt-10 lg:mt-16">
-      <div className="lg:grid lg:grid-cols-[240px_minmax(0,1fr)] lg:items-start lg:gap-10">
-        <aside className="hidden lg:block">
+    <section id="grade" className="mt-4 scroll-mt-8 desktop:mt-24">
+      <div className="desktop:grid desktop:grid-cols-[240px_minmax(0,1fr)] desktop:items-start desktop:gap-12">
+        <aside className="hidden desktop:block">
           <FilterGroup title="Coleções">
             {homeCollections.map(([name, count]) => (
               <FilterRow
@@ -68,8 +68,8 @@ export function HomeMarket() {
           </div>
         </aside>
         <div>
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <div className="flex flex-wrap gap-6" role="tablist" aria-label="Recorte do catálogo">
+          <div className="flex flex-col gap-4 desktop:flex-row desktop:items-end desktop:justify-between">
+            <div className="flex flex-nowrap gap-3 desktop:gap-6" role="tablist" aria-label="Recorte do catálogo">
               {homeTabs.map((item) => (
                 <button
                   key={item}
@@ -79,26 +79,26 @@ export function HomeMarket() {
                   onClick={() => setTab(item)}
                   className={
                     tab === item
-                      ? 'border-b-[3px] border-primary bg-transparent p-0 pb-1 font-mono text-[16px] font-bold text-text-accent'
-                      : 'border-b-[3px] border-transparent bg-transparent p-0 pb-1 font-mono text-[16px] font-normal text-foreground'
+                      ? 'border-b-[3px] border-primary bg-transparent p-0 pb-1 font-mono text-[14px] font-bold whitespace-nowrap text-text-accent desktop:text-[16px]'
+                      : 'border-b-[3px] border-transparent bg-transparent p-0 pb-1 font-mono text-[14px] font-normal whitespace-nowrap text-foreground desktop:text-[16px]'
                   }
                 >
                   {item}
                 </button>
               ))}
             </div>
-            <p className="m-0 hidden text-[14px] leading-none text-text-secondary lg:block">
+            <p className="m-0 hidden text-[14px] leading-none text-text-secondary desktop:block">
               Ordenar por: <span className="text-foreground">Listados recentemente</span>
             </p>
           </div>
-          <ul className="mt-6 grid list-none grid-cols-2 gap-4 p-0 md:max-w-[440px] md:grid-cols-1 lg:max-w-none lg:grid-cols-3 lg:gap-6">
+          <ul className="mt-6 grid list-none grid-cols-2 gap-4 p-0 desktop:grid-cols-3 desktop:gap-6">
             {homeNfts.map((nft) => (
               <li key={nft.id}>
                 <NftCard nft={nft} />
               </li>
             ))}
           </ul>
-          <div className="mt-8 hidden justify-end gap-2 lg:flex">
+          <div className="mt-8 hidden justify-end gap-2 desktop:flex">
             {[1, 2, 3, 4].map((number) => (
               <button
                 key={number}
@@ -175,7 +175,7 @@ function NftCard({ nft }: { nft: HomeNft }) {
           className="aspect-square w-full rounded-[15px] object-cover"
         />
         {nft.rare ? (
-          <span className="absolute top-3 left-3 rounded-[5px] bg-primary px-2 py-1 text-[12px] font-bold leading-none text-ink md:hidden">
+          <span className="absolute top-3 left-3 rounded-[5px] bg-primary px-2 py-1 text-[12px] font-bold leading-none text-ink desktop:hidden">
             RARO
           </span>
         ) : null}
@@ -184,7 +184,7 @@ function NftCard({ nft }: { nft: HomeNft }) {
           aria-pressed={saved}
           aria-label={saved ? `Remover ${nft.name} dos favoritos` : `Salvar ${nft.name}`}
           onClick={() => setSaved((current) => !current)}
-          className="absolute top-3 right-3 inline-flex size-8 items-center justify-center rounded-full border border-primary bg-ink text-primary md:hidden"
+          className="absolute top-3 right-3 inline-flex size-8 items-center justify-center rounded-full border border-primary bg-ink text-primary desktop:hidden"
         >
           <HeartIcon filled={saved} />
         </button>

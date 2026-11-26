@@ -9,7 +9,7 @@ export function HomeHero() {
 
   return (
     <>
-      <section className="hidden gap-8 md:grid md:grid-cols-1 lg:items-center lg:gap-12 lg:grid-cols-[minmax(0,1fr)_460px]">
+      <section className="relative hidden h-[450px] items-center pl-10 desktop:grid desktop:grid-cols-[minmax(0,1fr)_450px]">
         <div>
           <p className="m-0 text-[14px] leading-none text-text-secondary">Bem-vindo à Kurio</p>
           <h1 className="m-0 mt-4 text-[40px] font-bold leading-[46px] text-foreground">
@@ -30,12 +30,16 @@ export function HomeHero() {
           alt=""
           width={450}
           height={450}
-          className="aspect-square w-full max-w-[450px] rounded-[15px] object-cover lg:h-[450px] lg:max-w-none"
+          className="h-[450px] w-[450px] rounded-[15px] object-cover"
         />
-        <HeroDots slide={slide} onSelect={setSlide} className="justify-center lg:col-span-2 lg:-mt-6" />
+        <HeroDots
+          slide={slide}
+          onSelect={setSlide}
+          className="absolute top-full left-1/2 mt-6 -translate-x-1/2 justify-center"
+        />
       </section>
 
-      <section className="rounded-[15px] bg-surface-card p-4 md:hidden">
+      <section className="rounded-[15px] bg-surface-card p-4 desktop:hidden">
         <div className="flex items-start gap-3">
           <div className="min-w-0 flex-1">
             <p className="m-0 text-[12px] leading-none text-text-secondary">Bem-vindo à Kurio</p>

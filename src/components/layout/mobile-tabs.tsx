@@ -13,7 +13,7 @@ export function MobileTabs() {
   return (
     <nav
       aria-label="Atalhos"
-      className="fixed inset-x-[28px] bottom-3 z-20 h-[64px] rounded-[15px] bg-surface-card md:hidden"
+      className="fixed inset-x-6 bottom-3 z-20 h-[64px] rounded-[15px] bg-surface-card md:inset-x-7 desktop:hidden"
     >
       <ul className="flex h-full items-end justify-between px-4 pb-2">
         <li>

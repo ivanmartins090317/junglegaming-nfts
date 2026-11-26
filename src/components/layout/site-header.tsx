@@ -27,11 +27,11 @@ export function SiteHeader() {
 
   return (
     <header className="w-full">
-      <div className="hidden min-h-[68px] flex-wrap items-center gap-6 border-b border-border pb-4 md:flex min-[1440px]:flex-nowrap min-[1440px]:gap-10">
+      <div className="hidden h-[45px] items-center justify-between border-b border-border desktop:flex">
         <span className="text-[14px] font-bold leading-none tracking-[0.1em] text-foreground">
           KURIO
         </span>
-        <nav className="flex flex-wrap items-center gap-10" aria-label="Principal">
+        <nav className="flex items-center gap-10" aria-label="Principal">
           <Link to="/" {...quietLink} className={homeIsActive ? navItemActiveClass : navItemClass}>
             Início
           </Link>
@@ -45,7 +45,7 @@ export function SiteHeader() {
             Aprenda
           </button>
         </nav>
-        <div className="ml-auto flex items-center gap-6">
+        <div className="flex items-center gap-7">
           <button type="button" aria-label="Busca" className="bg-transparent p-0 text-foreground">
             <SearchIcon />
           </button>
@@ -69,7 +69,7 @@ export function SiteHeader() {
           </Button>
         </div>
       </div>
-      <div className="flex items-center gap-3 pt-4 md:hidden">
+      <div className="flex items-center gap-3 desktop:hidden">
         <div className="relative min-w-0 flex-1">
           <SearchIcon className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-text-secondary" />
           <Input

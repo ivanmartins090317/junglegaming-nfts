@@ -6,7 +6,7 @@ import { homeArticles } from '@/features/home/home-data.ts'
 
 export function HomeLower() {
   return (
-    <div className="mt-16 hidden md:block">
+    <div className="mt-24 hidden desktop:block">
       <PromoRow />
       <Journal />
       <InfoBand />
@@ -17,7 +17,7 @@ export function HomeLower() {
 
 function PromoRow() {
   return (
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+    <div className="grid grid-cols-2 items-stretch gap-6">
       <Promo
         image="/home/emerald.png"
         title="Lançamentos gênesis de edição limitada"
@@ -34,8 +34,8 @@ function PromoRow() {
 
 function Promo({ image, title, body }: { image: string; title: string; body: string }) {
   return (
-    <article className="grid grid-cols-1 items-center gap-4 rounded-[15px] bg-surface-card p-4 lg:grid-cols-[220px_minmax(0,1fr)]">
-      <img src={image} alt="" width={220} height={220} className="h-[220px] w-full rounded-[15px] object-cover" />
+    <article className="grid h-[250px] grid-cols-[218px_minmax(0,1fr)] items-center gap-4 rounded-[15px] bg-surface-card p-4">
+      <img src={image} alt="" width={218} height={218} className="h-[218px] w-[218px] rounded-[15px] object-cover" />
       <div>
         <h2 className="m-0 text-[20px] font-bold leading-[26px] text-foreground">{title}</h2>
         <p className="m-0 mt-3 text-[14px] leading-[22px] text-text-secondary">{body}</p>
@@ -49,12 +49,12 @@ function Promo({ image, title, body }: { image: string; title: string; body: str
 
 function Journal() {
   return (
-    <section className="mt-16">
+    <section className="mt-24">
       <h2 className="m-0 text-center text-[28px] font-bold leading-none text-foreground">Diário da Cunhagem</h2>
       <p className="m-0 mt-3 text-center text-[14px] leading-[22px] text-text-secondary">
         Histórias, guias e insights para colecionadores sobre o universo da propriedade digital.
       </p>
-      <ul className="mt-8 grid list-none grid-cols-1 gap-5 p-0 lg:grid-cols-2 min-[1440px]:grid-cols-4">
+      <ul className="mt-8 grid list-none grid-cols-4 gap-5 p-0">
         {homeArticles.map((article) => (
           <li key={article.title}>
             <article className="h-full rounded-[15px] bg-surface-card p-3">
@@ -87,7 +87,7 @@ function InfoBand() {
   }
 
   return (
-    <section className="mt-16 grid grid-cols-1 gap-6 rounded-[15px] bg-surface-card p-6 lg:grid-cols-2 min-[1440px]:grid-cols-[1fr_1fr_1fr_280px]">
+    <section className="mt-24 grid grid-cols-[1fr_1fr_1fr_280px] gap-6 rounded-[15px] bg-surface-card p-6">
       <BandItem mark="W" title="Segurança da carteira">
         Proteja sua carteira e colecione arte digital verificada com confiança.
       </BandItem>
@@ -122,7 +122,7 @@ function InfoBand() {
 
 function BandItem({ mark, title, children }: { mark: string; title: string; children: ReactNode }) {
   return (
-    <div className="min-[1440px]:border-r min-[1440px]:border-border min-[1440px]:pr-4">
+    <div className="border-r border-border pr-4">
       <span className="inline-flex size-10 items-center justify-center rounded-full bg-primary text-[16px] font-bold text-ink">
         {mark}
       </span>
@@ -135,13 +135,13 @@ function BandItem({ mark, title, children }: { mark: string; title: string; chil
 function SiteFooter() {
   return (
     <footer className="mt-10">
-      <div className="grid grid-cols-1 gap-6 border-y border-border py-6 text-[14px] leading-[22px] text-text-secondary lg:grid-cols-2 min-[1440px]:grid-cols-4">
+      <div className="grid grid-cols-4 gap-6 border-y border-border py-6 text-[14px] leading-[22px] text-text-secondary">
         <p className="m-0 text-[14px] font-bold tracking-[0.1em] text-foreground">KURIO</p>
         <p className="m-0">Feito para colecionadores, criadores e cultura</p>
         <p className="m-0">contato@email.com</p>
         <p className="m-0">+55 11 4002 8922</p>
       </div>
-      <div className="grid grid-cols-1 gap-6 py-8 lg:grid-cols-2 min-[1440px]:grid-cols-4">
+      <div className="grid grid-cols-4 gap-6 py-8">
         <FooterColumn title="Meu perfil">
           <Link to="/perfil" className="text-text-secondary no-underline">
             Meu perfil

@@ -5,6 +5,7 @@
 | Data | Slug | Tipo | Status | Spec |
 | --- | --- | --- | --- | --- |
 | 2026-11-25 | tokens-casca-rotas | `feature` | `done` | [spec](2026-11-25-tokens-casca-rotas.md) |
+| 2026-11-26 | msw-usuarios-reset-catalogo | `feature` | `done` | [spec](2026-11-26-msw-usuarios-reset-catalogo.md) |
 
 Status: `draft`, `aprovada`, `em_implementacao`, `done`.
 

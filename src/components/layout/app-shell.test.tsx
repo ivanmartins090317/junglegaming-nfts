@@ -107,8 +107,8 @@ describe('casca e rotas vazias', () => {
     expect(view.container.textContent).not.toContain('Mock desligado')
     expect(view.container.querySelectorAll('nav')).toHaveLength(2)
 
-    const padded = view.container.querySelector('[class*="px-[28px]"]')
-    expect(padded?.className).toContain('min-[1440px]:px-[120px]')
+    const padded = view.container.querySelector('[class*="desktop:px-[120px]"]')
+    expect(padded?.className).toContain('desktop:px-[120px]')
     expect(padded?.querySelector('header')).not.toBeNull()
     expect(padded?.querySelector('main')).not.toBeNull()
   })

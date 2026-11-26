@@ -1,0 +1,55 @@
+export interface SeedCartLine {
+  nftId: string
+  quantity: number
+}
+
+export interface SeedOrderItem {
+  nftId: string
+  quantity: number
+}
+
+export interface SeedOrder {
+  id: string
+  item: SeedOrderItem
+  total: string
+  status: 'confirmado'
+}
+
+export interface SeedUser {
+  id: string
+  email: string
+  favorites: string[]
+  cart: SeedCartLine[]
+  orders: SeedOrder[]
+}
+
+export const usersSeed: SeedUser[] = [
+  {
+    id: 'usr-ada',
+    email: 'ada@kurio.test',
+    favorites: ['emerald-ape-042', 'neon-vessel-552'],
+    cart: [{ nftId: 'sage-nomad-009', quantity: 1 }],
+    orders: [
+      {
+        id: 'ped-ada-1',
+        item: { nftId: 'ivory-baron-088', quantity: 1 },
+        total: '1.79',
+        status: 'confirmado',
+      },
+    ],
+  },
+  {
+    id: 'usr-bruno',
+    email: 'bruno@kurio.test',
+    favorites: ['golden-beat-207'],
+    cart: [{ nftId: 'cosmic-bloom-118', quantity: 2 }],
+    orders: [
+      {
+        id: 'ped-bruno-1',
+        item: { nftId: 'golden-signal-160', quantity: 1 },
+        total: '0.39',
+        status: 'confirmado',
+      },
+    ],
+  },
+]
