@@ -4,7 +4,7 @@ import { HeartIcon } from '@/components/layout/chrome-icons.tsx'
 import {
   homeCollections,
   homeNetworks,
-  homeNfts,
+  homeGridNfts,
   homeTabs,
   type HomeNft,
 } from '@/features/home/home-data.ts'
@@ -101,7 +101,7 @@ export function HomeMarket() {
             </p>
           </div>
           <ul className="mt-4 grid list-none grid-cols-2 gap-x-4 gap-y-[21px] p-0 pb-8 desktop:mt-5 desktop:grid-cols-3 desktop:gap-x-8 desktop:gap-y-[60px] desktop:pb-0">
-            {homeNfts.map((nft, index) => (
+            {homeGridNfts.map((nft, index) => (
               <li key={nft.id} className="even:translate-y-8 desktop:even:translate-y-0">
                 <NftCard nft={nft} lowered={index % 2 === 1} />
               </li>
@@ -175,13 +175,17 @@ function mobileCardPadding(nft: HomeNft, lowered: boolean) {
   return lowered ? 'pt-5 pb-3' : 'pt-3 pb-5'
 }
 
+// Referência desktop: no cartão sem texto a imagem desce 8px e o fundo termina na mesma altura dos vizinhos.
+function desktopCardPadding(nft: HomeNft) {
+  return nft.hideDetails ? 'desktop:pt-10 desktop:pb-2' : 'desktop:pt-8 desktop:pb-4'
+}
+
 function NftCard({ nft, lowered = false }: { nft: HomeNft; lowered?: boolean }) {
   const [saved, setSaved] = useState(false)
-
   return (
     <article>
       <div
-        className={`rounded-[20px] bg-surface-card px-1 ${mobileCardPadding(nft, lowered)} desktop:rounded-[15px] desktop:bg-surface-card desktop:px-1 desktop:pt-8 desktop:pb-4`}
+        className={`rounded-[20px] bg-surface-card px-1 ${mobileCardPadding(nft, lowered)} desktop:rounded-[15px] desktop:bg-surface-card desktop:px-1 ${desktopCardPadding(nft)}`}
       >
         <div className="relative">
           <img
@@ -207,10 +211,18 @@ function NftCard({ nft, lowered = false }: { nft: HomeNft; lowered?: boolean }) 
           </button>
         </div>
       </div>
-      <h3 className="m-0 mt-2.5 px-2 text-[15px] font-normal leading-[18px] text-foreground desktop:mt-4 desktop:px-1 desktop:text-[14px] desktop:leading-none">
+      <h3
+        className={`m-0 mt-2.5 px-2 text-[15px] font-normal leading-[18px] text-foreground desktop:text-[14px] desktop:leading-none${
+          nft.hideDetails ? ' desktop:sr-only' : ' desktop:mt-4 desktop:px-1'
+        }`}
+      >
         {nft.name}
       </h3>
-      <p className="m-0 flex items-center gap-2 px-2 text-[16px] font-bold leading-5 text-primary desktop:mt-3.5 desktop:px-1 desktop:leading-none">
+      <p
+        className={`m-0 flex items-center gap-2 px-2 text-[16px] font-bold leading-5 text-primary desktop:leading-none${
+          nft.hideDetails ? ' desktop:sr-only' : ' desktop:mt-3.5 desktop:px-1'
+        }`}
+      >
         {nft.price} ETH
         {nft.compareAt ? (
           <span className="text-[14px] font-normal text-text-secondary line-through">
