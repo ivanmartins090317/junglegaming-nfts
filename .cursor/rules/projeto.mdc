@@ -1,0 +1,60 @@
+---
+description: Kurio, prova Jungle. Escopo, stack e visual medido.
+alwaysApply: true
+---
+
+# Kurio
+
+Idioma: sempre responda em português (pt-BR). Nunca use o travessão "—" em copy nem em nota do repo.
+
+Marketplace de NFTs. Marca visível: Kurio. Prova frontend da Jungle. SPA Vite, dados simulados, sem backend de produção.
+
+## Docs
+
+- Constituição: `AGENTS.md`
+- Fluxo do agente: `.cursor/rules/ai-native-workflow.mdc`
+- Specs: `docs/specs/`
+- Planos: `docs/plans/`
+- Entregas: `docs/implementation/`
+- Como rodar e homologar: `docs/manual-dev/`
+- O que falta: `docs/state/PENDENCIAS.md`
+- Prompts: `.cursor/workflow/prompts/`
+
+## Stack fechada
+
+Vite, React, TypeScript, TanStack Router por arquivo, TanStack Query, Axios, Socket.IO no cliente (websocket), Tailwind 4, shadcn, MSW com `@mswjs/socket.io-binding`, Playwright, Lighthouse. pnpm.
+
+O esqueleto ainda não existe. Não adicionar dependência, `package.json` nem tela sem pedido.
+
+## Visual medido
+
+Roboto Mono (400, 500, 700). Sem segunda família. Sem `box-shadow`. Sem hex fora desta lista:
+
+- `color/ink` `#140D0A`
+- `color/foreground` `#F5F1EB`
+- `color/primary` `#D28A4C`
+- `color/text-accent` `#E89B55`
+- `color/text-secondary` `#CFB28C`
+- `color/secondary` `#B39463`
+- `color/text-coral` `#F0805F`
+- `color/surface-card` `#241612`
+- `color/border` `#3F2319`
+
+Raio 6 no botão de página. Raio 5 no modal, no social e no campo. Imagem do card com raio 15. O raio 40 é só o frame de telefone. Heading não tem número: não inventar tamanho.
+
+Desktop 1440, padding horizontal 120. Mobile na composição do frame 414. 390 usa essa composição. 768 é uma coluna, padding horizontal 28.
+
+## Comportamento que não se improvisa
+
+- ETH é string decimal. Quantidade é inteiro. Total de fechar vem da cotação.
+- Favorito pode ser otimista, com rollback. Pedido espera a simulação.
+- A mesma chave de idempotência com o mesmo corpo devolve o mesmo pedido. Corpo diferente conflita.
+- Cache privado inclui o usuário. Logout limpa esse cache e a subscription.
+- Evento com versão igual ou menor não regride estado. `confirmado` e `recusado` são terminais.
+- Link desenhado fora do escopo (Blog, Criadores, Aprenda, Activity, Watchlist, Offers, Downloads, Support) não navega e não mostra sucesso.
+
+## Teste e entrega
+
+Os 12 fluxos do enunciado viram Playwright a partir do mapa da skill `C:\projetos\manual-report`. A skill roda de novo antes da entrega. O HTML do mapa não entra neste Git.
+
+Sentry fica fora do `package.json`. A limitação se registra no `ARCHITECTURE.md` quando ele existir.

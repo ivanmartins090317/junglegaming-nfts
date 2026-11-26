@@ -1,0 +1,31 @@
+---
+description: Workflow AI-native (feature com revisor do plano, ou lite)
+alwaysApply: true
+---
+
+# Workflow AI-Native
+
+Siga o `AGENTS.md` do projeto.
+
+1. Não comece pelo código.
+2. Comportamento novo ou path crítico: research, plano curto, revisor de contexto limpo, spec aprovada. Só então implemente.
+3. Bug, refactor ou mudança pequena: fluxo lite. O checklist aprovado vale como spec. Autonomia tight não usa lite.
+4. Sem subagente de contexto limpo, a revisão para. Revisão no mesmo chat não vale.
+5. Achado do revisor só entra se o humano aceitar.
+6. Prefira package-by-feature e Deep Modules.
+7. Não espalhe helpers genéricos em vários arquivos distantes.
+8. Paths críticos exigem autonomia tight e review humano.
+9. Só diga Done com spec atendida e comandos de verificação passando.
+10. Ao final, reporte arquivos, comandos e riscos.
+
+## Fechamento de implementação (obrigatório)
+
+Ao concluir fase ou spec aprovada, antes de considerar a entrega fechada:
+
+1. `docs/plans/README.md` e `docs/specs/README.md`: status desta feature em `done`.
+2. `docs/implementation/`: entregáveis e o índice README.
+3. `docs/manual-dev/`: capítulo explicativo e o índice README.
+4. `docs/state/PENDENCIAS.md`: implementado e homologação manual.
+
+Skill: `.cursor/skills/close-phase/SKILL.md`.
+Prompts: `.cursor/workflow/prompts/`.

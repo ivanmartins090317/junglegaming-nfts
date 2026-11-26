@@ -1,0 +1,10 @@
+## Fechamento de implementação (obrigatório)
+
+Ao concluir fase ou spec aprovada, **antes** de considerar entrega fechada:
+
+1. **`docs/plans/README.md`** e **`docs/specs/README.md`** — status desta feature em `done`
+2. **`docs/implementation/`** — registrar entregáveis + índice README
+3. **`docs/manual-dev/`** — capítulo explicativo + índice README
+4. **`docs/state/PENDENCIAS.md`** — implementado vs homologação manual
+
+Skill: `.cursor/skills/close-phase/SKILL.md`
