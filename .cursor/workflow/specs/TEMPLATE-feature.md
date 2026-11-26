@@ -10,16 +10,27 @@
 
 Em 1–3 frases: qual resultado de negócio essa feature entrega.
 
-## 2. Fora de escopo
+## 2. Tela
 
-Liste o que NÃO entra agora.
+Contrato de UI do Claude Sonnet 5.5 (`claude-sonnet-5-5-high`), colado na íntegra. O modelo que escreve a spec não reescreve arranjo, cópia nem composição.
 
-## 3. Atores e pré-condições
+PNG:
+
+- `research/figma/desktop-<tela>.png`
+- `research/figma/mobile-<tela>.png`
+
+<colar aqui a resposta do subagente>
+
+## 3. Fora de escopo
+
+Liste o que NÃO entra agora. Inclua o que a imagem não mostra.
+
+## 4. Atores e pré-condições
 
 - Quem usa:
 - O que precisa existir antes:
 
-## 4. Comportamento esperado (cenários)
+## 5. Comportamento esperado (cenários)
 
 Escreva em linguagem de domínio. Evite leakage técnico (`POST /api/...`, nome de tabela, nome de classe).
 
@@ -41,20 +52,21 @@ Escreva em linguagem de domínio. Evite leakage técnico (`POST /api/...`, nome 
 - Quando:
 - Então:
 
-## 5. Regras de negócio
+## 6. Regras de negócio
 
 - Regra 1:
 - Regra 2:
 
-## 6. Critérios de Done desta feature
+## 7. Critérios de Done desta feature
 
+- [ ] A tela entregue segue a seção Tela (os PNG de `research/figma/`)
 - [ ] Todos os cenários acima passam
 - [ ] Testes unitários da feature passam
 - [ ] `typecheck` passa
 - [ ] `lint` passa
 - [ ] Nenhuma mudança fora do escopo sem aprovação
 
-## 7. Escopo de arquivos permitido
+## 8. Escopo de arquivos permitido
 
 - Pode editar:
   - `src/features/<feature>/**`
@@ -62,11 +74,11 @@ Escreva em linguagem de domínio. Evite leakage técnico (`POST /api/...`, nome 
   - `src/domain/core/**`
   - auth / billing / schema / .env
 
-## 8. Riscos e dúvidas abertas
+## 9. Riscos e dúvidas abertas
 
 - 
 
-## 9. Aprovação humana
+## 10. Aprovação humana
 
 - Aprovado por:
 - Data:

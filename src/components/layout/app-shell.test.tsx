@@ -1,12 +1,18 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClientProvider } from '@tanstack/react-query'
 import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createMemoryHistory, createRouter, RouterProvider } from '@tanstack/react-router'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { routeTree } from '@/routeTree.gen.ts'
 import { parseCatalogLocation, stringifyCatalogLocation } from '@/features/catalog/catalog-search.ts'
+import { createAppQueryClient, setAppQueryClient } from '@/lib/query/session.ts'
 
-async function mount(path: string) {
+function setViewport(width: number) {
+  Object.defineProperty(window, 'innerWidth', { configurable: true, value: width })
+}
+
+async function mount(path: string, width = 1024) {
+  setViewport(width)
   const history = createMemoryHistory({ initialEntries: [path] })
   const router = createRouter({
     routeTree,
@@ -14,9 +20,8 @@ async function mount(path: string) {
     parseSearch: parseCatalogLocation,
     stringifySearch: stringifyCatalogLocation,
   })
-  const queryClient = new QueryClient({
-    defaultOptions: { queries: { retry: false } },
-  })
+  const queryClient = createAppQueryClient()
+  setAppQueryClient(queryClient)
   await router.load()
   const container = document.createElement('div')
   document.body.append(container)
@@ -56,7 +61,7 @@ describe('casca e rotas vazias', () => {
   })
 
   it('abre o início com a casca medida e sem o estado do mock', async () => {
-    const view = await mount('/')
+    const view = await mount('/', 1440)
     mounted.push(view)
     const header = view.container.querySelector('header')
     const headerChildren = [...(header?.children ?? [])]
@@ -106,15 +111,24 @@ describe('casca e rotas vazias', () => {
     expect(badge?.className).toContain('min-w-[16px]')
     expect(badge?.className).toContain('bg-primary')
 
-    const signIn = [...view.container.querySelectorAll('a')].find(
-      (anchor) => anchor.textContent?.trim() === 'Entrar',
+    const signIn = [...view.container.querySelectorAll('button')].find(
+      (button) => button.textContent?.trim() === 'Entrar',
     )
-    expect(signIn?.getAttribute('href')).toBe('/entrar')
+    expect(signIn?.tagName).toBe('BUTTON')
+    expect(signIn?.getAttribute('href')).toBeNull()
     expect(signIn?.className).toContain('h-[35px]')
     expect(signIn?.className).toContain('w-auto')
     expect(signIn?.className).toContain('bg-primary')
     expect(signIn?.className).toContain('text-ink')
     expect(signIn?.className).toContain('font-medium')
+
+    await act(async () => {
+      signIn?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+    })
+    expect(view.router.state.location.pathname).toBe('/')
+    expect(view.router.state.location.href).toContain('conta=entrar')
+    expect(view.container.querySelector('[role="dialog"]')).not.toBeNull()
+    expect(view.container.textContent).toContain('Entre para gerenciar sua carteira, coleção e perfil de')
 
     await vi.waitFor(() => {
       expect(view.container.textContent).toContain('Não foi possível carregar o catálogo.')
@@ -131,14 +145,7 @@ describe('casca e rotas vazias', () => {
     expect(padded?.querySelector('main')).not.toBeNull()
   })
 
-  it.each([
-    ['/carrinho', 'Carrinho'],
-    ['/pagamento', 'Revisão e envio'],
-    ['/entrar', 'Entrar'],
-    ['/cadastro', 'Cadastro'],
-    ['/perfil', 'Perfil'],
-    ['/carteiras', 'Carteiras'],
-  ])('mostra só o nome em %s', async (path, title) => {
+  it.each([['/carrinho', 'Carrinho']])('mostra só o nome em %s', async (path, title) => {
     const view = await mount(path)
     mounted.push(view)
     expect(miolo(view.container)?.textContent).toBe(title)
@@ -155,9 +162,12 @@ describe('casca e rotas vazias', () => {
     expect(nft.container.textContent).not.toContain('NFT não encontrado.')
     expect(nft.container.querySelector('header')).not.toBeNull()
 
-    const order = await mount('/pedidos/ped-9')
+    const order = await mount('/pedidos/ped-9', 390)
     mounted.push(order)
-    expect(miolo(order.container)?.textContent).toBe('Confirmação ped-9')
+    expect(order.router.state.location.pathname).toBe('/entrar')
+    expect(order.router.state.location.href).toContain('retorno=')
+    expect(order.container.querySelector('header')).toBeNull()
+    expect(order.container.textContent).not.toContain('Confirmação ped-9')
   })
 
   it('explica o endereço desconhecido e volta ao início', async () => {
@@ -188,7 +198,7 @@ describe('casca e rotas vazias', () => {
   })
 
   it('navega pelo topo sem ativar Mercado e sem sair de Criadores ou Aprenda', async () => {
-    const view = await mount('/perfil')
+    const view = await mount('/carrinho', 1440)
     mounted.push(view)
 
     await act(async () => {
@@ -228,12 +238,14 @@ describe('casca e rotas vazias', () => {
     ).toBe('5')
 
     await act(async () => {
-      const signIn = [...view.container.querySelectorAll('a')].find(
-        (anchor) => anchor.textContent?.trim() === 'Entrar',
+      const signIn = [...view.container.querySelectorAll('button')].find(
+        (button) => button.textContent?.trim() === 'Entrar',
       )
       signIn?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
     })
-    expect(view.router.state.location.pathname).toBe('/entrar')
+    expect(view.router.state.location.pathname).toBe('/carrinho')
+    expect(view.router.state.location.href).toContain('conta=entrar')
+    expect(view.container.querySelector('[role="dialog"]')).not.toBeNull()
 
     const beforeBrand = view.router.state.location.pathname
     await act(async () => {

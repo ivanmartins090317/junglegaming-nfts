@@ -17,7 +17,9 @@ export interface SeedOrder {
 
 export interface SeedUser {
   id: string
+  name: string
   email: string
+  password: string
   favorites: string[]
   cart: SeedCartLine[]
   orders: SeedOrder[]
@@ -26,7 +28,9 @@ export interface SeedUser {
 export const usersSeed: SeedUser[] = [
   {
     id: 'usr-ada',
+    name: 'Ada',
     email: 'ada@kurio.test',
+    password: 'kurio',
     favorites: ['emerald-ape-042', 'neon-vessel-552'],
     cart: [{ nftId: 'sage-nomad-009', quantity: 1 }],
     orders: [
@@ -40,7 +44,9 @@ export const usersSeed: SeedUser[] = [
   },
   {
     id: 'usr-bruno',
+    name: 'Bruno',
     email: 'bruno@kurio.test',
+    password: 'kurio',
     favorites: ['golden-beat-207'],
     cart: [{ nftId: 'cosmic-bloom-118', quantity: 2 }],
     orders: [

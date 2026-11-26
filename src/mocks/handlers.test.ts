@@ -38,7 +38,9 @@ const happyCatalog = [
 const happyUsers = [
   {
     id: 'usr-ada',
+    name: 'Ada',
     email: 'ada@kurio.test',
+    password: 'kurio',
     favorites: ['emerald-ape-042', 'neon-vessel-552'],
     cart: [{ nftId: 'sage-nomad-009', quantity: 1 }],
     orders: [
@@ -52,7 +54,9 @@ const happyUsers = [
   },
   {
     id: 'usr-bruno',
+    name: 'Bruno',
     email: 'bruno@kurio.test',
+    password: 'kurio',
     favorites: ['golden-beat-207'],
     cart: [{ nftId: 'cosmic-bloom-118', quantity: 2 }],
     orders: [
@@ -184,6 +188,6 @@ describe('loja simulada', () => {
     expect(workerState.handlers).toHaveLength(handlers.length)
     for (const handler of handlers) expect(workerState.handlers).toContain(handler)
 
-    await expect(fetch('/api/sessao')).rejects.toThrow()
+    await expect(fetch('/api/desconhecido')).rejects.toThrow()
   })
 })

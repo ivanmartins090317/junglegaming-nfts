@@ -14,6 +14,7 @@ Tarefa:
 2. Abra um subagente de contexto limpo. Entregue somente:
    - o texto desse arquivo
    - os caminhos de arquivo que o plano cita, para ele ler o código
+   - os PNG de research/figma que o plano cita (desktop-<tela>.png e mobile-<tela>.png), para ele ler a imagem
    Não passe o histórico desta conversa nem a sua opinião sobre o plano.
 3. Se este ambiente não abrir subagente de contexto limpo, pare e me avise. Revisão no mesmo chat não vale.
 4. O subagente só lê. Quem grava o relatório é você, em:
@@ -24,6 +25,7 @@ Tarefa:
    - Código que já existe e o plano ignora
    - Escopo que dá para cortar
    - Path crítico sem autonomia tight
+   - Passo de UI que contradiz o contrato do Claude Sonnet 5.5 colado no plano, ou plano sem esse contrato. O revisor não substitui o contrato por uma leitura própria
    - O que, se estiver errado, muda a spec
    Formato de cada achado: fato, e a frase "muda a spec: ...".
    Se nada mudar a spec, o relatório diz isso e para.

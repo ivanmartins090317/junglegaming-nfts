@@ -17,6 +17,7 @@ Siga o `AGENTS.md` do projeto.
 8. Paths críticos exigem autonomia tight e review humano.
 9. Só diga Done com spec atendida e comandos de verificação passando.
 10. Ao final, reporte arquivos, comandos e riscos.
+11. Research, plano e spec de tela pedem o contrato de UI ao Claude Sonnet 5.5 (`claude-sonnet-5-5-high`), com os PNG de `research/figma/` anexados. Esse texto entra na íntegra. O modelo do chat não substitui a leitura. Ver `.cursor/rules/figma-tela.mdc`.
 
 ## Fechamento de implementação (obrigatório)
 

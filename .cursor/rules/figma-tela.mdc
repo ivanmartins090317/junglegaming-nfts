@@ -1,0 +1,41 @@
+---
+description: Research, plano e spec pedem o contrato de UI ao Claude Sonnet 5.5, a partir do PNG em research/figma
+alwaysApply: true
+---
+
+# Tela em research/figma
+
+Ao iniciar research, plano ou spec de uma tela, quem descreve a UI é o Claude Sonnet 5.5. O modelo desta conversa não lê o PNG no lugar dele e não reescreve o arranjo.
+
+## Achar o arquivo
+
+1. Liste `research/figma/`.
+2. Case o nome da tela. Padrão: `desktop-<tela>.png` e `mobile-<tela>.png`.
+   Telas neste repo: inicio, detalhe, carrinho, login, cadastro, carteiras, confirmacao, pagamento, perfil.
+3. Feature com mais de uma tela: inclua cada par. Sem arquivo com esse nome: pare, liste a pasta e pergunte. Não invente o desenho.
+
+## Quem lê
+
+Siga `.cursor/workflow/prompts/00-tela-sonnet.md`.
+
+Uma chamada Task, com todos os PNG casados em `file_attachments`:
+
+- `subagent_type`: `generalPurpose`
+- `model`: `claude-sonnet-5-5-high`
+- `run_in_background`: false
+
+Slug recusado: pare e avise. Não troque de modelo. Não faça a leitura você mesmo.
+
+Se o contrato desses mesmos PNG já está nesta conversa ou no plano gravado, copie esse texto. Não peça segunda leitura.
+
+## O que entra no fluxo
+
+Cole a resposta dele na íntegra. Não resuma região, cópia nem composição.
+
+- Research: o contrato, com o caminho de cada PNG.
+- Plano: a parte de UI é esse contrato. Passo de tela não muda o que ele mandou construir.
+- Spec: a seção Tela é esse contrato. Cenário não pede bloco que ele marcou como ausente.
+
+Dúvida de comportamento que não está no desenho fica separada, fora do contrato. Cor, fonte e raio continuam os medidos. Hex novo não entra.
+
+Na implementação, a UI segue a seção Tela da spec. Não redesenhe a partir de outra leitura.

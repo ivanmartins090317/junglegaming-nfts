@@ -7,6 +7,7 @@ Registro do que já foi entregue.
 | 1 | [Tokens, casca e rotas vazias](F1-tokens-casca-rotas.md) | concluída (código) · homologação manual pendente |
 | 2 | [MSW com dois usuários, reset e catálogo feliz](F2-msw-usuarios-reset-catalogo.md) | concluída (código) · homologação manual pendente |
 | 3 | [Catálogo e detalhe, estado na URL](F3-catalogo-detalhe-url.md) | concluída (código) · homologação manual pendente |
+| 4 | [Sessão, login, cadastro e guarda](F4-sessao-login-cadastro-guarda.md) | concluída (código) · homologação manual pendente |
 
 O que falta está em [docs/state/PENDENCIAS.md](../state/PENDENCIAS.md).
 

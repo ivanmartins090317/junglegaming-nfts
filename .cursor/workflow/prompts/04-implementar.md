@@ -11,6 +11,7 @@ Implemente SOMENTE o que a Spec pede.
 Regras:
 1. Respeite AGENTS.md (pode / não pode)
 2. Não altere a Spec
+2b. A UI segue a seção Tela, que é o contrato do Claude Sonnet 5.5. Não redesenhe a partir de outra leitura do PNG
 3. Package by feature / Deep Modules
 4. Helpers no mesmo arquivo quando fizer sentido
 5. Crie unit tests da feature

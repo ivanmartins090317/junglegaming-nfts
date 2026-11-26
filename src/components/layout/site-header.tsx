@@ -1,10 +1,13 @@
-import { Link, useNavigate, useRouterState, useSearch } from '@tanstack/react-router'
+import { Link, useNavigate, useRouter, useRouterState, useSearch } from '@tanstack/react-router'
 import { useEffect, useRef, useState, type MouseEvent } from 'react'
 import { Button } from '@/components/ui/button.tsx'
 import { Input } from '@/components/ui/input.tsx'
 import { CartIcon, EnterIcon, SearchIcon } from '@/components/layout/chrome-icons.tsx'
 import { SlidersIcon } from '@/components/layout/mobile-icons.tsx'
 import { catalogSearchParams, readCatalogQuery } from '@/features/catalog/catalog-search.ts'
+import { entrySearch, hrefWithConta, isDesktopEntry } from '@/features/session/entry-location.ts'
+import { useSessionQuery } from '@/lib/query/session.ts'
+import { useEndSession } from '@/features/session/use-end-session.ts'
 
 const navItemClass =
   'relative inline-flex h-full items-center bg-transparent p-0 text-left font-mono text-[16px] font-normal leading-none text-foreground no-underline'
@@ -19,8 +22,11 @@ const quietLink = {
 
 export function SiteHeader() {
   const navigate = useNavigate()
+  const router = useRouter()
   const pathname = useRouterState({ select: (state) => state.location.pathname })
   const q = readCatalogQuery(useSearch({ strict: false }))
+  const session = useSessionQuery()
+  const endSession = useEndSession()
   const homeIsActive = pathname === '/'
   const [desktopSearchOpen, setDesktopSearchOpen] = useState(false)
   const replaceRef = useRef(pathname === '/')
@@ -37,11 +43,33 @@ export function SiteHeader() {
   function commitSearch(next: string) {
     const replace = replaceRef.current
     replaceRef.current = true
+    const entry = entrySearch(router.state.location.search as Record<string, unknown>)
     void navigate({
       to: '/',
-      search: catalogSearchParams(next),
+      search: {
+        ...entry,
+        ...catalogSearchParams(next),
+      },
       replace,
     })
+  }
+
+  function openEntry() {
+    if (!isDesktopEntry()) {
+      void navigate({ to: '/entrar' })
+      return
+    }
+    void navigate({
+      href: hrefWithConta(pathname, router.state.location.search, 'entrar'),
+    })
+  }
+
+  function onAccount() {
+    if (session.data) {
+      void endSession()
+      return
+    }
+    openEntry()
   }
 
   const desktopFieldVisible = desktopSearchOpen || q.length > 0
@@ -100,11 +128,15 @@ export function SiteHeader() {
             <CartIcon />
             <span className="sr-only">Carrinho</span>
           </Link>
-          <Button asChild className="w-auto gap-2 px-4">
-            <Link to="/entrar" {...quietLink}>
-              <EnterIcon className="size-4" />
-              Entrar
-            </Link>
+          <Button type="button" className="w-auto gap-2 px-4" onClick={onAccount}>
+            {session.data ? (
+              'Sair'
+            ) : (
+              <>
+                <EnterIcon className="size-4" />
+                Entrar
+              </>
+            )}
           </Button>
         </div>
       </div>

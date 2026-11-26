@@ -4,7 +4,7 @@
 
 - [ ] Feature nomeada
 - [ ] Autonomia definida (`tight` / `medium` / `loose`)
-- [ ] Research feito
+- [ ] Contrato de UI do Claude Sonnet 5.5 (`claude-sonnet-5-5-high`), com os PNG de `research/figma/` anexados, colado na íntegra no research, no plano e na spec
 - [ ] Plano curto feito
 - [ ] Plano revisado por outro agente, contexto limpo
 - [ ] Eu aceitei ou descartei os achados

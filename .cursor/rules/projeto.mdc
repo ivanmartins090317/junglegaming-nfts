@@ -44,6 +44,8 @@ Raio 6 no botão de página. Raio 5 no modal, no social e no campo. Imagem do ca
 
 Desktop 1440, padding horizontal 120. Mobile na composição do frame 414. 390 usa essa composição. 768 é uma coluna, padding horizontal 28.
 
+Research, plano e spec de tela pedem o contrato de UI ao Claude Sonnet 5.5, com o PNG de `research/figma/` pelo nome (`desktop-<tela>.png`, `mobile-<tela>.png`). A implementação segue esse contrato. Ver `.cursor/rules/figma-tela.mdc`.
+
 ## Comportamento que não se improvisa
 
 - ETH é string decimal. Quantidade é inteiro. Total de fechar vem da cotação.

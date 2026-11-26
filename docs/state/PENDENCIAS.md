@@ -36,6 +36,21 @@ Código entregue em `docs/implementation/F3-catalogo-detalhe-url.md`. Homologaç
 - [ ] Buscar a partir do carrinho cria uma entrada nova. O voltar do navegador reabre o carrinho
 - [ ] Com a simulação desligada, a grade e o detalhe mostram a frase de falha e o restante do início continua
 
+## Fase 4 · Homologação
+
+Código entregue em `docs/implementation/F4-sessao-login-cadastro-guarda.md`. Homologação manual pendente:
+
+- [ ] No desktop (1440), Entrar abre o painel sobre a página atual, com `conta=entrar`, sem película escura. A aba, o X e Esc trocam ou fecham o painel
+- [ ] `/entrar` e `/cadastro` no desktop viram `/?conta=entrar` e `/?conta=cadastro`, com o início atrás do painel
+- [ ] Abaixo de 1440, inclusive 390, `/entrar` e `/cadastro` são telas cheias, sem cabeçalho, sem mercado e sem o raio 40 do frame
+- [ ] Ada entra com `ada@kurio.test` e `kurio`. Senha errada mostra `E-mail ou senha não conferem.`
+- [ ] Cadastro de um e-mail novo abre a sessão. E-mail já usado, senhas diferentes e nome vazio mostram as frases da spec e não entram na conta da Ada
+- [ ] Sem sessão, `/perfil`, `/carteiras`, `/pagamento` e `/pedidos/ped-9` abrem a entrada e voltam ao caminho válido depois do sucesso
+- [ ] `retorno` externo, `//` ou a própria entrada caem em `/`. Sem `retorno`, o desktop fica na página de trás e o mobile vai para `/`
+- [ ] Sair no topo e em `/perfil` encerra a sessão. A página privada reabre a entrada. Recarregar a página também perde a sessão, porque a loja viva nasce de novo
+- [ ] Esqueceu a senha, Google e Facebook continuam visíveis e o clique não navega
+- [ ] Com a simulação desligada, a guarda não abre a página privada e o formulário mostra `Não foi possível carregar a sessão.`
+
 ## Setup
 
 - [x] Workflow em `.cursor/workflow/`
@@ -49,7 +64,7 @@ Código entregue em `docs/implementation/F3-catalogo-detalhe-url.md`. Homologaç
 - [x] Tela de início fiel aos frames desktop e mobile (dados estáticos, sem catálogo)
 - [x] MSW com dois usuários, reset e catálogo feliz
 - [x] Catálogo e detalhe, estado na URL
-- [ ] Sessão, login, cadastro e guarda
+- [x] Sessão, login, cadastro e guarda
 - [ ] Carrinho e cotação
 - [ ] Pedido idempotente, confirmação e recibo snapshot
 - [ ] Socket no preço e no estado do pedido
