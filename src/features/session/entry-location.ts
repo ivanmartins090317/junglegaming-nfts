@@ -1,4 +1,5 @@
-const desktopMinWidth = 1440
+// Mesmo valor de --breakpoint-desktop em src/styles/globals.css (80rem).
+const desktopMinWidth = 1280
 
 export interface EntrySearch {
   conta?: 'entrar' | 'cadastro'

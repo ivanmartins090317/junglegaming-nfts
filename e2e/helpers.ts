@@ -148,7 +148,7 @@ export async function signIn(page: Page, email: string, password: string) {
 
   const width = page.viewportSize()?.width ?? 1440
 
-  if (width >= 1440) {
+  if (width >= 1280) {
 
     if (!entryOpen(page)) {
 

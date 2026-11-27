@@ -9,7 +9,7 @@
 @theme inline {
   --font-sans: 'Roboto Mono', ui-monospace, monospace;
   --font-mono: 'Roboto Mono', ui-monospace, monospace;
-  --breakpoint-desktop: 90rem;
+  --breakpoint-desktop: 80rem;
 
   --color-ink: var(--ink);
   --color-foreground: var(--fg);
