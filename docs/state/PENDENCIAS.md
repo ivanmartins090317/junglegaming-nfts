@@ -113,7 +113,8 @@ Código entregue em `docs/implementation/F6-pedido-idempotente-confirmacao.md`. 
 - [x] Perfil e carteiras
 - [x] Mapa de teste pela skill `C:\projetos\manual-report`. Primeira rodada, casos em Pendente: `docs/relatorio-testes-manuais.html` e `docs/evidencias/`. Segunda rodada em andamento: TC-01 a TC-05 aprovados em 2026-11-27. FL-01 fechado.
 - [x] Playwright dos 12 fluxos e regressão visual (55/55 em 2026-11-27: `pnpm exec playwright test`. Suíte em `e2e/`, snapshots em `e2e/visual.spec.ts-snapshots/`. Helpers mobile em `e2e/helpers.ts`.)
-- [ ] Lighthouse, três medições, mediana, e deploy da mesma build
+- [x] Correções de Lighthouse sem mudar o visual (`docs/implementation/F9-lighthouse.md`). Accessibility 94 → 100 e SEO 90 → 100 no Lighthouse mobile local. Best Practices 96 permanece (401 da sessão, spec). Performance 99.
+- [ ] Lighthouse no deploy: três medições, mediana, e a mesma build publicada. Recapturar `docs/evidencias/lighthouse.png`
 - [ ] Segunda rodada do mapa, antes da entrega
 
 ## Fora deste repositório

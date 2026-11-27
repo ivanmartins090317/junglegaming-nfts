@@ -12,6 +12,7 @@ Registro do que já foi entregue.
 | 6 | [Pedido idempotente, confirmação e recibo](F6-pedido-idempotente-confirmacao.md) | concluída (código) · homologação manual pendente |
 | 7 | [Preço ao vivo e estado do pedido](F7-socket-preco-estado-pedido.md) | concluída (código) · homologação manual pendente |
 | 8 | [Perfil e carteiras](F8-perfil-carteiras.md) | concluída (código) · homologação manual pendente |
+| 9 | [Lighthouse](F9-lighthouse.md) | código entregue · recaptura no deploy pendente |
 
 O que falta está em [docs/state/PENDENCIAS.md](../state/PENDENCIAS.md).
 

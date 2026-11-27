@@ -160,7 +160,7 @@ Meta do enunciado: Performance ≥ 90, Accessibility ≥ 95, Best Practices ≥ 
 
 ![Resultado anterior do Lighthouse: Performance 99, Accessibility 94, Best Practices 96, SEO 90](docs/evidencias/lighthouse.png)
 
-Recapture as notas no [deploy](https://junglegaming-nfts.vercel.app/) depois de publicar estas correções. Best Practices permanece em 96 porque o visitante lê a sessão com `GET /api/sessao` 401, como a spec manda, e o Chrome registra isso no console.
+O que mudou, por que mudou e como recapturar: `docs/implementation/F9-lighthouse.md`. Recapture as notas no [deploy](https://junglegaming-nfts.vercel.app/) depois de publicar. Best Practices permanece em 96 porque o visitante lê a sessão com `GET /api/sessao` 401, como a spec manda, e o Chrome registra isso no console.
 
 ### Observabilidade
 
