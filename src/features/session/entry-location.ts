@@ -50,6 +50,14 @@ export function pathWhenAlreadySignedIn(retorno: string | undefined) {
   return safeReturnPath(retorno)
 }
 
+export function pathWhenSkippingLogin(retorno: string | undefined) {
+  if (!retorno) return '/'
+  const path = safeReturnPath(retorno)
+  const pathname = path.split('?')[0] ?? path
+  if (isPrivatePath(pathname)) return '/'
+  return path
+}
+
 export function hrefWithConta(pathname: string, search: object, conta: 'entrar' | 'cadastro') {
   const params = new URLSearchParams()
   const record = search as Record<string, unknown>

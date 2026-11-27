@@ -3,7 +3,13 @@ import { useEffect } from 'react'
 import { CloseIcon, SocialButtons } from '@/features/session/auth-icons.tsx'
 import { AuthForm, type AuthMode } from '@/features/session/auth-form.tsx'
 import { useHoldSignedInRedirect } from '@/features/session/use-signed-in-redirect.ts'
-import { hrefWithConta, hrefWithoutEntry, isDesktopEntry, readEntry } from '@/features/session/entry-location.ts'
+import {
+  hrefWithConta,
+  hrefWithoutEntry,
+  isDesktopEntry,
+  pathWhenSkippingLogin,
+  readEntry,
+} from '@/features/session/entry-location.ts'
 import { cn } from '@/lib/utils.ts'
 
 export function AuthPanel() {
@@ -40,8 +46,9 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
       <div className="mt-4">
         <SocialButtons layout="screen" />
       </div>
-      <div className="mt-8 flex justify-center">
+      <div className="mt-8 flex flex-col items-center gap-4">
         <ScreenFooter mode={mode} retorno={retorno} />
+        <SkipLoginLink retorno={retorno} />
       </div>
     </div>
   )
@@ -199,6 +206,21 @@ function ScreenFooter({ mode, retorno }: { mode: AuthMode; retorno: string | und
       }}
     >
       {label}
+    </button>
+  )
+}
+
+function SkipLoginLink({ retorno }: { retorno: string | undefined }) {
+  const navigate = useNavigate()
+  return (
+    <button
+      type="button"
+      className="bg-transparent p-0 text-center font-mono text-[0.875em] font-normal text-text-secondary"
+      onClick={() => {
+        void navigate({ href: pathWhenSkippingLogin(retorno), replace: true })
+      }}
+    >
+      Continuar sem fazer login
     </button>
   )
 }
