@@ -284,7 +284,7 @@
       </div>
     </div>
     <div class="topbar-meta">
-      <span class="badge-version">v1.0, primeira rodada</span>
+      <span class="badge-version">v1.1, segunda rodada em andamento</span>
     </div>
   </header>
 
@@ -295,10 +295,10 @@
       <p>
         Mapa da prova frontend da Jungle. Cobre os 12 fluxos do enunciado (FL-01 a FL-12)
         e a regressão visual de início, detalhe, carrinho e pagamento (FL-13).
-        Esta é a primeira rodada: todos os casos estão pendentes. O resultado esperado
-        segue a spec aprovada das fases 1 a 8. Onde o enunciado pede mais do que a spec
-        fechou, a observação do fluxo registra a lacuna. A segunda rodada preenche status,
-        screenshot e bug.
+        A segunda rodada começou em 27/11/2026. O resultado esperado segue a spec
+        aprovada das fases 1 a 8. Onde o enunciado pede mais do que a spec fechou,
+        a observação do fluxo registra a lacuna. Cada caso sai de Pendente quando
+        a evidência e o status entram.
       </p>
       <div class="hero-meta">
         <div class="hero-meta-item">
@@ -389,47 +389,71 @@
               <td>Grade inicial em 1440 mostra as oito peças na ordem da semente, com hero, oferta, artigos e rodapé.</td>
               <td>Mock ligado. Sem <code>q</code>. Largura 1440.</td>
               <td>Ordem: Emerald Ape #042, Sage Nomad #009, Neon Vessel #552, Cosmic Bloom #118, Violet Nomad #314, Ivory Baron #088, Golden Beat #207, Golden Signal #160. Neon Vessel mostra <code>1.99</code>, <code>2.29</code> e <code>RARO</code>.</td>
-              <td><span class="status pending dot">Pendente</span></td>
+              <td><span class="status pass dot">Aprovado</span></td>
             </tr>
             <tr>
               <td>TC-02</td>
               <td>A busca <code>q</code> recorta a grade, sobrevive ao refresh e, ao ser apagada, devolve as oito peças.</td>
               <td><code>/</code> aberto. Mock ligado.</td>
               <td><code>/?q=neon</code> e <code>/?q=NEON</code> deixam só Neon Vessel #552. <code>nomad</code>, <code>552</code> e <code>inexistente</code> esvaziam a grade com <code>Nenhuma peça com esse nome.</code> Apagar a busca tira <code>q</code> do endereço.</td>
-              <td><span class="status pending dot">Pendente</span></td>
+              <td><span class="status pass dot">Aprovado</span></td>
             </tr>
             <tr>
               <td>TC-03</td>
               <td>O histórico preserva a busca: o card abre o detalhe com <code>q</code>, o voltar reabre a grade recortada, e buscar a partir do carrinho cria uma entrada nova.</td>
               <td>Grade com <code>q=neon</code>. Em outro passo, a pessoa está em <code>/carrinho</code>.</td>
               <td>O card abre <code>/nfts/neon-vessel-552</code> e preserva <code>q</code>. Voltar reabre a grade recortada. Sem <code>q</code>, voltar reabre <code>/</code>. Buscar no carrinho empurra uma entrada; o voltar do navegador reabre o carrinho.</td>
-              <td><span class="status pending dot">Pendente</span></td>
+              <td><span class="status pass dot">Aprovado</span></td>
             </tr>
             <tr>
               <td>TC-04</td>
-              <td>Aba, coleção, rede, faixa de preço, ordenação e página não mudam a lista nem o endereço.</td>
-              <td>Grade com as oito peças.</td>
-              <td>Acionar esses controles deixa as oito peças e não grava parâmetro novo na URL.</td>
-              <td><span class="status pending dot">Pendente</span></td>
+              <td>Aba, coleção, rede, ordenação e página permanecem visuais. A faixa de preço recorta a grade ao aplicar.</td>
+              <td>Grade com as oito peças. Mock ligado. Desktop com a barra lateral visível.</td>
+              <td>Coleção, rede, aba, ordenação e paginação não alteram a lista nem o endereço. Ajustar os limites e tocar <code>Aplicar</code> mostra só peças com preço dentro do intervalo, sem gravar parâmetro novo na URL. Faixa vazia mostra <code>Nenhuma peça nessa faixa de preço.</code></td>
+              <td><span class="status pass dot">Aprovado</span></td>
             </tr>
             <tr>
               <td>TC-05</td>
               <td>No desktop a lupa abre o campo; no mobile, <code>Explorar coleções</code> grava <code>q</code>.</td>
               <td>Larguras 1440 e 390. Mock ligado.</td>
               <td>Em 1440, com <code>q</code> o campo já está aberto; sem <code>q</code>, a lupa abre o campo. Em 390, <code>Explorar coleções</code> grava <code>q</code>.</td>
-              <td><span class="status pending dot">Pendente</span></td>
+              <td><span class="status pass dot">Aprovado</span></td>
             </tr>
           </tbody>
         </table>
         <div class="evidence-section">
           <h4>📸 Evidências Visuais</h4>
           <div class="evidence-gallery" id="gallery-1">
-            <div class="evidence-placeholder"><span>📷</span> Screenshots serão adicionados após execução dos testes</div>
+            <div class="evidence-item" onclick="openLightbox('evidencias/tc01-grade-oito-pecas.jpeg')">
+              <img src="evidencias/tc01-grade-oito-pecas.jpeg" alt="TC-01 — Grade inicial com as oito peças"
+                onerror="this.style.display='none';this.parentElement.querySelector('.evidence-caption').textContent='📷 TC-01 (imagem na pasta evidencias/)';" />
+              <div class="evidence-caption">TC-01 — Grade inicial em 1440 ✅</div>
+            </div>
+            <div class="evidence-item" onclick="openLightbox('evidencias/tc02-busca-neon.jpeg')">
+              <img src="evidencias/tc02-busca-neon.jpeg" alt="TC-02 — Busca neon com só Neon Vessel"
+                onerror="this.style.display='none';this.parentElement.querySelector('.evidence-caption').textContent='📷 TC-02 (imagem na pasta evidencias/)';" />
+              <div class="evidence-caption">TC-02 — Busca neon ✅</div>
+            </div>
+            <div class="evidence-item" onclick="openLightbox('evidencias/tc03-historico-busca-q.jpeg')">
+              <img src="evidencias/tc03-historico-busca-q.jpeg" alt="TC-03 — Histórico com q no detalhe e na grade"
+                onerror="this.style.display='none';this.parentElement.querySelector('.evidence-caption').textContent='📷 TC-03 (imagem na pasta evidencias/)';" />
+              <div class="evidence-caption">TC-03 — Histórico e busca ✅</div>
+            </div>
+            <div class="evidence-item" onclick="openLightbox('evidencias/tc04-faixa-preco.jpeg')">
+              <img src="evidencias/tc04-faixa-preco.jpeg" alt="TC-04 — Faixa de preço aplicada na grade"
+                onerror="this.style.display='none';this.parentElement.querySelector('.evidence-caption').textContent='📷 TC-04 (imagem na pasta evidencias/)';" />
+              <div class="evidence-caption">TC-04 — Faixa de preço ✅</div>
+            </div>
+            <div class="evidence-item" onclick="openLightbox('evidencias/tc05-explorar-colecoes.jpeg')">
+              <img src="evidencias/tc05-explorar-colecoes.jpeg" alt="TC-05 — Campo Explorar coleções no mobile"
+                onerror="this.style.display='none';this.parentElement.querySelector('.evidence-caption').textContent='📷 TC-05 (imagem na pasta evidencias/)';" />
+              <div class="evidence-caption">TC-05 — Explorar coleções ✅</div>
+            </div>
           </div>
         </div>
         <div class="obs-box">
           <strong>Observações:</strong>
-          Testes pendentes de execução. Lacuna do enunciado: filtro combinável, ordenação e paginação na URL. A spec da fase 3 deixa esses controles visíveis e sem efeito sobre a lista (TC-04).
+          TC-01 a TC-05 aprovados em 27/11/2026, mock ligado. TC-01: a grade em 1440 mostra as oito peças na ordem da semente, com hero, oferta, artigos e rodapé. Neon Vessel mostra 1.99 ETH e o preço de comparação riscado. A marca RARO do card não aparece nesta largura: o selo fica oculto no desktop e entra no card abaixo do breakpoint, além do detalhe da peça. TC-02: o campo do topo está aberto com o texto neon e a grade fica só com Neon Vessel #552. Esta captura não mostra a variante NEON, a grade vazia de nomad, 552 e inexistente, nem o apagar da busca. TC-03: o card abre o detalhe com <code>q</code> preservado, o voltar reabre a grade recortada, e a busca a partir do carrinho cria entrada nova no histórico com o voltar do navegador devolvendo ao carrinho. A evidência anexada cobre um passo desse fluxo; o executor confirmou o caso inteiro. TC-04: faixa de preço aplicada recorta a grade conforme os limites; aba, coleção, rede, ordenação e paginação seguem só visuais, sem parâmetro novo na URL. A spec formal da fase 3 ainda descreve a faixa como visual; o mapa manual e o código foram alinhados nesta homologação. Lacuna do enunciado: ordenação e paginação na URL. TC-05: no mobile o campo <code>Explorar coleções</code> está no topo. Esta captura não mostra a lupa do desktop nem o texto gravado em <code>q</code>. O executor confirmou o caso inteiro. FL-01 fechado. Próximo: TC-06 no FL-02.
         </div>
       </div>
     </div>
@@ -1127,7 +1151,7 @@
       Log de Bugs
     </div>
     <div class="bug-empty" id="bug-log">
-      Nenhum bug registrado. A primeira rodada deixa os casos em Pendente. Bug entra aqui na segunda rodada, quando um caso for reprovado, com código BG, severidade, passos e o que a tela fez.
+      Nenhum bug registrado. A segunda rodada em andamento: TC-01 a TC-05 aprovados em 27/11/2026. Bug entra aqui quando um caso for reprovado, com código BG, severidade, passos e o que a tela fez.
     </div>
 
     <div class="section-title" style="margin-top: 2rem;">
@@ -1179,7 +1203,7 @@
 
   <script>
     const testData = {
-      fluxo1: { total: 5, pass: 0, fail: 0, block: 0 },
+      fluxo1: { total: 5, pass: 5, fail: 0, block: 0 },
       fluxo2: { total: 3, pass: 0, fail: 0, block: 0 },
       fluxo3: { total: 6, pass: 0, fail: 0, block: 0 },
       fluxo4: { total: 3, pass: 0, fail: 0, block: 0 },
@@ -1248,8 +1272,8 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('meta-executor').textContent = 'Aguardando execução';
-      document.getElementById('meta-data').textContent = '26/11/2026';
+      document.getElementById('meta-executor').textContent = 'Homologação manual';
+      document.getElementById('meta-data').textContent = '27/11/2026';
       initScoreboard();
     });
 
