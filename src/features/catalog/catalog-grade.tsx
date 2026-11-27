@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { Link, useSearch } from '@tanstack/react-router'
 import { HeartIcon } from '@/components/layout/chrome-icons.tsx'
 import { catalogSearchParams, normalizeCatalogQuery } from '@/features/catalog/catalog-search.ts'
@@ -22,14 +22,42 @@ export function CatalogGrade() {
     return <CatalogNote>Nenhuma peça com esse nome.</CatalogNote>
   }
 
+  const fillerIndex = fillerPosition(visible.length, query)
+
   return (
     <ul className={gradeClass}>
       {visible.map((nft, index) => (
-        <li key={nft.id} className="even:translate-y-8 desktop:even:translate-y-0">
-          <NftCard nft={nft} lowered={index % 2 === 1} query={query} />
-        </li>
+        <Fragment key={nft.id}>
+          {index === fillerIndex ? <FillerCard image={nft.image} /> : null}
+          <li className={index % 2 === 1 ? 'translate-y-8 desktop:translate-y-0' : undefined}>
+            <NftCard nft={nft} lowered={index % 2 === 1} query={query} />
+          </li>
+        </Fragment>
       ))}
     </ul>
+  )
+}
+
+// Desktop tem 3 colunas: quando a última fileira sobraria com 2 peças, o card
+// de preenchimento (só imagem) entra entre elas para fechar a fileira em 3.
+function fillerPosition(total: number, query: string) {
+  if (query.length > 0 || total < 3 || total % 3 !== 2) return -1
+  return total - 1
+}
+
+function FillerCard({ image }: { image: string }) {
+  return (
+    <li aria-hidden="true" className="hidden desktop:block">
+      <div className="rounded-[15px] bg-surface-card px-1 pt-8 pb-4">
+        <img
+          src={image}
+          alt=""
+          width={250}
+          height={250}
+          className="aspect-square w-full rounded-[15px] object-cover"
+        />
+      </div>
+    </li>
   )
 }
 
