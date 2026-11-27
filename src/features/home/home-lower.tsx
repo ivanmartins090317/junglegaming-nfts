@@ -1,6 +1,7 @@
 import type { FormEvent, ReactNode } from 'react'
 import { Link } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button.tsx'
+import { FooterSocial } from '@/components/layout/footer-social.tsx'
 import { Input } from '@/components/ui/input.tsx'
 import { homeArticles } from '@/features/home/home-data.ts'
 
@@ -188,29 +189,7 @@ function FooterColumns() {
         <Quiet>Arte 3D</Quiet>
         <Quiet>Utilidade</Quiet>
       </FooterColumn>
-      <div>
-        <h2 className="m-0 text-[16px] font-bold leading-none text-foreground">Redes sociais</h2>
-        <div className="mt-3.5 flex gap-2">
-          {['Facebook', 'Instagram', 'X', 'LinkedIn', 'YouTube'].map((name) => (
-            <button
-              key={name}
-              type="button"
-              aria-label={name}
-              className="inline-flex size-8 items-center justify-center rounded-[5px] border border-primary bg-transparent font-mono text-[12px] text-primary"
-            >
-              {name.slice(0, 1)}
-            </button>
-          ))}
-        </div>
-        <h2 className="m-0 mt-6 text-[16px] font-bold leading-none text-foreground">Carteiras compatíveis</h2>
-        <div className="mt-3 inline-flex divide-x divide-primary rounded-[5px] border border-primary">
-          {['METAMASK', 'WALLETCONNECT', 'COINBASE'].map((name) => (
-            <span key={name} className="px-2 py-1 text-[10px] leading-none text-primary">
-              {name}
-            </span>
-          ))}
-        </div>
-      </div>
+      <FooterSocial />
     </div>
   )
 }

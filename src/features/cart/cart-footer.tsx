@@ -1,5 +1,6 @@
 import type { FormEvent, ReactNode } from 'react'
 import { Link } from '@tanstack/react-router'
+import { FooterSocial } from '@/components/layout/footer-social.tsx'
 import { Button } from '@/components/ui/button.tsx'
 import { Input } from '@/components/ui/input.tsx'
 
@@ -110,33 +111,8 @@ function FooterColumns() {
         <Quiet>Arte 3D</Quiet>
         <Quiet>Utilidade</Quiet>
       </FooterColumn>
-      <div>
-        <h2 className="m-0 font-bold text-foreground">Redes sociais</h2>
-        <div className="mt-3 flex gap-2">
-          <Social name="Facebook" mark="f" />
-          <Social name="Instagram" mark="◎" />
-          <Social name="Twitter" mark="x" />
-          <Social name="LinkedIn" mark="in" />
-          <Social name="YouTube" mark="▷" />
-        </div>
-        <h2 className="m-0 mt-6 font-bold text-foreground">Carteiras compatíveis</h2>
-        <p className="m-0 mt-3 inline-flex rounded-[5px] border border-primary px-2 py-1 text-[0.75em] tracking-wide text-primary uppercase">
-          METAMASK · WALLETCONNECT · COINBASE
-        </p>
-      </div>
+      <FooterSocial />
     </div>
-  )
-}
-
-function Social({ name, mark }: { name: string; mark: string }) {
-  return (
-    <button
-      type="button"
-      aria-label={name}
-      className="inline-flex size-8 items-center justify-center rounded-[5px] border border-primary bg-transparent font-mono text-primary"
-    >
-      {mark}
-    </button>
   )
 }
 
