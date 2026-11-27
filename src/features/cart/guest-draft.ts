@@ -42,12 +42,17 @@ export function clearGuestDraft() {
   sessionStorage.removeItem(storageKey)
 }
 
-export function addGuestOne(nftId: string) {
+export function addGuestMany(nftId: string, amount: number) {
+  if (!isPositiveInt(amount)) return
   const lines = readGuestDraft()
   const found = lines.find((line) => line.nftId === nftId)
-  if (found) found.quantity += 1
-  else lines.push({ nftId, quantity: 1 })
+  if (found) found.quantity += amount
+  else lines.push({ nftId, quantity: amount })
   writeGuestDraft(lines)
+}
+
+export function addGuestOne(nftId: string) {
+  addGuestMany(nftId, 1)
 }
 
 export function setGuestQuantity(nftId: string, quantity: number) {

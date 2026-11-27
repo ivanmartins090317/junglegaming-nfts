@@ -102,3 +102,37 @@ export function WalletIcon({ className }: IconProps) {
     </Svg>
   )
 }
+
+export function StarIcon({ className }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className={className ?? 'size-4'} fill="currentColor">
+      <path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8L12 2.8Z" />
+    </svg>
+  )
+}
+
+export function PlusIcon({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="M12 6v12" />
+      <path d="M6 12h12" />
+    </Svg>
+  )
+}
+
+export function MinusIcon({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <path d="M6 12h12" />
+    </Svg>
+  )
+}
+
+export function MailIcon({ className }: IconProps) {
+  return (
+    <Svg className={className}>
+      <rect x="3.5" y="5.5" width="17" height="13" rx="2" />
+      <path d="M4 7l8 6 8-6" />
+    </Svg>
+  )
+}

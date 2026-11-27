@@ -30,6 +30,7 @@ export function SiteHeader() {
   const endSession = useEndSession()
   const cartCount = useCartBadgeCount()
   const homeIsActive = pathname === '/'
+  const marketIsActive = pathname.startsWith('/nfts/')
   const [desktopSearchOpen, setDesktopSearchOpen] = useState(false)
   const replaceRef = useRef(pathname === '/')
 
@@ -86,7 +87,12 @@ export function SiteHeader() {
           <Link to="/" {...quietLink} className={homeIsActive ? navItemActiveClass : navItemClass}>
             Início
           </Link>
-          <a href="/" className={navItemClass} onClick={openHome}>
+          <a
+            href="/"
+            className={marketIsActive ? navItemActiveClass : navItemClass}
+            aria-current={marketIsActive ? 'page' : undefined}
+            onClick={openHome}
+          >
             Mercado
           </a>
           <button type="button" className={navItemClass}>

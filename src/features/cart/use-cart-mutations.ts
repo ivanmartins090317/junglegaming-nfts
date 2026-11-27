@@ -5,7 +5,7 @@ import { fetchSession } from '@/lib/api/session.ts'
 import { cartMessages } from '@/lib/contracts/cart.ts'
 import { invalidateCart } from '@/lib/query/cart.ts'
 import { sessionQueryKey } from '@/lib/query/session.ts'
-import { addGuestOne, removeGuestLine, setGuestQuantity } from '@/features/cart/guest-draft.ts'
+import { addGuestMany, removeGuestLine, setGuestQuantity } from '@/features/cart/guest-draft.ts'
 
 export function useCartMutations() {
   const queryClient = useQueryClient()
@@ -13,8 +13,8 @@ export function useCartMutations() {
   const [busy, setBusy] = useState(false)
   const lock = useRef(false)
 
-  async function commit(work: (userId: string | null) => Promise<void>) {
-    if (lock.current) return
+  async function commit(work: (userId: string | null) => Promise<void>): Promise<boolean> {
+    if (lock.current) return false
     lock.current = true
     setBusy(true)
     setMessage(null)
@@ -25,22 +25,31 @@ export function useCartMutations() {
       })
       await work(user?.id ?? null)
       await invalidateCart(queryClient, user?.id ?? null)
+      return true
     } catch {
       setMessage(cartMessages.updateFailed)
+      return false
     } finally {
       lock.current = false
       setBusy(false)
     }
   }
 
-  function addOne(nftId: string) {
+  function addMany(nftId: string, amount: number) {
     return commit(async (userId) => {
       if (userId) {
-        await addCartItem(nftId)
+        const view = await addCartItem(nftId)
+        if (amount < 2) return
+        const current = view.lines.find((line) => line.nftId === nftId)?.quantity ?? 1
+        await setCartQuantity(nftId, current + amount - 1)
         return
       }
-      addGuestOne(nftId)
+      addGuestMany(nftId, amount)
     })
+  }
+
+  function addOne(nftId: string) {
+    return addMany(nftId, 1)
   }
 
   function setQuantity(nftId: string, quantity: number) {
@@ -64,5 +73,5 @@ export function useCartMutations() {
     })
   }
 
-  return { message, busy, addOne, setQuantity, remove }
+  return { message, busy, addOne, addMany, setQuantity, remove }
 }

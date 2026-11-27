@@ -1,7 +1,11 @@
 import { Link, useSearch } from '@tanstack/react-router'
-import { Button } from '@/components/ui/button.tsx'
+import { SiteFooter } from '@/components/layout/site-footer.tsx'
 import { catalogSearchParams, normalizeCatalogQuery } from '@/features/catalog/catalog-search.ts'
-import { useCartMutations } from '@/features/cart/use-cart-mutations.ts'
+import { nftDetailContent } from '@/features/detail/nft-detail-content.ts'
+import { NftDetailGallery } from '@/features/detail/nft-detail-gallery.tsx'
+import { NftDetailInfo } from '@/features/detail/nft-detail-info.tsx'
+import { NftDetailTabs } from '@/features/detail/nft-detail-tabs.tsx'
+import { NftRelated } from '@/features/detail/nft-related.tsx'
 import { NftNotFoundError } from '@/lib/api/nfts.ts'
 import { useNftQuery } from '@/lib/query/nfts.ts'
 import type { Nft } from '@/lib/contracts/nft.ts'
@@ -10,6 +14,8 @@ interface NftDetailProps {
   nftId: string
 }
 
+const crumbClass = 'text-[14px] leading-5 text-foreground no-underline'
+
 export function NftDetail({ nftId }: NftDetailProps) {
   const { q } = useSearch({ from: '/nfts/$nftId' })
   const query = normalizeCatalogQuery(q)
@@ -17,19 +23,32 @@ export function NftDetail({ nftId }: NftDetailProps) {
   const message = detailMessage(nft.isPending, nft.isError, nft.error)
 
   return (
-    <article className="max-w-[420px]">
-      <Link
-        to="/"
-        search={catalogSearchParams(query)}
-        className="inline-flex text-[14px] leading-none text-text-accent no-underline"
-      >
-        Voltar
+    <>
+      <article>
+        <Breadcrumb query={query} />
+        {message ? (
+          <p className="m-0 mt-6 text-[14px] font-normal leading-[16px] text-foreground">{message}</p>
+        ) : null}
+        {nft.data ? <NftDetailBody nft={nft.data} query={query} /> : null}
+      </article>
+      <SiteFooter />
+    </>
+  )
+}
+
+function Breadcrumb({ query }: { query: string }) {
+  return (
+    <nav aria-label="Trilha" className="flex items-center gap-2">
+      <Link to="/" className={crumbClass}>
+        Início
       </Link>
-      <div className="mt-6">
-        {message ? <p className="m-0 text-[14px] font-normal leading-[16px] text-foreground">{message}</p> : null}
-        {nft.data ? <NftDetailBody nft={nft.data} /> : null}
-      </div>
-    </article>
+      <span aria-hidden="true" className={crumbClass}>
+        /
+      </span>
+      <Link to="/" search={catalogSearchParams(query)} className={`${crumbClass} font-bold`}>
+        Mercado
+      </Link>
+    </nav>
   )
 }
 
@@ -40,45 +59,16 @@ function detailMessage(isPending: boolean, isError: boolean, error: unknown) {
   return null
 }
 
-function NftDetailBody({ nft }: { nft: Nft }) {
+function NftDetailBody({ nft, query }: { nft: Nft; query: string }) {
+  const content = nftDetailContent(nft)
   return (
-    <div>
-      <div className="relative rounded-[15px] bg-surface-card p-1">
-        <img
-          src={nft.image}
-          alt={nft.name}
-          width={420}
-          height={420}
-          className="aspect-square w-full rounded-[15px] object-cover"
-        />
-        {nft.rare ? (
-          <span className="absolute top-2 left-2 inline-flex h-8 items-center bg-primary px-2 text-[13px] font-medium leading-none text-ink">
-            RARO
-          </span>
-        ) : null}
+    <div className="mt-2.5">
+      <div className="desktop:grid desktop:grid-cols-[minmax(0,571px)_minmax(0,1fr)] desktop:gap-x-[33px]">
+        <NftDetailGallery nft={nft} />
+        <NftDetailInfo nft={nft} content={content} />
       </div>
-      <h1 className="m-0 mt-4 text-[15px] font-normal leading-[18px] text-foreground">{nft.name}</h1>
-      <p className="m-0 mt-3 flex items-center gap-2 text-[16px] font-bold leading-5 text-primary">
-        {nft.price} ETH
-        {nft.compareAt ? (
-          <span className="text-[14px] font-normal text-text-secondary line-through">
-            {nft.compareAt} ETH
-          </span>
-        ) : null}
-      </p>
-      <IncludeButton nftId={nft.id} />
-    </div>
-  )
-}
-
-function IncludeButton({ nftId }: { nftId: string }) {
-  const cart = useCartMutations()
-  return (
-    <div className="mt-4">
-      <Button type="button" className="w-auto px-4 font-bold" onClick={() => void cart.addOne(nftId)}>
-        Incluir no carrinho
-      </Button>
-      {cart.message ? <p className="m-0 mt-2 text-[14px] text-foreground">{cart.message}</p> : null}
+      <NftDetailTabs content={content} />
+      <NftRelated currentId={nft.id} query={query} />
     </div>
   )
 }

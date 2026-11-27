@@ -168,6 +168,10 @@ describe('entrada, cadastro e guarda', () => {
     mounted.push(tablet)
     expect(tablet.container.querySelector('header')).toBeNull()
     expect(tablet.container.textContent).toContain('Entrar')
+    expect(tablet.container.textContent).toContain('Continuar sem fazer login')
+
+    await click(buttonNamed(tablet.container, 'Continuar sem fazer login'))
+    expect(tablet.router.state.location.pathname).toBe('/')
   })
 
   it('Ada entra, a senha errada fica na tela e o olho só revela aquele campo', async () => {

@@ -4,6 +4,7 @@ import {
   hrefWithoutEntry,
   pathAfterSuccess,
   pathWhenAlreadySignedIn,
+  pathWhenSkippingLogin,
   safeReturnPath,
 } from '@/features/session/entry-location.ts'
 
@@ -23,6 +24,15 @@ describe('caminho de retorno', () => {
     expect(pathWhenAlreadySignedIn(undefined)).toBe('/')
     expect(pathWhenAlreadySignedIn('/carrinho')).toBe('/carrinho')
     expect(pathWhenAlreadySignedIn('https://fora.exemplo')).toBe('/')
+  })
+
+  it('quem pula o login volta ao início ou a um retorno público', () => {
+    expect(pathWhenSkippingLogin(undefined)).toBe('/')
+    expect(pathWhenSkippingLogin('/carrinho')).toBe('/carrinho')
+    expect(pathWhenSkippingLogin('/nfts/neon-vessel-552?q=neon')).toBe('/nfts/neon-vessel-552?q=neon')
+    expect(pathWhenSkippingLogin('/perfil')).toBe('/')
+    expect(pathWhenSkippingLogin('/pedidos/ped-9')).toBe('/')
+    expect(pathWhenSkippingLogin('https://fora.exemplo')).toBe('/')
   })
 
   it('no desktop sem retorno fica na página e abaixo de 1440 vai para o início', () => {
