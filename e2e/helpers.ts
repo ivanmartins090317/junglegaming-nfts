@@ -72,12 +72,49 @@ export function authForm(page: Page): Locator {
 
 
 
+const desktopMinWidth = 1280
+
+function isMobileViewport(page: Page) {
+  return (page.viewportSize()?.width ?? desktopMinWidth) < desktopMinWidth
+}
+
 function entryOpen(page: Page) {
-
   const url = page.url()
-
   return url.includes('conta=entrar') || url.includes('conta=cadastro') || url.includes('/entrar') || url.includes('/cadastro')
+}
 
+async function ensureEntryForm(page: Page) {
+  if (!isMobileViewport(page)) {
+    if (!entryOpen(page)) {
+      await gotoHome(page)
+      await openEntryDesktop(page)
+    }
+    return
+  }
+
+  if (pathnameIs(page, '/entrar') || pathnameIs(page, '/cadastro')) {
+    await expect(page.getByRole('heading', { name: /Entrar|Criar perfil/, level: 1 })).toBeVisible()
+    return
+  }
+
+  const retorno = new URL(page.url()).searchParams.get('retorno')
+  await page.goto(retorno ? `/entrar?retorno=${retorno}` : '/entrar')
+  await expect(page.getByRole('heading', { name: 'Entrar', level: 1 })).toBeVisible()
+}
+
+function showsDesktopSair(page: Page) {
+  const path = new URL(page.url()).pathname
+  return path === '/' || path === '/carrinho' || path.startsWith('/nfts/')
+}
+
+async function expectSignedIn(page: Page) {
+  await expect
+    .poll(async () => (await apiFetch(page, '/api/sessao')).status, { timeout: 10_000 })
+    .toBe(200)
+
+  if (!isMobileViewport(page) && showsDesktopSair(page)) {
+    await expect(page.getByRole('button', { name: 'Sair' }).locator('visible=true')).toBeVisible()
+  }
 }
 
 
@@ -129,7 +166,11 @@ function pathnameIs(page: Page, path: string) {
 
 export async function visitProtected(page: Page, path: string, creds: { email: string; password: string }) {
   const retorno = encodeURIComponent(path)
-  await page.goto(`/?conta=entrar&retorno=${retorno}`)
+  if (isMobileViewport(page)) {
+    await page.goto(`/entrar?retorno=${retorno}`)
+  } else {
+    await page.goto(`/?conta=entrar&retorno=${retorno}`)
+  }
   await signIn(page, creds.email, creds.password)
   await expect.poll(() => pathnameIs(page, path), { timeout: 20_000 }).toBe(true)
 }
@@ -145,24 +186,7 @@ export async function openSignedInCart(page: Page, creds: { email: string; passw
 }
 
 export async function signIn(page: Page, email: string, password: string) {
-
-  const width = page.viewportSize()?.width ?? 1440
-
-  if (width >= 1280) {
-
-    if (!entryOpen(page)) {
-
-      await gotoHome(page)
-
-      await openEntryDesktop(page)
-
-    }
-
-  } else if (!entryOpen(page)) {
-
-    await openEntryMobile(page)
-
-  }
+  await ensureEntryForm(page)
 
   const form = authForm(page)
 
@@ -175,14 +199,7 @@ export async function signIn(page: Page, email: string, password: string) {
   )
   await form.locator('button[type="submit"]').click()
   await login
-  await expect
-    .poll(async () => (await apiFetch(page, '/api/sessao')).status, { timeout: 10_000 })
-    .toBe(200)
-  const fullscreenSession =
-    pathnameIs(page, '/pagamento') || page.url().includes('/pedidos/') || pathnameIs(page, '/perfil')
-  if (!fullscreenSession) {
-    await expect(page.getByRole('button', { name: 'Sair' }).locator('visible=true')).toBeVisible()
-  }
+  await expectSignedIn(page)
 }
 
 
@@ -200,7 +217,9 @@ export async function addToCartFromDetail(page: Page, nftId: string) {
 
   await page.goto(`/nfts/${nftId}`)
 
-  await page.getByRole('button', { name: 'Incluir no carrinho' }).click()
+  await page.getByRole('button', { name: 'COMPRAR', exact: true }).click()
+
+  await expect(page).toHaveURL(/\/carrinho/, { timeout: 15_000 })
 
 }
 
@@ -215,9 +234,12 @@ export function cartBadge(page: Page) {
 
 
 export function cartLinesDesktop(page: Page) {
-
   return page.locator('[data-cart="lines-desktop"]')
+}
 
+export function cartLines(page: Page) {
+  if (isMobileViewport(page)) return page.locator('[data-cart="lines-mobile"]')
+  return cartLinesDesktop(page)
 }
 
 
@@ -340,5 +362,5 @@ export async function gotoOrderInPlace(page: Page, orderId: string) {
 }
 
 export async function waitForUserCart(page: Page) {
-  await expect(cartLinesDesktop(page)).toContainText('Sage Nomad #009', { timeout: 20_000 })
+  await expect(cartLines(page)).toContainText('Sage Nomad #009', { timeout: 20_000 })
 }

@@ -43,9 +43,11 @@ Bloqueia a entrega e o deploy (CP-5). Não bloqueia CP-0.
 
 ### CP-2 · Playwright 55/55 (depois, não bloqueia homologação)
 
-- [ ] Os 4 visuais restantes em `e2e/visual.spec.ts`: TC-52 carrinho com linha; TC-53 pagamento (desktop sem snapshot; mobile timeout/login)
+- [x] TC-50 a TC-53 e FL-01 a FL-12 em `e2e/` (55/55, 2026-11-27)
+- [x] Snapshots visuais desktop e mobile, incluindo detalhe de referência (TC-51)
+- [x] Helpers E2E alinhados à guarda mobile (`/entrar?retorno=`, `cartLines`, sessão sem **Sair** no topo em 390)
 
-Estado atual: 51/55. `pnpm typecheck`, `pnpm lint` e `pnpm test` (130 vitest) passam.
+Estado atual: fechado. `pnpm exec playwright test` verde nesta data.
 
 Como marcar: caixa neste arquivo. Quando a suíte inteira passar, marcar também a linha Playwright em `docs/state/PENDENCIAS.md`.
 
@@ -75,7 +77,7 @@ Como marcar: caixa neste arquivo. Marcar a linha "Segunda rodada do mapa" em `do
 
 ### CP-7 · Fechar pendências de entrega
 
-- [ ] Playwright, Lighthouse, segunda rodada e Sentry no `ARCHITECTURE.md` refletidos em `docs/state/PENDENCIAS.md`
+- [ ] Lighthouse, segunda rodada e Sentry no `ARCHITECTURE.md` refletidos em `docs/state/PENDENCIAS.md` (Playwright fechado em 2026-11-27)
 - [ ] Este plano e a linha do índice em `done`
 
 Como marcar: `docs/state/PENDENCIAS.md` (Construção e Fora deste repositório) e `docs/plans/README.md` (status desta entrega). Sentry já está no `ARCHITECTURE.md`; falta só confirmar a linha correspondente.

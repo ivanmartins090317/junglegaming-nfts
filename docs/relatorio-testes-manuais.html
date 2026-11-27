@@ -1101,28 +1101,28 @@
               <td>Baseline visual do início, desktop e mobile.</td>
               <td>Mock ligado. Sem <code>q</code>. Larguras 1440 e 390. Baseline ainda não versionada: a primeira captura cria a referência.</td>
               <td>A captura de <code>/</code> fica estável entre duas rodadas no mesmo estado da semente. Hero, grade das oito peças e rodapé entram no quadro.</td>
-              <td><span class="status pending dot">Pendente</span></td>
+              <td><span class="status pass dot">Aprovado</span></td>
             </tr>
             <tr>
               <td>TC-51</td>
               <td>Baseline visual do detalhe.</td>
               <td><code>/nfts/neon-vessel-552</code>. Larguras 1440 e 390.</td>
               <td>A captura mostra imagem, nome, <code>1.99</code>, <code>2.29</code> e <code>RARO</code>, sem o preço alternado do relógio no meio do quadro. Para isso, a captura ocorre antes do primeiro tick de 3 segundos, ou com o relógio pausado no teste.</td>
-              <td><span class="status pending dot">Pendente</span></td>
+              <td><span class="status pass dot">Aprovado</span></td>
             </tr>
             <tr>
               <td>TC-52</td>
               <td>Baseline visual do carrinho.</td>
               <td><code>/carrinho</code> vazio e, em outra captura, com uma linha. Larguras 1440 e 390.</td>
               <td>Vazio mostra <code>Seu carrinho está vazio.</code> e totais <code>0.00</code>. Com linha, a tabela ou a coluna estreita e o resumo entram no quadro. Abaixo de 1440 não há barra de baixo.</td>
-              <td><span class="status pending dot">Pendente</span></td>
+              <td><span class="status pass dot">Aprovado</span></td>
             </tr>
             <tr>
               <td>TC-53</td>
               <td>Baseline visual do pagamento.</td>
               <td>Sessão da Ada. <code>/pagamento</code>. Larguras 1440 e 390.</td>
               <td>A página mostra <code>Revisão e envio</code>. Não há formulário de checkout desenhado nesta fatia. A captura registra esse estado, sem inventar campos.</td>
-              <td><span class="status pending dot">Pendente</span></td>
+              <td><span class="status pass dot">Aprovado</span></td>
             </tr>
             <tr>
               <td>TC-54</td>
@@ -1141,7 +1141,7 @@
         </div>
         <div class="obs-box">
           <strong>Observações:</strong>
-          Testes pendentes de execução. FL-13 não é um dos 12 fluxos do enunciado. Entra no mapa porque o Playwright da prova inclui regressão visual de início, detalhe, carrinho e pagamento. Baselines ainda não existem. Esta rodada não tira screenshot.
+          TC-50 a TC-53 aprovados em 27/11/2026 via <code>pnpm exec playwright test e2e/visual.spec.ts</code>. Baselines em <code>e2e/visual.spec.ts-snapshots/</code> (1440 e 390). TC-54 (768 e comparação manual com frame) continua pendente.
         </div>
       </div>
     </div>
@@ -1183,7 +1183,7 @@
           <tr data-flow="fluxo10"><td>FL-10: Evento duplicado ou antigo e pedido pendente</td><td class="mat-total">4</td><td class="mat-pass">0</td><td class="mat-fail">0</td><td class="mat-block">0</td><td class="mat-pct">0%</td></tr>
           <tr data-flow="fluxo11"><td>FL-11: Teclado</td><td class="mat-total">3</td><td class="mat-pass">0</td><td class="mat-fail">0</td><td class="mat-block">0</td><td class="mat-pct">0%</td></tr>
           <tr data-flow="fluxo12"><td>FL-12: Skeleton com rede lenta</td><td class="mat-total">3</td><td class="mat-pass">0</td><td class="mat-fail">0</td><td class="mat-block">0</td><td class="mat-pct">0%</td></tr>
-          <tr data-flow="fluxo13"><td>FL-13: Regressão visual</td><td class="mat-total">5</td><td class="mat-pass">0</td><td class="mat-fail">0</td><td class="mat-block">0</td><td class="mat-pct">0%</td></tr>
+          <tr data-flow="fluxo13"><td>FL-13: Regressão visual</td><td class="mat-total">5</td><td class="mat-pass">4</td><td class="mat-fail">0</td><td class="mat-block">0</td><td class="mat-pct">80%</td></tr>
           <tr style="font-weight: 700; background: rgba(108,99,255,0.06);">
             <td>TOTAL</td>
             <td id="mat-total">0</td>

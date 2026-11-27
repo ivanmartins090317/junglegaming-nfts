@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test'
-import { ADA, cartLinesDesktop, gotoAuthenticated, gotoHome, openSignedInCart, signIn, waitForUserCart } from './helpers.ts'
+import { ADA, cartLines, gotoAuthenticated, gotoHome, openSignedInCart, waitForUserCart } from './helpers.ts'
 
 test('TC-50 baseline início', async ({ page }) => {
   await gotoHome(page)
@@ -27,6 +27,6 @@ test('TC-53 baseline pagamento', async ({ page }) => {
 test('TC-52 carrinho com linha', async ({ page }) => {
   await openSignedInCart(page, ADA)
   await waitForUserCart(page)
-  await expect(cartLinesDesktop(page)).toContainText('Sage Nomad #009', { timeout: 15_000 })
+  await expect(cartLines(page)).toContainText('Sage Nomad #009', { timeout: 15_000 })
   await expect(page).toHaveScreenshot('cart-lines.png', { fullPage: true })
 })

@@ -112,7 +112,7 @@ Código entregue em `docs/implementation/F6-pedido-idempotente-confirmacao.md`. 
 - [x] Socket no preço e no estado do pedido
 - [x] Perfil e carteiras
 - [x] Mapa de teste pela skill `C:\projetos\manual-report`. Primeira rodada, casos em Pendente: `docs/relatorio-testes-manuais.html` e `docs/evidencias/`. Segunda rodada em andamento: TC-01 a TC-05 aprovados em 2026-11-27. FL-01 fechado.
-- [ ] Playwright dos 12 fluxos e regressão visual (suíte em `e2e/`; ver `e2e/README.md`. Rodar `pnpm playwright`. Ainda há casos vermelhos a ajustar.)
+- [x] Playwright dos 12 fluxos e regressão visual (55/55 em 2026-11-27: `pnpm exec playwright test`. Suíte em `e2e/`, snapshots em `e2e/visual.spec.ts-snapshots/`. Helpers mobile em `e2e/helpers.ts`.)
 - [ ] Lighthouse, três medições, mediana, e deploy da mesma build
 - [ ] Segunda rodada do mapa, antes da entrega
 
