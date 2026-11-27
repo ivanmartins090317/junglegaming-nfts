@@ -12,7 +12,7 @@ test.describe('Simulação desligada', () => {
       .poll(
         async () => {
           const text = await page.locator('article').innerText()
-          if (text.includes('Incluir no carrinho')) return 'loaded'
+          if (text.includes('COMPRAR')) return 'loaded'
           if (text.includes('Não foi possível carregar a peça.')) return 'fail'
           if (text.includes('NFT não encontrado.')) return 'missing'
           if (text.includes('Carregando')) return 'loading'
@@ -21,7 +21,7 @@ test.describe('Simulação desligada', () => {
         { timeout: 20_000 },
       )
       .not.toBe('loaded')
-    await expect(page.locator('article')).not.toContainText('Incluir no carrinho')
+    await expect(page.locator('article')).not.toContainText('COMPRAR')
   })
 
   test('TC-14 sem mock a entrada não carrega sessão', async ({ page }) => {
@@ -37,6 +37,6 @@ test.describe('Simulação desligada', () => {
     await page.goto('/')
     await expect(page.getByText('Não foi possível carregar o catálogo.')).toBeVisible({ timeout: 20_000 })
     await page.goto('/nfts/neon-vessel-552')
-    await expect(page.locator('article')).not.toContainText('Incluir no carrinho', { timeout: 20_000 })
+    await expect(page.locator('article')).not.toContainText('COMPRAR', { timeout: 20_000 })
   })
 })
