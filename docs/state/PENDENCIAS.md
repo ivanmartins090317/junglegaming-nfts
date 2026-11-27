@@ -28,12 +28,13 @@ Código entregue em `docs/implementation/F3-catalogo-detalhe-url.md`. Homologaç
 - [x] `/` mostra as oito peças da loja, nesta ordem, com hero, oferta, artigos e rodapé (TC-01, 2026-11-27, `docs/evidencias/tc01-grade-oito-pecas.jpeg`)
 - [ ] `/?q=neon` e `/?q=NEON` deixam só Neon Vessel #552. `/?q=nomad`, `/?q=552` e `/?q=inexistente` esvaziam a grade com `Nenhuma peça com esse nome.` A captura `docs/evidencias/tc02-busca-neon.jpeg` cobre só o texto `neon`
 - [ ] Apagar a busca tira `q` do endereço e devolve as oito peças
-- [ ] Aba, coleção, rede, ordenação e página não mudam a lista nem o endereço
-- [ ] A faixa de preço recorta a grade ao aplicar, em estado local, sem parâmetro no endereço (TC-04)
+- [x] Aba, coleção, rede, ordenação e página não mudam a lista nem o endereço (TC-04, 2026-11-27)
+- [x] A faixa de preço recorta a grade ao aplicar, em estado local, sem parâmetro no endereço (TC-04, `docs/evidencias/tc04-faixa-preco.jpeg`)
 - [x] O card abre `/nfts/neon-vessel-552` e preserva `q` (TC-03, 2026-11-27). O coração alterna no card e não abre a peça
 - [ ] O detalhe mostra imagem, nome, `1.99`, `2.29` e `RARO`. `/nfts/nao-existe` mostra `NFT não encontrado.`
+- [ ] O detalhe de `/nfts/emerald-ape-042` segue a referência desktop (trilha, galeria, ficha, abas, mais da coleção e rodapé). `COMPRAR` soma a quantidade escolhida e abre `/carrinho`. Spec lite `docs/specs/2026-11-27-detalhe-referencia.md`
 - [x] Voltar da peça com `q` reabre a grade recortada. Sem `q`, reabre `/` (TC-03, 2026-11-27, `docs/evidencias/tc03-historico-busca-q.jpeg`)
-- [ ] No desktop, com `q`, o campo já está aberto. Sem `q`, a lupa abre o campo. No mobile, `Explorar coleções` grava `q`
+- [x] No desktop, com `q`, o campo já está aberto. Sem `q`, a lupa abre o campo. No mobile, `Explorar coleções` grava `q` (TC-05, 2026-11-27, `docs/evidencias/tc05-explorar-colecoes.jpeg`)
 - [x] Buscar a partir do carrinho cria uma entrada nova. O voltar do navegador reabre o carrinho (TC-03, 2026-11-27)
 - [ ] Com a simulação desligada, a grade e o detalhe mostram a frase de falha e o restante do início continua
 
@@ -110,7 +111,7 @@ Código entregue em `docs/implementation/F6-pedido-idempotente-confirmacao.md`. 
 - [x] Pedido idempotente, confirmação e recibo snapshot
 - [x] Socket no preço e no estado do pedido
 - [x] Perfil e carteiras
-- [x] Mapa de teste pela skill `C:\projetos\manual-report`. Primeira rodada, casos em Pendente: `docs/relatorio-testes-manuais.html` e `docs/evidencias/`. Segunda rodada em andamento: TC-01, TC-02 e TC-03 aprovados em 2026-11-27
+- [x] Mapa de teste pela skill `C:\projetos\manual-report`. Primeira rodada, casos em Pendente: `docs/relatorio-testes-manuais.html` e `docs/evidencias/`. Segunda rodada em andamento: TC-01 a TC-05 aprovados em 2026-11-27. FL-01 fechado.
 - [ ] Playwright dos 12 fluxos e regressão visual (suíte em `e2e/`; ver `e2e/README.md`. Rodar `pnpm playwright`. Ainda há casos vermelhos a ajustar.)
 - [ ] Lighthouse, três medições, mediana, e deploy da mesma build
 - [ ] Segunda rodada do mapa, antes da entrega

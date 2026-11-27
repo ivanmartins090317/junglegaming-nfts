@@ -9,7 +9,8 @@
 - A grade do início pede `GET /api/nfts` e desenha as oito peças da loja, na ordem da semente.
 - O texto da busca fica no endereço como `q`. A tela recorta pelo começo do nome, sem diferenciar maiúsculas.
 - O card abre `/nfts/$nftId`. O detalhe mostra imagem, nome, preço, comparação quando houver, e `RARO` quando a peça for rara.
-- Aba, coleção, rede, faixa de preço, ordenação e página mudam só o destaque visual.
+- Aba, coleção, rede, ordenação e página mudam só o destaque visual.
+- A faixa de preço recorta a grade quando a pessoa toca em `Aplicar`. Os limites ficam na barra lateral, em estado local, sem parâmetro no endereço.
 
 Não entrega: favorito guardado, carrinho, cotação, pedido, sessão nem tempo real.
 
@@ -50,19 +51,20 @@ A tela não chama o cliente HTTP. O componente pede o cache de leitura. O catál
 
 ## Homologação manual
 
-- [ ] Em `/`, as oito peças aparecem nesta ordem: Emerald Ape #042, Sage Nomad #009, Neon Vessel #552, Cosmic Bloom #118, Violet Nomad #314, Ivory Baron #088, Golden Beat #207, Golden Signal #160.
+- [x] Em `/`, as oito peças aparecem nesta ordem: Emerald Ape #042, Sage Nomad #009, Neon Vessel #552, Cosmic Bloom #118, Violet Nomad #314, Ivory Baron #088, Golden Beat #207, Golden Signal #160. (TC-01, 2026-11-27)
 - [ ] Neon Vessel #552 mostra `1.99`, `2.29` e `RARO`. O hero, a oferta, os artigos e o rodapé continuam.
 - [ ] Digitar `neon` leva a `/?q=neon` e deixa só essa peça. Cada letra substitui a entrada atual.
 - [ ] `/?q=nomad`, `/?q=552` e `/?q=inexistente` mostram `Nenhuma peça com esse nome.`
 - [ ] Apagar o texto tira `q` do endereço e devolve as oito peças.
-- [ ] Trocar a aba, a coleção, a rede, a faixa de preço, a ordenação ou a página não muda a lista nem o endereço.
-- [ ] O card abre `/nfts/neon-vessel-552`. Com `q`, o mesmo texto continua no endereço.
+- [x] Trocar a aba, a coleção, a rede, a ordenação ou a página não muda a lista nem o endereço. (TC-04, 2026-11-27)
+- [x] Ajustar a faixa de preço e tocar `Aplicar` mostra só peças no intervalo. Faixa vazia mostra `Nenhuma peça nessa faixa de preço.` Combina com `q` quando os dois estão ativos. (TC-04, 2026-11-27)
+- [x] O card abre `/nfts/neon-vessel-552`. Com `q`, o mesmo texto continua no endereço. (TC-03, 2026-11-27)
 - [ ] O coração alterna e a tela não muda de rota.
 - [ ] `/nfts/nao-existe` mostra `NFT não encontrado.` e a casca permanece.
-- [ ] Voltar da peça com `q=neon` reabre a grade recortada. Sem `q`, volta para `/`.
-- [ ] No desktop, com `q`, o campo já está aberto. Sem `q`, a lupa abre o campo.
-- [ ] No mobile, o campo `Explorar coleções` grava `q`.
-- [ ] Em `/carrinho`, digitar `neon` vai para `/?q=neon` numa entrada nova. O voltar do navegador reabre o carrinho.
+- [x] Voltar da peça com `q=neon` reabre a grade recortada. Sem `q`, volta para `/`. (TC-03, 2026-11-27)
+- [x] No desktop, com `q`, o campo já está aberto. Sem `q`, a lupa abre o campo. (TC-05, 2026-11-27)
+- [x] No mobile, o campo `Explorar coleções` grava `q`. (TC-05, 2026-11-27, `docs/evidencias/tc05-explorar-colecoes.jpeg`)
+- [x] Em `/carrinho`, digitar `neon` vai para `/?q=neon` numa entrada nova. O voltar do navegador reabre o carrinho. (TC-03, 2026-11-27)
 - [ ] Com `VITE_ENABLE_MOCK=false`, a grade mostra `Não foi possível carregar o catálogo.` e o detalhe mostra `Não foi possível carregar a peça.` O restante do início continua.
 
 ---
