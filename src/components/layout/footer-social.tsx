@@ -20,7 +20,7 @@ export function FooterSocial() {
             key={name}
             type="button"
             aria-label={name}
-            className="inline-flex size-7 cursor-pointer items-center justify-center rounded-[5px] border border-primary bg-transparent p-0 text-primary"
+            className="inline-flex size-7 items-center justify-center rounded-[5px] border border-primary bg-transparent p-0 text-primary"
           >
             {glyph}
           </button>

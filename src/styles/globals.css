@@ -42,3 +42,27 @@ body {
 *::after {
   box-shadow: none;
 }
+
+/* Tailwind 4 não aplica cursor:pointer em controles. A camada base cobre todo
+   elemento interativo; utilitários (cursor-*) continuam vencendo esta regra. */
+@layer base {
+  button:not(:disabled):not([aria-disabled='true']),
+  [role='button']:not([aria-disabled='true']),
+  [role='tab']:not([aria-disabled='true']),
+  [role='menuitem']:not([aria-disabled='true']),
+  [role='option']:not([aria-disabled='true']),
+  a[href]:not([aria-disabled='true']),
+  summary,
+  select:not(:disabled),
+  label[for],
+  input:is([type='button'], [type='submit'], [type='reset'], [type='checkbox'], [type='radio']):not(:disabled) {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  select:disabled,
+  input:disabled,
+  [aria-disabled='true'] {
+    cursor: not-allowed;
+  }
+}
