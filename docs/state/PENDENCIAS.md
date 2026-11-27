@@ -2,7 +2,7 @@
 
 Fonte viva do que ainda falta implementar ou validar. Atualizar ao concluir cada fase.
 
-Última revisão: 2026-11-26
+Última revisão: 2026-11-27
 
 ## Fase 1 · Homologação
 
@@ -25,15 +25,16 @@ Código entregue em `docs/implementation/F2-msw-usuarios-reset-catalogo.md`. Hom
 
 Código entregue em `docs/implementation/F3-catalogo-detalhe-url.md`. Homologação manual pendente:
 
-- [ ] `/` mostra as oito peças da loja, nesta ordem, com hero, oferta, artigos e rodapé
-- [ ] `/?q=neon` e `/?q=NEON` deixam só Neon Vessel #552. `/?q=nomad`, `/?q=552` e `/?q=inexistente` esvaziam a grade com `Nenhuma peça com esse nome.`
+- [x] `/` mostra as oito peças da loja, nesta ordem, com hero, oferta, artigos e rodapé (TC-01, 2026-11-27, `docs/evidencias/tc01-grade-oito-pecas.jpeg`)
+- [ ] `/?q=neon` e `/?q=NEON` deixam só Neon Vessel #552. `/?q=nomad`, `/?q=552` e `/?q=inexistente` esvaziam a grade com `Nenhuma peça com esse nome.` A captura `docs/evidencias/tc02-busca-neon.jpeg` cobre só o texto `neon`
 - [ ] Apagar a busca tira `q` do endereço e devolve as oito peças
-- [ ] Aba, coleção, rede, faixa de preço, ordenação e página não mudam a lista nem o endereço
-- [ ] O card abre `/nfts/neon-vessel-552` e preserva `q`. O coração alterna no card e não abre a peça
+- [ ] Aba, coleção, rede, ordenação e página não mudam a lista nem o endereço
+- [ ] A faixa de preço recorta a grade ao aplicar, em estado local, sem parâmetro no endereço (TC-04)
+- [x] O card abre `/nfts/neon-vessel-552` e preserva `q` (TC-03, 2026-11-27). O coração alterna no card e não abre a peça
 - [ ] O detalhe mostra imagem, nome, `1.99`, `2.29` e `RARO`. `/nfts/nao-existe` mostra `NFT não encontrado.`
-- [ ] Voltar da peça com `q` reabre a grade recortada. Sem `q`, reabre `/`
+- [x] Voltar da peça com `q` reabre a grade recortada. Sem `q`, reabre `/` (TC-03, 2026-11-27, `docs/evidencias/tc03-historico-busca-q.jpeg`)
 - [ ] No desktop, com `q`, o campo já está aberto. Sem `q`, a lupa abre o campo. No mobile, `Explorar coleções` grava `q`
-- [ ] Buscar a partir do carrinho cria uma entrada nova. O voltar do navegador reabre o carrinho
+- [x] Buscar a partir do carrinho cria uma entrada nova. O voltar do navegador reabre o carrinho (TC-03, 2026-11-27)
 - [ ] Com a simulação desligada, a grade e o detalhe mostram a frase de falha e o restante do início continua
 
 ## Fase 4 · Homologação
@@ -109,11 +110,11 @@ Código entregue em `docs/implementation/F6-pedido-idempotente-confirmacao.md`. 
 - [x] Pedido idempotente, confirmação e recibo snapshot
 - [x] Socket no preço e no estado do pedido
 - [x] Perfil e carteiras
-- [x] Mapa de teste pela skill `C:\projetos\manual-report`. Primeira rodada, casos em Pendente: `docs/relatorio-testes-manuais.html` e `docs/evidencias/`
+- [x] Mapa de teste pela skill `C:\projetos\manual-report`. Primeira rodada, casos em Pendente: `docs/relatorio-testes-manuais.html` e `docs/evidencias/`. Segunda rodada em andamento: TC-01, TC-02 e TC-03 aprovados em 2026-11-27
 - [ ] Playwright dos 12 fluxos e regressão visual (suíte em `e2e/`; ver `e2e/README.md`. Rodar `pnpm playwright`. Ainda há casos vermelhos a ajustar.)
 - [ ] Lighthouse, três medições, mediana, e deploy da mesma build
 - [ ] Segunda rodada do mapa, antes da entrega
 
 ## Fora deste repositório
 
-- [ ] Sentry, só como limitação no `ARCHITECTURE.md` quando ele for escrito
+- [x] Sentry fora do `package.json`. Limitação registrada em `ARCHITECTURE.md` (raiz, 2026-11-27). Sem `@sentry/*` e sem DSN.
