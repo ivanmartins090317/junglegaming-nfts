@@ -148,6 +148,20 @@ docs/                  specs, planos, entregas, manual do desenvolvedor, pendên
 - E2E com Playwright, cobrindo os 12 fluxos do enunciado e regressão visual em desktop e mobile.
 - Evidências dos testes manuais em `docs/evidencias/`.
 
+### Lighthouse
+
+Meta do enunciado: Performance ≥ 90, Accessibility ≥ 95, Best Practices ≥ 95, SEO ≥ 90.
+
+| | Performance | Accessibility | Best Practices | SEO |
+| --- | --- | --- | --- | --- |
+| Meta | ≥ 90 | ≥ 95 | ≥ 95 | ≥ 90 |
+| Antes | 99 | 94 | 96 | 90 |
+| Depois (local, mobile) | 99 | 100 | 96 | 100 |
+
+![Resultado anterior do Lighthouse: Performance 99, Accessibility 94, Best Practices 96, SEO 90](docs/evidencias/lighthouse.png)
+
+Recapture as notas no [deploy](https://junglegaming-nfts.vercel.app/) depois de publicar estas correções. Best Practices permanece em 96 porque o visitante lê a sessão com `GET /api/sessao` 401, como a spec manda, e o Chrome registra isso no console.
+
 ### Observabilidade
 
 Sentry fica de fora de propósito. Não há `@sentry/*` nem DSN. A limitação está registrada em `ARCHITECTURE.md`.

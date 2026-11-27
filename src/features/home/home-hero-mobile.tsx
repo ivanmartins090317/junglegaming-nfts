@@ -1,12 +1,7 @@
-import { useState } from 'react'
 import { ArrowRightIcon } from '@/components/layout/mobile-icons.tsx'
 import { scrollToGrade } from '@/features/home/home-data.ts'
 
-const slides = [0, 1, 2]
-
 export function HomeHeroMobile() {
-  const [slide, setSlide] = useState(0)
-
   return (
     <section className="relative overflow-hidden rounded-[30px] bg-primary/12 pb-[30px] desktop:hidden">
       <div
@@ -41,6 +36,8 @@ export function HomeHeroMobile() {
             alt=""
             width={138}
             height={138}
+            fetchPriority="high"
+            decoding="async"
             className="size-full rounded-[15px] object-cover"
           />
           <img
@@ -52,17 +49,10 @@ export function HomeHeroMobile() {
           />
         </div>
       </div>
-      <div className="absolute inset-x-0 bottom-[6px] flex justify-center gap-[7px]">
-        {slides.map((index) => (
-          <button
-            key={index}
-            type="button"
-            aria-label={`Destaque ${index + 1}`}
-            aria-current={slide === index ? 'true' : undefined}
-            onClick={() => setSlide(index)}
-            className="size-1.5 rounded-full bg-primary p-0"
-          />
-        ))}
+      <div className="absolute inset-x-0 bottom-[6px] flex justify-center gap-[7px]" aria-hidden="true">
+        <span className="size-1.5 rounded-full bg-primary" />
+        <span className="size-1.5 rounded-full bg-primary" />
+        <span className="size-1.5 rounded-full bg-primary" />
       </div>
     </section>
   )

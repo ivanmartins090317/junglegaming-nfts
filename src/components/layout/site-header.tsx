@@ -127,7 +127,7 @@ export function SiteHeader() {
           <Link
             to="/carrinho"
             {...quietLink}
-            aria-label="Carrinho"
+            aria-label={`Carrinho ${cartCount}`}
             className="relative inline-flex items-center text-foreground no-underline"
           >
             <span className="absolute -right-2 -top-2 inline-flex h-[16px] min-w-[16px] items-center justify-center rounded-full bg-primary text-[10px] font-bold leading-none text-ink">

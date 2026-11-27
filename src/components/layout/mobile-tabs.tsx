@@ -47,7 +47,7 @@ export function MobileTabs() {
         <li className="relative size-full">
           <button
             type="button"
-            aria-label="Carteira"
+            aria-label="Carteira 2"
             className="absolute -top-[30px] left-1/2 inline-flex size-16 -translate-x-1/2 items-center justify-center rounded-full bg-linear-to-b from-primary/50 to-primary/90 p-0 text-foreground"
           >
             <span className="absolute top-0 right-0 inline-flex h-[16px] min-w-[16px] items-center justify-center rounded-full bg-foreground text-[10px] font-bold text-ink">
@@ -60,7 +60,7 @@ export function MobileTabs() {
           <Link
             to="/carrinho"
             {...quietLink}
-            aria-label="Carrinho"
+            aria-label={`Carrinho ${cartCount}`}
             className={`${itemClass} relative text-text-secondary`}
           >
             <span className="absolute top-1 right-0 inline-flex h-[16px] min-w-[16px] items-center justify-center rounded-full bg-primary text-[10px] font-bold leading-none text-ink">

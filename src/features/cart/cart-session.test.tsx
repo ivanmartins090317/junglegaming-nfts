@@ -128,7 +128,7 @@ describe('fusão na entrada e saída', () => {
       { nftId: 'sage-nomad-009', quantity: 3 },
       { nftId: 'emerald-ape-042', quantity: 1 },
     ])
-    const cart = view.container.querySelector('header a[aria-label="Carrinho"]')
+    const cart = view.container.querySelector('header a[aria-label^="Carrinho"]')
     if (!(cart instanceof HTMLElement)) throw new Error('Carrinho ausente')
     await click(cart)
     await vi.waitFor(() => {

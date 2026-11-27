@@ -295,7 +295,7 @@ function buttonNamed(container: ParentNode, name: string) {
 }
 
 function cartBadge(container: ParentNode) {
-  return container.querySelector('header a[aria-label="Carrinho"] span')?.textContent
+  return container.querySelector('header a[aria-label^="Carrinho"] span')?.textContent
 }
 
 async function click(element: HTMLElement) {

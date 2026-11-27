@@ -87,7 +87,7 @@ function ShareButton({ label, children }: { label: string; children: ReactNode }
     <button
       type="button"
       aria-label={label}
-      className="inline-flex size-5 items-center justify-center bg-transparent p-0 text-foreground"
+      className="relative -m-0.5 inline-flex size-6 items-center justify-center bg-transparent p-0 text-foreground"
     >
       {children}
     </button>

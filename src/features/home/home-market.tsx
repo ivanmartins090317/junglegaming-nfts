@@ -156,6 +156,7 @@ export function HomeMarket() {
               </button>
             </p>
           </div>
+          <h2 className="sr-only">Catálogo</h2>
           <CatalogGrade priceRange={appliedPrice} />
           <div className="mt-8 hidden justify-end gap-2 desktop:mt-[93px] desktop:flex">
             {[1, 2, 3, 4].map((number) => (

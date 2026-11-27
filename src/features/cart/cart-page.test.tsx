@@ -55,7 +55,7 @@ function field(root: ParentNode, name: string) {
 }
 
 function badge(container: ParentNode) {
-  return container.querySelector('header a[aria-label="Carrinho"] span')?.textContent
+  return container.querySelector('header a[aria-label^="Carrinho"] span')?.textContent
 }
 
 function button(root: ParentNode, label: string) {
@@ -345,7 +345,7 @@ describe('carrinho', () => {
 
     const home = await mount('/', 390)
     mounted.push(home)
-    const cart = home.container.querySelector('a[aria-label="Carrinho"]')
+    const cart = home.container.querySelector('a[aria-label^="Carrinho"]')
     if (!(cart instanceof HTMLElement)) throw new Error('Carrinho ausente')
     await click(cart)
     await vi.waitFor(() => {

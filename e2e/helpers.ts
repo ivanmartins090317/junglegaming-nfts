@@ -227,7 +227,7 @@ export async function addToCartFromDetail(page: Page, nftId: string) {
 
 export function cartBadge(page: Page) {
 
-  return page.locator('header a[aria-label="Carrinho"] span').first()
+  return page.locator('header a[aria-label^="Carrinho"] span').first()
 
 }
 

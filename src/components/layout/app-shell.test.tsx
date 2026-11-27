@@ -113,7 +113,7 @@ describe('casca e rotas vazias', () => {
     expect(badge?.className).toContain('h-[16px]')
     expect(badge?.className).toContain('min-w-[16px]')
     expect(badge?.className).toContain('bg-primary')
-    expect(view.container.querySelector('button[aria-label="Carteira"] span')?.textContent).toBe('2')
+    expect(view.container.querySelector('button[aria-label="Carteira 2"] span')?.textContent).toBe('2')
 
     const signIn = [...view.container.querySelectorAll('button')].find(
       (button) => button.textContent?.trim() === 'Entrar',

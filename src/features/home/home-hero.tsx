@@ -1,13 +1,8 @@
-import { useState } from 'react'
 import { Button } from '@/components/ui/button.tsx'
 import { scrollToGrade } from '@/features/home/home-data.ts'
 import { HomeHeroMobile } from '@/features/home/home-hero-mobile.tsx'
 
-const slides = [0, 1, 2]
-
 export function HomeHero() {
-  const [slide, setSlide] = useState(0)
-
   return (
     <>
       <section className="hidden h-[450px] items-center pl-10 desktop:grid desktop:grid-cols-[minmax(0,1fr)_450px]">
@@ -32,42 +27,19 @@ export function HomeHero() {
             alt=""
             width={450}
             height={450}
+            fetchPriority="high"
+            decoding="async"
             className="h-[450px] w-[450px] rounded-[15px] object-cover"
           />
-          <HeroDots
-            slide={slide}
-            onSelect={setSlide}
-            className="absolute right-[calc(100%+110px)] bottom-8 justify-center"
-          />
+          <div className="absolute right-[calc(100%+110px)] bottom-8 flex justify-center gap-2" aria-hidden="true">
+            <span className="size-2 rounded-full bg-primary" />
+            <span className="size-2 rounded-full bg-secondary" />
+            <span className="size-2 rounded-full bg-secondary" />
+          </div>
         </div>
       </section>
 
       <HomeHeroMobile />
     </>
-  )
-}
-
-function HeroDots({
-  slide,
-  onSelect,
-  className,
-}: {
-  slide: number
-  onSelect: (index: number) => void
-  className: string
-}) {
-  return (
-    <div className={`flex gap-2 ${className}`}>
-      {slides.map((index) => (
-        <button
-          key={index}
-          type="button"
-          aria-label={`Destaque ${index + 1}`}
-          aria-current={slide === index ? 'true' : undefined}
-          onClick={() => onSelect(index)}
-          className={`size-2 rounded-full p-0 ${slide === index ? 'bg-primary' : 'bg-secondary'}`}
-        />
-      ))}
-    </div>
   )
 }
