@@ -49,7 +49,7 @@ test.describe('FL-01 Catálogo e histórico', () => {
     await expect(page).toHaveURL(/\/carrinho/)
   })
 
-  test('TC-04 filtros visíveis não mudam a lista nem a URL', async ({ page }) => {
+  test('TC-04 demais filtros visuais e faixa de preço funcional', async ({ page }) => {
     await gotoHome(page)
     await page.locator('aside').getByRole('button', { name: /Arte digital/ }).click()
     await page.locator('aside').getByRole('button', { name: /Ethereum/ }).click()
@@ -58,6 +58,14 @@ test.describe('FL-01 Catálogo e histórico', () => {
     await page.getByRole('button', { name: '3', exact: true }).click()
     await expect(page).not.toHaveURL(/aba|rede|pagina/)
     await expect(page.locator('#grade h3')).toHaveCount(8)
+
+    await page.locator('input[name="preco-min"]').fill('1.50')
+    await page.locator('input[name="preco-max"]').fill('2.00')
+    await page.locator('aside').getByRole('button', { name: 'Aplicar' }).click()
+    await waitForCatalog(page)
+    const names = await page.locator('#grade h3').allTextContents()
+    expect(names).toEqual(['Sage Nomad #009', 'Neon Vessel #552', 'Ivory Baron #088'])
+    await expect(page).not.toHaveURL(/preco|min|max/)
   })
 
   test('TC-05 lupa abre busca no desktop', async ({ page }) => {
@@ -82,9 +90,9 @@ test.describe('FL-02 Detalhe inexistente', () => {
   test('TC-06 detalhe direto da peça da semente', async ({ page }) => {
     await page.goto('/nfts/neon-vessel-552')
     await expect(page.getByRole('heading', { name: 'Neon Vessel #552' })).toBeVisible()
-    await expect(page.getByText('1.99')).toBeVisible()
-    await expect(page.getByText('2.29')).toBeVisible()
-    await expect(page.getByText('RARO')).toBeVisible()
+    await expect(page.locator('article')).toContainText('1.99 ETH')
+    await expect(page.locator('article')).toContainText('2.29 ETH')
+    await expect(page.getByText('RARO', { exact: true })).toBeVisible()
   })
 
   test('TC-07 identificador ausente', async ({ page }) => {

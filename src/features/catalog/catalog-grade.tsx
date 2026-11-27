@@ -3,13 +3,23 @@ import { Link, useSearch } from '@tanstack/react-router'
 import { HeartIcon } from '@/components/layout/chrome-icons.tsx'
 import { catalogSearchParams, normalizeCatalogQuery } from '@/features/catalog/catalog-search.ts'
 import { nftsByNamePrefix } from '@/features/catalog/nfts-by-name-prefix.ts'
+import { nftsInPriceRange } from '@/features/catalog/nfts-in-price-range.ts'
 import { useCatalogQuery } from '@/lib/query/nfts.ts'
 import type { Nft } from '@/lib/contracts/nft.ts'
 
 const gradeClass =
   'mt-4 grid list-none grid-cols-2 gap-x-4 gap-y-[21px] p-0 pb-8 desktop:mt-5 desktop:grid-cols-3 desktop:gap-x-8 desktop:gap-y-[60px] desktop:pb-0'
 
-export function CatalogGrade() {
+export interface CatalogPriceRange {
+  min: string
+  max: string
+}
+
+interface CatalogGradeProps {
+  priceRange?: CatalogPriceRange | null
+}
+
+export function CatalogGrade({ priceRange = null }: CatalogGradeProps) {
   const { q } = useSearch({ from: '/' })
   const query = normalizeCatalogQuery(q)
   const catalog = useCatalogQuery()
@@ -17,12 +27,17 @@ export function CatalogGrade() {
   if (catalog.isPending) return <CatalogNote>Carregando</CatalogNote>
   if (catalog.isError) return <CatalogNote>Não foi possível carregar o catálogo.</CatalogNote>
 
-  const visible = nftsByNamePrefix(catalog.data, query)
-  if (query.length > 0 && visible.length === 0) {
+  const byName = nftsByNamePrefix(catalog.data, query)
+  const visible = priceRange ? nftsInPriceRange(byName, priceRange.min, priceRange.max) : byName
+
+  if (query.length > 0 && byName.length === 0) {
     return <CatalogNote>Nenhuma peça com esse nome.</CatalogNote>
   }
+  if (priceRange && visible.length === 0) {
+    return <CatalogNote>Nenhuma peça nessa faixa de preço.</CatalogNote>
+  }
 
-  const fillerIndex = fillerPosition(visible.length, query)
+  const fillerIndex = fillerPosition(visible.length, query.length > 0 || priceRange !== null)
 
   return (
     <ul className={gradeClass}>
@@ -40,8 +55,8 @@ export function CatalogGrade() {
 
 // Desktop tem 3 colunas: quando a última fileira sobraria com 2 peças, o card
 // de preenchimento (só imagem) entra entre elas para fechar a fileira em 3.
-function fillerPosition(total: number, query: string) {
-  if (query.length > 0 || total < 3 || total % 3 !== 2) return -1
+function fillerPosition(total: number, skipFiller: boolean) {
+  if (skipFiller || total < 3 || total % 3 !== 2) return -1
   return total - 1
 }
 

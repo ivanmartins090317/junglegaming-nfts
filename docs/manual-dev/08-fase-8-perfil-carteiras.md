@@ -2,13 +2,15 @@
 
 ## O que foi feito
 
+k
 `/perfil` mostra a sidebar `Meu perfil` e o formulário `Perfil do colecionador`. `/carteiras` mostra o mesmo miolo lateral com `Carteira principal`, texto de pagamento, formulário e bloco vazio de carteira secundária. A partir de 1440, sidebar e conteúdo ficam lado a lado; abaixo disso, a sidebar vem primeiro (cenário 16 da spec).
 
 Ada e Bruno nascem com perfil e carteira vazios, exceto nome e e-mail no perfil. Conta nova herda nome e e-mail do cadastro.
 
 ## Como homologar
 
-Pré-requisito: `pnpm dev`, mock ligado. Ada: `ada@kurio.test` / `kurio`.
+Pré-requisito: `pnpm dev`, mock ligado. Ada: `ada@kurio.test` / `
+`.
 
 - [ ] Em 1440, `/perfil` segue o contrato desktop: sidebar, grade em duas colunas, `Salvar`, avatar e `Alterar senha`.
 - [ ] Em 390, mesma página em uma coluna, sidebar antes do formulário.
@@ -22,9 +24,9 @@ Pré-requisito: `pnpm dev`, mock ligado. Ada: `ada@kurio.test` / `kurio`.
 
 ## Endereços úteis
 
-| Método | Caminho |
-| --- | --- |
-| GET | `/api/perfil` |
-| PUT | `/api/perfil` |
-| GET | `/api/carteiras` |
-| PUT | `/api/carteiras/principal` |
+| Método | Caminho                    |
+| ------ | -------------------------- |
+| GET    | `/api/perfil`              |
+| PUT    | `/api/perfil`              |
+| GET    | `/api/carteiras`           |
+| PUT    | `/api/carteiras/principal` |

@@ -1,14 +1,27 @@
 import { useState, type ReactNode } from 'react'
 import { Button } from '@/components/ui/button.tsx'
-import { CatalogGrade } from '@/features/catalog/catalog-grade.tsx'
+import { CatalogGrade, type CatalogPriceRange } from '@/features/catalog/catalog-grade.tsx'
 import { homeCollections, homeNetworks, homeTabs } from '@/features/home/home-data.ts'
+
+const priceFloor = 0
+const priceCeiling = 13
+
+function formatEthPt(value: number) {
+  return value.toFixed(2).replace('.', ',')
+}
+
+function toEthString(value: number) {
+  return value.toFixed(2)
+}
 
 export function HomeMarket() {
   const [collection, setCollection] = useState('Arte digital')
   const [network, setNetwork] = useState<string | null>(null)
   const [tab, setTab] = useState<(typeof homeTabs)[number]>('Todos os NFTs')
   const [page, setPage] = useState(1)
-  const [priceApplied, setPriceApplied] = useState(false)
+  const [priceMin, setPriceMin] = useState(0.02)
+  const [priceMax, setPriceMax] = useState(12.3)
+  const [appliedPrice, setAppliedPrice] = useState<CatalogPriceRange | null>(null)
   const [sortHighlighted, setSortHighlighted] = useState(false)
 
   return (
@@ -29,19 +42,53 @@ export function HomeMarket() {
             </FilterGroup>
             <div className="mt-11">
               <h2 className="m-0 text-[16px] font-bold leading-none text-foreground">Faixa de preço</h2>
-              <div className="relative mt-3.5 h-4">
+              <div className="relative mt-3.5 h-8">
                 <div className="absolute top-1/2 right-0 left-0 h-px -translate-y-1/2 bg-secondary" />
-                <span className="absolute top-1/2 left-0 size-3 -translate-y-1/2 rounded-full bg-primary" />
-                <span className="absolute top-1/2 right-8 size-3 -translate-y-1/2 rounded-full bg-primary" />
+                <input
+                  type="range"
+                  name="preco-min"
+                  min={priceFloor}
+                  max={priceCeiling}
+                  step={0.01}
+                  value={priceMin}
+                  aria-label="Preço mínimo em ETH"
+                  onChange={(event) => {
+                    const next = Number(event.target.value)
+                    setPriceMin(next)
+                    if (next > priceMax) setPriceMax(next)
+                  }}
+                  className="absolute top-1/2 right-0 left-0 z-[1] w-full -translate-y-1/2 appearance-none bg-transparent [&::-webkit-slider-thumb]:size-3 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary"
+                />
+                <input
+                  type="range"
+                  name="preco-max"
+                  min={priceFloor}
+                  max={priceCeiling}
+                  step={0.01}
+                  value={priceMax}
+                  aria-label="Preço máximo em ETH"
+                  onChange={(event) => {
+                    const next = Number(event.target.value)
+                    setPriceMax(next)
+                    if (next < priceMin) setPriceMin(next)
+                  }}
+                  className="absolute top-1/2 right-0 left-0 z-[2] w-full -translate-y-1/2 appearance-none bg-transparent [&::-webkit-slider-thumb]:size-3 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary"
+                />
               </div>
               <p className="m-0 mt-4 text-[14px] leading-none text-text-secondary">
-                Preço: 0,02 - 12,30 ETH
+                Preço: {formatEthPt(priceMin)} - {formatEthPt(priceMax)} ETH
               </p>
               <Button
                 type="button"
-                aria-pressed={priceApplied}
+                aria-pressed={appliedPrice !== null}
                 className="mt-5 w-auto px-4 text-[14px]"
-                onClick={() => setPriceApplied(true)}
+                onClick={() => {
+                  const min = Math.min(priceMin, priceMax)
+                  const max = Math.max(priceMin, priceMax)
+                  setPriceMin(min)
+                  setPriceMax(max)
+                  setAppliedPrice({ min: toEthString(min), max: toEthString(max) })
+                }}
               >
                 Aplicar
               </Button>
@@ -109,7 +156,7 @@ export function HomeMarket() {
               </button>
             </p>
           </div>
-          <CatalogGrade />
+          <CatalogGrade priceRange={appliedPrice} />
           <div className="mt-8 hidden justify-end gap-2 desktop:mt-[93px] desktop:flex">
             {[1, 2, 3, 4].map((number) => (
               <button

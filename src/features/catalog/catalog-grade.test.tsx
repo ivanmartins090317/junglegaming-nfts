@@ -127,6 +127,36 @@ describe('grade do catálogo', () => {
     expect(await shownNames(view.container)).toEqual(seedNames)
   })
 
+  it('recorta a grade pela faixa de preço ao aplicar', async () => {
+    const view = await mount('/')
+    mounted.push(view)
+    expect(await shownNames(view.container)).toEqual(seedNames)
+
+    const min = view.container.querySelector('input[name="preco-min"]')
+    const max = view.container.querySelector('input[name="preco-max"]')
+    if (!(min instanceof HTMLInputElement) || !(max instanceof HTMLInputElement)) {
+      throw new Error('Faixa de preço ausente')
+    }
+
+    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set
+    await act(async () => {
+      setter?.call(min, '1.50')
+      min.dispatchEvent(new Event('input', { bubbles: true }))
+      setter?.call(max, '2.00')
+      max.dispatchEvent(new Event('input', { bubbles: true }))
+      clickText(view.container, 'Aplicar')
+    })
+
+    await vi.waitFor(() => {
+      expect(cardNames(view.container)).toEqual([
+        'Sage Nomad #009',
+        'Neon Vessel #552',
+        'Ivory Baron #088',
+      ])
+    })
+    expect(view.router.state.location.href).not.toContain('preco')
+  })
+
   it('não muda a lista nem o endereço quando a aba, o filtro ou a página mudam', async () => {
     const view = await mount('/?q=sage')
     mounted.push(view)
