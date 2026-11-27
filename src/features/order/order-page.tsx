@@ -12,6 +12,7 @@ export function OrderPage({ orderId }: { orderId: string }) {
     queryKey: userId ? orderQueryKey(userId, orderId) : ['pedido', 'sem-sessao', orderId],
     queryFn: ({ signal }) => fetchOrder(orderId, signal),
     enabled: Boolean(userId),
+    refetchInterval: (query) => (query.state.data?.status === 'pendente' ? 1000 : false),
   })
 
   const message = pageMessage(Boolean(userId), order.isPending, order.error, order.data?.status)

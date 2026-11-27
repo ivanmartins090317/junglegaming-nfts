@@ -110,7 +110,7 @@ Código entregue em `docs/implementation/F6-pedido-idempotente-confirmacao.md`. 
 - [x] Socket no preço e no estado do pedido
 - [x] Perfil e carteiras
 - [x] Mapa de teste pela skill `C:\projetos\manual-report`. Primeira rodada, casos em Pendente: `docs/relatorio-testes-manuais.html` e `docs/evidencias/`
-- [ ] Playwright dos 12 fluxos e regressão visual
+- [ ] Playwright dos 12 fluxos e regressão visual (suíte em `e2e/`; ver `e2e/README.md`. Rodar `pnpm playwright`. Ainda há casos vermelhos a ajustar.)
 - [ ] Lighthouse, três medições, mediana, e deploy da mesma build
 - [ ] Segunda rodada do mapa, antes da entrega
 

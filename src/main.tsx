@@ -5,7 +5,8 @@ import { createRouter, RouterProvider } from '@tanstack/react-router'
 import { routeTree } from './routeTree.gen.ts'
 import { isMockEnabled } from './mocks/config.ts'
 import { parseCatalogLocation, stringifyCatalogLocation } from '@/features/catalog/catalog-search.ts'
-import { getAppQueryClient } from '@/lib/query/session.ts'
+import type { SessionUser } from '@/lib/contracts/session.ts'
+import { getAppQueryClient, sessionQueryKey } from '@/lib/query/session.ts'
 import '@fontsource/roboto-mono/400.css'
 import '@fontsource/roboto-mono/500.css'
 import '@fontsource/roboto-mono/700.css'
@@ -18,6 +19,18 @@ const router = createRouter({
 })
 
 const queryClient = getAppQueryClient()
+
+if (import.meta.env.DEV) {
+  interface KurioE2EBridge {
+    navigate: (href: string) => Promise<void>
+    setSession: (user: SessionUser | null) => void
+  }
+
+  ;(window as Window & { kurioE2E?: KurioE2EBridge }).kurioE2E = {
+    navigate: (href) => router.navigate({ href }),
+    setSession: (user) => queryClient.setQueryData(sessionQueryKey, user),
+  }
+}
 
 declare module '@tanstack/react-router' {
   interface Register {

@@ -74,7 +74,10 @@ export function applyPriceNotice(queryClient: QueryClient, notice: PriceNotice):
 export function applyOrderNotice(queryClient: QueryClient, userId: string, notice: OrderNotice): boolean {
   const key = orderQueryKey(userId, notice.orderId)
   const order = queryClient.getQueryData<OrderReceipt>(key)
-  if (!order) return false
+  if (!order) {
+    void queryClient.invalidateQueries({ queryKey: key })
+    return false
+  }
   if (order.status === 'confirmado' || order.status === 'recusado') return false
   if (!isSafeVersion(notice.version)) return false
   const current = storedOrderVersion(userId, notice.orderId)
